@@ -78,4 +78,22 @@ class UserModel extends Model
     {
         return $this->where('role', $role)->findAll();
     }
+
+    public function getAvailableUsersByRole($role)
+    {
+        return $this->db->table('users u')
+            ->select('u.id, u.username, u.full_name, u.email')
+            ->where('u.role', $role)
+            ->where('u.is_active', 1)
+            ->whereNotIn('u.id', function($subquery) use ($role) {
+                if ($role === 'siswa') {
+                    $subquery->select('s.user_id')->from('siswa s');
+                } elseif ($role === 'guru') {
+                    $subquery->select('g.user_id')->from('guru g');
+                }
+            })
+            ->orderBy('u.full_name', 'ASC')
+            ->get()
+            ->getResultArray();
+    }
 } 

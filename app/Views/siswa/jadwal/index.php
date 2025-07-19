@@ -18,7 +18,6 @@
                             <th>Guru</th>
                             <th>Hari</th>
                             <th>Jam</th>
-                            <th>Ruang</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,7 +28,6 @@
                             <td><?= esc($item['nama_guru']) ?></td>
                             <td><?= esc($item['hari']) ?></td>
                             <td><?= esc($item['jam_mulai']) ?> - <?= esc($item['jam_selesai']) ?></td>
-                            <td><?= esc($item['ruang'] ?? '-') ?></td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>

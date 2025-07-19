@@ -32,8 +32,7 @@ class SiswaModel extends Model
         'tanggal_lahir' => 'required|valid_date',
         'alamat' => 'required|min_length[10]|max_length[255]',
         'no_telp' => 'required|min_length[10]|max_length[15]',
-        'kelas_id' => 'required|numeric',
-        'jurusan_id' => 'required|numeric'
+        'kelas_id' => 'required|numeric'
     ];
     protected $validationMessages   = [];
     protected $skipValidation       = false;

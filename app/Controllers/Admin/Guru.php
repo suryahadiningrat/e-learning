@@ -29,8 +29,12 @@ class Guru extends BaseController
 
     public function create()
     {
+        // Get users with role 'guru' that haven't been assigned to any guru yet
+        $availableUsers = $this->userModel->getAvailableUsersByRole('guru');
+        
         $data = [
-            'title' => 'Tambah Guru'
+            'title' => 'Tambah Guru',
+            'users' => $availableUsers
         ];
 
         return view('admin/guru/create', $data);
@@ -40,8 +44,7 @@ class Guru extends BaseController
     {
         // Validasi input dengan pengecekan manual untuk unique
         $nip = $this->request->getPost('nip');
-        $username = $this->request->getPost('username');
-        $email = $this->request->getPost('email');
+        $userId = $this->request->getPost('user_id');
         
         // Cek NIP unique
         $existingNIP = $this->guruModel->where('nip', $nip)->first();
@@ -49,26 +52,16 @@ class Guru extends BaseController
             return redirect()->back()->withInput()->with('error', 'NIP sudah digunakan');
         }
         
-        // Cek username unique
-        $existingUser = $this->userModel->where('username', $username)->first();
-        if ($existingUser) {
-            return redirect()->back()->withInput()->with('error', 'Username sudah digunakan');
-        }
-        
-        // Cek email unique
-        $existingEmail = $this->userModel->where('email', $email)->first();
-        if ($existingEmail) {
-            return redirect()->back()->withInput()->with('error', 'Email sudah digunakan');
+        // Cek user_id unique (user belum dipilih untuk guru lain)
+        $existingGuru = $this->guruModel->where('user_id', $userId)->first();
+        if ($existingGuru) {
+            return redirect()->back()->withInput()->with('error', 'User sudah dipilih untuk guru lain');
         }
 
         // Validasi input lainnya
         $rules = [
             'nip' => 'required|min_length[8]|max_length[20]',
-            'username' => 'required|min_length[3]|max_length[50]',
-            'full_name' => 'required|min_length[3]|max_length[100]',
-            'email' => 'required|valid_email',
-            'password' => 'required|min_length[6]',
-            'confirm_password' => 'required|matches[password]',
+            'user_id' => 'required|numeric',
             'jenis_kelamin' => 'required|in_list[L,P]',
             'tempat_lahir' => 'required|min_length[2]|max_length[50]',
             'tanggal_lahir' => 'required|valid_date',
@@ -83,27 +76,9 @@ class Guru extends BaseController
                 'min_length' => 'NIP minimal 8 karakter',
                 'max_length' => 'NIP maksimal 20 karakter'
             ],
-            'username' => [
-                'required' => 'Username harus diisi',
-                'min_length' => 'Username minimal 3 karakter',
-                'max_length' => 'Username maksimal 50 karakter'
-            ],
-            'full_name' => [
-                'required' => 'Nama lengkap harus diisi',
-                'min_length' => 'Nama lengkap minimal 3 karakter',
-                'max_length' => 'Nama lengkap maksimal 100 karakter'
-            ],
-            'email' => [
-                'required' => 'Email harus diisi',
-                'valid_email' => 'Format email tidak valid'
-            ],
-            'password' => [
-                'required' => 'Password harus diisi',
-                'min_length' => 'Password minimal 6 karakter'
-            ],
-            'confirm_password' => [
-                'required' => 'Konfirmasi password harus diisi',
-                'matches' => 'Konfirmasi password tidak cocok'
+            'user_id' => [
+                'required' => 'User login harus dipilih',
+                'numeric' => 'User login tidak valid'
             ],
             'jenis_kelamin' => [
                 'required' => 'Jenis kelamin harus dipilih',
@@ -144,20 +119,6 @@ class Guru extends BaseController
         $db->transStart();
 
         try {
-            // Buat user baru
-            $userData = [
-                'username' => $username,
-                'full_name' => $this->request->getPost('full_name'),
-                'email' => $email,
-                'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-                'role' => 'guru',
-                'is_active' => 1,
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s')
-            ];
-
-            $userId = $db->table('users')->insert($userData);
-
             // Buat data guru
             $guruData = [
                 'user_id' => $userId,
@@ -196,9 +157,32 @@ class Guru extends BaseController
             return redirect()->to('admin/guru')->with('error', 'Guru tidak ditemukan');
         }
 
+        // Get available users (including current user)
+        $availableUsers = $this->userModel->getAvailableUsersByRole('guru');
+        
+        // Add current user if not in available users (for edit case)
+        $currentUser = $this->userModel->find($guru['user_id']);
+        $userExists = false;
+        foreach ($availableUsers as $user) {
+            if ($user['id'] == $guru['user_id']) {
+                $userExists = true;
+                break;
+            }
+        }
+        
+        if (!$userExists && $currentUser) {
+            $availableUsers[] = [
+                'id' => $currentUser['id'],
+                'username' => $currentUser['username'],
+                'full_name' => $currentUser['full_name'],
+                'email' => $currentUser['email']
+            ];
+        }
+
         $data = [
             'title' => 'Edit Guru',
-            'guru' => $guru
+            'guru' => $guru,
+            'users' => $availableUsers
         ];
 
         return view('admin/guru/edit', $data);
@@ -212,10 +196,9 @@ class Guru extends BaseController
             return redirect()->to('admin/guru')->with('error', 'Guru tidak ditemukan');
         }
 
-        // Validasi input dengan pengecekan manual untuk unique
+        // Validasi input
         $nip = $this->request->getPost('nip');
-        $username = $this->request->getPost('username');
-        $email = $this->request->getPost('email');
+        $userId = $this->request->getPost('user_id');
         
         // Cek NIP unique (kecuali untuk guru yang sedang diedit)
         $existingNIP = $this->guruModel->where('nip', $nip)
@@ -225,28 +208,18 @@ class Guru extends BaseController
             return redirect()->back()->withInput()->with('error', 'NIP sudah digunakan');
         }
         
-        // Cek username unique (kecuali untuk user yang sedang diedit)
-        $existingUser = $this->userModel->where('username', $username)
-                                       ->where('id !=', $guru['user_id'])
+        // Cek user_id unique (kecuali untuk guru yang sedang diedit)
+        $existingGuru = $this->guruModel->where('user_id', $userId)
+                                       ->where('id !=', $id)
                                        ->first();
-        if ($existingUser) {
-            return redirect()->back()->withInput()->with('error', 'Username sudah digunakan');
-        }
-        
-        // Cek email unique (kecuali untuk user yang sedang diedit)
-        $existingEmail = $this->userModel->where('email', $email)
-                                        ->where('id !=', $guru['user_id'])
-                                        ->first();
-        if ($existingEmail) {
-            return redirect()->back()->withInput()->with('error', 'Email sudah digunakan');
+        if ($existingGuru) {
+            return redirect()->back()->withInput()->with('error', 'User sudah dipilih untuk guru lain');
         }
 
         // Validasi input lainnya
         $rules = [
             'nip' => 'required|min_length[8]|max_length[20]',
-            'username' => 'required|min_length[3]|max_length[50]',
-            'full_name' => 'required|min_length[3]|max_length[100]',
-            'email' => 'required|valid_email',
+            'user_id' => 'required|numeric',
             'jenis_kelamin' => 'required|in_list[L,P]',
             'tempat_lahir' => 'required|min_length[2]|max_length[50]',
             'tanggal_lahir' => 'required|valid_date',
@@ -261,19 +234,9 @@ class Guru extends BaseController
                 'min_length' => 'NIP minimal 8 karakter',
                 'max_length' => 'NIP maksimal 20 karakter'
             ],
-            'username' => [
-                'required' => 'Username harus diisi',
-                'min_length' => 'Username minimal 3 karakter',
-                'max_length' => 'Username maksimal 50 karakter'
-            ],
-            'full_name' => [
-                'required' => 'Nama lengkap harus diisi',
-                'min_length' => 'Nama lengkap minimal 3 karakter',
-                'max_length' => 'Nama lengkap maksimal 100 karakter'
-            ],
-            'email' => [
-                'required' => 'Email harus diisi',
-                'valid_email' => 'Format email tidak valid'
+            'user_id' => [
+                'required' => 'User login harus dipilih',
+                'numeric' => 'User login tidak valid'
             ],
             'jenis_kelamin' => [
                 'required' => 'Jenis kelamin harus dipilih',
@@ -314,28 +277,9 @@ class Guru extends BaseController
         $db->transStart();
 
         try {
-            // Update user data
-            $userData = [
-                'username' => $username,
-                'full_name' => $this->request->getPost('full_name'),
-                'email' => $email,
-                'updated_at' => date('Y-m-d H:i:s')
-            ];
-
-            // Update password jika diisi
-            $password = $this->request->getPost('password');
-            if (!empty($password)) {
-                $confirmPassword = $this->request->getPost('confirm_password');
-                if ($password !== $confirmPassword) {
-                    return redirect()->back()->withInput()->with('error', 'Konfirmasi password tidak cocok');
-                }
-                $userData['password'] = password_hash($password, PASSWORD_DEFAULT);
-            }
-
-            $db->table('users')->where('id', $guru['user_id'])->update($userData);
-
             // Update guru data
             $guruData = [
+                'user_id' => $userId,
                 'nip' => $nip,
                 'jenis_kelamin' => $this->request->getPost('jenis_kelamin'),
                 'tempat_lahir' => $this->request->getPost('tempat_lahir'),
@@ -375,11 +319,8 @@ class Guru extends BaseController
         $db->transStart();
 
         try {
-            // Hapus data guru
+            // Hapus data guru saja (user tetap ada untuk digunakan guru lain)
             $db->table('guru')->where('id', $id)->delete();
-            
-            // Hapus user terkait
-            $db->table('users')->where('id', $guru['user_id'])->delete();
 
             $db->transComplete();
 
