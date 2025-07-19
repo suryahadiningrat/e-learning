@@ -1,0 +1,43 @@
+Admin:
+Panel Admin
+- user aktivasi
+- user pengguna
+- setting system
+
+Data Master
+- data siswa
+- data guru
+- data jurusan/kelas
+- data jadwal
+- data absensi
+- data nilai
+- data ulangan
+- data materi/modul
+- data link pengumpulan tugas
+- data tahun akademik
+
+
+------------------------------------------------------------------------------------------
+
+Guru:
+Panel guru
+- user pengguna
+
+Data master
+- data siswa
+- data jurusan/kelas
+- data absensi
+- data nilai
+- data ulangan (membuat soal online) 
+- data materi/modul
+- data link pengumpulan tugas
+
+------------------------------------------------------------------------------------------
+
+Siswa:
+Data
+- Jadwal
+- Nilai
+- Ulangan
+- Materi
+- Link tugas

@@ -1,0 +1,67 @@
+# CodeIgniter 4
+# https://codeigniter.com/user_guide/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+writable/logs/*
+!writable/logs/index.html
+
+# Cache
+writable/cache/*
+!writable/cache/index.html
+
+# Session
+writable/session/*
+!writable/session/index.html
+
+# Uploads
+writable/uploads/*
+!writable/uploads/index.html
+
+# Debugbar
+writable/debugbar/*
+!writable/debugbar/.gitkeep
+
+# Composer
+/vendor/
+composer.phar
+composer.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+/tests/coverage/
+phpunit.xml
+.phpunit.result.cache
+
+# Build
+/build/
+/dist/
+
+# Node modules (if using frontend build tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+*.tmp
+*.temp 
