@@ -121,6 +121,16 @@
                                 <i class="fas fa-clipboard-check"></i> Data Absensi
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?= (strpos(current_url(), 'guru/nilai') !== false) ? 'active' : '' ?>" href="<?= base_url('guru/nilai') ?>">
+                                <i class="fas fa-chart-line"></i> Data Nilai
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?= (strpos(current_url(), 'guru/materi') !== false) ? 'active' : '' ?>" href="<?= base_url('guru/materi') ?>">
+                                <i class="fas fa-book"></i> Data Materi/Modul
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </nav>

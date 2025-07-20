@@ -11,6 +11,9 @@
 *.sqlite
 *.sqlite3
 
+#uploads
+public/uploads/*
+
 # Logs
 writable/logs/*
 !writable/logs/index.html

@@ -1,52 +1,60 @@
 <?php
 
-namespace App\Controllers\Admin;
+namespace App\Controllers\Guru;
 
 use App\Controllers\BaseController;
 use App\Models\NilaiModel;
-use App\Models\JurusanModel;
 use App\Models\JadwalModel;
+use App\Models\JurusanModel;
 use App\Models\SiswaModel;
 
 class Nilai extends BaseController
 {
     protected $nilaiModel;
-    protected $jurusanModel;
     protected $jadwalModel;
+    protected $jurusanModel;
     protected $siswaModel;
 
     public function __construct()
     {
         $this->nilaiModel = new NilaiModel();
-        $this->jurusanModel = new JurusanModel();
         $this->jadwalModel = new JadwalModel();
+        $this->jurusanModel = new JurusanModel();
         $this->siswaModel = new SiswaModel();
     }
 
-    // Step 1: Tampilkan semua jurusan
+    // Step 1: Tampilkan daftar jurusan yang memiliki mata pelajaran yang diajar guru
     public function index()
     {
+        $guruId = session('user_id');
+        
+        // Get jurusan yang memiliki mata pelajaran yang diajar guru
+        $jurusan = $this->nilaiModel->getJurusanByGuru($guruId);
+
         $data = [
             'title' => 'Data Nilai',
-            'jurusan' => $this->jurusanModel->findAll()
+            'jurusan' => $jurusan
         ];
 
-        return view('admin/nilai/index', $data);
+        return view('guru/nilai/index', $data);
     }
 
-    // Step 2: Tampilkan mata pelajaran berdasarkan jurusan
+    // Step 2: Tampilkan mata pelajaran yang diajar guru di jurusan tertentu
     public function mataPelajaran($jurusanId = null)
     {
         if (!$jurusanId) {
-            return redirect()->to('admin/nilai')->with('error', 'Jurusan tidak ditemukan');
+            return redirect()->to('guru/nilai')->with('error', 'Jurusan tidak ditemukan');
         }
 
+        $guruId = session('user_id');
         $jurusan = $this->jurusanModel->find($jurusanId);
+        
         if (!$jurusan) {
-            return redirect()->to('admin/nilai')->with('error', 'Jurusan tidak ditemukan');
+            return redirect()->to('guru/nilai')->with('error', 'Jurusan tidak ditemukan');
         }
 
-        $mataPelajaran = $this->nilaiModel->getMataPelajaranByJurusan($jurusanId);
+        // Get mata pelajaran yang diajar guru di jurusan tertentu
+        $mataPelajaran = $this->nilaiModel->getMataPelajaranByGuruAndJurusan($guruId, $jurusanId);
 
         $data = [
             'title' => 'Mata Pelajaran - ' . $jurusan['nama_jurusan'],
@@ -54,28 +62,31 @@ class Nilai extends BaseController
             'mata_pelajaran' => $mataPelajaran
         ];
 
-        return view('admin/nilai/mata_pelajaran', $data);
+        return view('guru/nilai/mata_pelajaran', $data);
     }
 
     // Step 3: Tampilkan form input nilai berdasarkan mata pelajaran
     public function inputNilai($jadwalId = null)
     {
         if (!$jadwalId) {
-            return redirect()->to('admin/nilai')->with('error', 'Jadwal tidak ditemukan');
+            return redirect()->to('guru/nilai')->with('error', 'Jadwal tidak ditemukan');
         }
 
-        // Get jadwal info dengan jurusan_id
+        $guruId = session('user_id');
+
+        // Get jadwal info dengan jurusan_id dan verifikasi guru
         $db = \Config\Database::connect();
         $jadwal = $db->table('jadwal j')
                     ->select('j.*, k.nama_kelas, k.jurusan_id, jur.nama_jurusan')
                     ->join('kelas k', 'k.id = j.kelas_id')
                     ->join('jurusan jur', 'jur.id = k.jurusan_id')
                     ->where('j.id', $jadwalId)
+                    ->where('j.guru_id', $guruId) // Pastikan guru yang mengajar
                     ->get()
                     ->getRowArray();
 
         if (!$jadwal) {
-            return redirect()->to('admin/nilai')->with('error', 'Jadwal tidak ditemukan');
+            return redirect()->to('guru/nilai')->with('error', 'Jadwal tidak ditemukan atau Anda tidak berhak mengakses');
         }
 
         // Get siswa berdasarkan kelas di jadwal
@@ -101,7 +112,7 @@ class Nilai extends BaseController
             'nilai_existing' => $nilaiFormatted
         ];
 
-        return view('admin/nilai/input_nilai', $data);
+        return view('guru/nilai/input_nilai', $data);
     }
 
     // Step 4: Simpan nilai
@@ -109,7 +120,20 @@ class Nilai extends BaseController
     {
         $jadwalId = $this->request->getPost('jadwal_id');
         $jurusanId = $this->request->getPost('jurusan_id');
+        $guruId = session('user_id');
         $nilaiData = $this->request->getPost('nilai');
+
+        // Verifikasi bahwa guru berhak mengajar jadwal ini
+        $db = \Config\Database::connect();
+        $jadwal = $db->table('jadwal')
+                    ->where('id', $jadwalId)
+                    ->where('guru_id', $guruId)
+                    ->get()
+                    ->getRowArray();
+
+        if (!$jadwal) {
+            return redirect()->back()->with('error', 'Anda tidak berhak mengakses jadwal ini');
+        }
 
         // Debug: Log data yang diterima
         log_message('debug', 'Jadwal ID: ' . $jadwalId);
@@ -164,7 +188,7 @@ class Nilai extends BaseController
             
             if ($result) {
                 // Redirect back ke halaman input nilai yang sama
-                return redirect()->to('admin/nilai/input/' . $jadwalId)
+                return redirect()->to('guru/nilai/input/' . $jadwalId)
                                ->with('success', 'Nilai berhasil disimpan');
             } else {
                 return redirect()->back()->with('error', 'Gagal menyimpan nilai');
@@ -175,42 +199,22 @@ class Nilai extends BaseController
         }
     }
 
-    // View nilai per siswa
-    public function viewNilai($siswaId = null)
-    {
-        if (!$siswaId) {
-            return redirect()->to('admin/nilai')->with('error', 'Siswa tidak ditemukan');
-        }
-
-        $siswa = $this->siswaModel->getSiswaWithRelations($siswaId);
-        if (!$siswa) {
-            return redirect()->to('admin/nilai')->with('error', 'Siswa tidak ditemukan');
-        }
-
-        $nilai = $this->nilaiModel->getNilaiBySiswa($siswaId);
-
-        $data = [
-            'title' => 'Nilai Siswa - ' . $siswa['full_name'],
-            'siswa' => $siswa,
-            'nilai' => $nilai
-        ];
-
-        return view('admin/nilai/view_nilai', $data);
-    }
-
-    // Export nilai
+    // Export nilai untuk guru
     public function export($jurusanId = null)
     {
         if (!$jurusanId) {
-            return redirect()->to('admin/nilai')->with('error', 'Jurusan tidak ditemukan');
+            return redirect()->to('guru/nilai')->with('error', 'Jurusan tidak ditemukan');
         }
 
+        $guruId = session('user_id');
         $jurusan = $this->jurusanModel->find($jurusanId);
+        
         if (!$jurusan) {
-            return redirect()->to('admin/nilai')->with('error', 'Jurusan tidak ditemukan');
+            return redirect()->to('guru/nilai')->with('error', 'Jurusan tidak ditemukan');
         }
 
-        $nilai = $this->nilaiModel->getNilaiByJurusan($jurusanId);
+        // Get nilai yang diajar oleh guru di jurusan tertentu
+        $nilai = $this->nilaiModel->getNilaiByGuruAndJurusan($guruId, $jurusanId);
 
         // Hitung jumlah maksimal tugas dan ulangan
         $maxTugas = 0;
@@ -227,7 +231,7 @@ class Nilai extends BaseController
         $sheet = $spreadsheet->getActiveSheet();
 
         // Set title
-        $sheet->setCellValue('A1', 'DATA NILAI - ' . strtoupper($jurusan['nama_jurusan']));
+        $sheet->setCellValue('A1', 'DATA NILAI - ' . strtoupper($jurusan['nama_jurusan']) . ' (GURU)');
         $sheet->mergeCells('A1:' . chr(65 + 3 + $maxTugas + $maxUlangan) . '1');
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
 
@@ -297,7 +301,7 @@ class Nilai extends BaseController
 
         // Create response
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        $filename = 'Nilai_' . $jurusan['nama_jurusan'] . '_' . date('Y-m-d_H-i-s') . '.xlsx';
+        $filename = 'Nilai_Guru_' . $jurusan['nama_jurusan'] . '_' . date('Y-m-d_H-i-s') . '.xlsx';
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');

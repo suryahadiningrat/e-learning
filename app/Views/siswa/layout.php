@@ -66,6 +66,16 @@
                                 <i class="fas fa-calendar-alt"></i> Jadwal
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?= (strpos(current_url(), 'siswa/nilai') !== false) ? 'active' : '' ?>" href="<?= base_url('siswa/nilai') ?>">
+                                <i class="fas fa-chart-line"></i> Nilai
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?= (strpos(current_url(), 'siswa/materi') !== false) ? 'active' : '' ?>" href="<?= base_url('siswa/materi') ?>">
+                                <i class="fas fa-book"></i> Materi
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -103,7 +113,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <script>
     $(document).ready(function() {
-        if ($('#dataTable').length) {
+        // Only initialize DataTable if it exists and hasn't been initialized yet
+        if ($('#dataTable').length && !$.fn.DataTable.isDataTable('#dataTable')) {
             $('#dataTable').DataTable({
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'

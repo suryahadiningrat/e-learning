@@ -1,10 +1,10 @@
-<?= $this->extend('admin/layout') ?>
+<?= $this->extend('guru/layout') ?>
 
 <?= $this->section('content') ?>
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Data Materi/Modul</h1>
-        <a href="<?= base_url('admin/materi/create') ?>" class="btn btn-primary btn-sm">
+        <a href="<?= base_url('guru/materi/create') ?>" class="btn btn-primary btn-sm">
             <i class="fas fa-plus fa-sm"></i> Tambah Materi
         </a>
     </div>
@@ -25,7 +25,7 @@
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Daftar Materi/Modul</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Daftar Materi/Modul Saya</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -37,7 +37,6 @@
                             <th>Mata Pelajaran</th>
                             <th>Deskripsi</th>
                             <th>File</th>
-                            <th>Uploader</th>
                             <th>Tanggal Upload</th>
                             <th>Aksi</th>
                         </tr>
@@ -63,19 +62,18 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td><?= $item['nama_uploader'] ?></td>
                                 <td><?= date('d/m/Y H:i', strtotime($item['created_at'])) ?></td>
                                 <td>
                                     <div class="btn-group" role="group">
-                                        <a href="<?= base_url('admin/materi/download/' . $item['id']) ?>" 
+                                        <a href="<?= base_url('guru/materi/download/' . $item['id']) ?>" 
                                            class="btn btn-success btn-sm" title="Download">
                                             <i class="fas fa-download"></i>
                                         </a>
-                                        <a href="<?= base_url('admin/materi/edit/' . $item['id']) ?>" 
+                                        <a href="<?= base_url('guru/materi/edit/' . $item['id']) ?>" 
                                            class="btn btn-warning btn-sm" title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <a href="<?= base_url('admin/materi/delete/' . $item['id']) ?>" 
+                                        <a href="<?= base_url('guru/materi/delete/' . $item['id']) ?>" 
                                            class="btn btn-danger btn-sm" title="Hapus"
                                            onclick="return confirm('Apakah Anda yakin ingin menghapus materi ini?')">
                                             <i class="fas fa-trash"></i>

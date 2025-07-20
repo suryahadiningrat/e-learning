@@ -1,4 +1,4 @@
-<?= $this->extend('admin/layout') ?>
+<?= $this->extend('guru/layout') ?>
 
 <?= $this->section('content') ?>
 <div class="container-fluid">
@@ -22,7 +22,7 @@
 
     <div class="row">
         <?php foreach ($jurusan as $jur): ?>
-            <div class="col-xl-3 col-md-6 mb-4">
+            <div class="col-xl-4 col-md-6 mb-4">
                 <div class="card border-left-primary shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
@@ -33,14 +33,17 @@
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
                                     <?= $jur['nama_jurusan'] ?>
                                 </div>
+                                <div class="text-xs text-gray-600">
+                                    <?= $jur['jumlah_mapel'] ?> Mata Pelajaran
+                                </div>
                             </div>
                             <div class="col-auto">
                                 <div class="d-flex gap-1">
-                                    <a href="<?= base_url('admin/nilai/export/' . $jur['id']) ?>" 
+                                    <a href="<?= base_url('guru/nilai/export/' . $jur['id']) ?>" 
                                        class="btn btn-success btn-sm" title="Export Excel">
                                         <i class="fas fa-file-excel fa-sm"></i>
                                     </a>
-                                    <a href="<?= base_url('admin/nilai/mata-pelajaran/' . $jur['id']) ?>" 
+                                    <a href="<?= base_url('guru/nilai/mata-pelajaran/' . $jur['id']) ?>" 
                                        class="btn btn-primary btn-sm" title="Pilih Jurusan">
                                         <i class="fas fa-arrow-right fa-sm"></i>
                                     </a>
@@ -55,9 +58,9 @@
 
     <?php if (empty($jurusan)): ?>
         <div class="text-center py-4">
-            <i class="fas fa-folder-open fa-3x text-gray-300 mb-3"></i>
-            <h5 class="text-gray-500">Belum ada data jurusan</h5>
-            <p class="text-gray-400">Silakan tambahkan data jurusan terlebih dahulu</p>
+            <i class="fas fa-book fa-3x text-gray-300 mb-3"></i>
+            <h5 class="text-gray-500">Belum ada mata pelajaran yang diajar</h5>
+            <p class="text-gray-400">Silakan hubungi admin untuk menambahkan jadwal mengajar</p>
         </div>
     <?php endif; ?>
 </div>

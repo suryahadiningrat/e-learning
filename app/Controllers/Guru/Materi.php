@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\Admin;
+namespace App\Controllers\Guru;
 
 use App\Controllers\BaseController;
 use App\Models\MateriModel;
@@ -10,38 +10,71 @@ class Materi extends BaseController
 {
     protected $materiModel;
     protected $jadwalModel;
+    protected $db;
 
     public function __construct()
     {
         $this->materiModel = new MateriModel();
         $this->jadwalModel = new JadwalModel();
+        $this->db = \Config\Database::connect();
     }
 
     public function index()
     {
+        $userId = session('user_id');
+        
+        // Get guru_id from database using user_id
+        $guru = $this->db->table('guru')->where('user_id', $userId)->get()->getRowArray();
+        
+        if (!$guru) {
+            return redirect()->to('guru/dashboard')->with('error', 'Data guru tidak ditemukan');
+        }
+        
         $data = [
             'title' => 'Data Materi/Modul',
-            'materi' => $this->materiModel->getMateriWithRelations()
+            'materi' => $this->materiModel->getMateriByGuru($userId)
         ];
 
-        return view('admin/materi/index', $data);
+        return view('guru/materi/index', $data);
     }
 
     public function create()
     {
-        // Get mata pelajaran dari jadwal
-        $mataPelajaran = $this->jadwalModel->getMataPelajaranList();
+        $userId = session('user_id');
+        
+        // Get guru_id from database using user_id
+        $guru = $this->db->table('guru')->where('user_id', $userId)->get()->getRowArray();
+        
+        if (!$guru) {
+            return redirect()->to('guru/dashboard')->with('error', 'Data guru tidak ditemukan');
+        }
+        
+        $guruId = $guru['id'];
+        
+        // Get mata pelajaran yang diajar oleh guru
+        $mataPelajaran = $this->jadwalModel->getMataPelajaranByGuru($guruId);
 
         $data = [
             'title' => 'Tambah Materi/Modul',
             'mata_pelajaran' => $mataPelajaran
         ];
 
-        return view('admin/materi/create', $data);
+        return view('guru/materi/create', $data);
     }
 
     public function store()
     {
+        $userId = session('user_id');
+        
+        // Get guru_id from database using user_id
+        $guru = $this->db->table('guru')->where('user_id', $userId)->get()->getRowArray();
+        
+        if (!$guru) {
+            return redirect()->to('guru/dashboard')->with('error', 'Data guru tidak ditemukan');
+        }
+        
+        $guruId = $guru['id'];
+        
         // Validasi input
         $rules = [
             'judul' => 'required|min_length[3]|max_length[255]',
@@ -74,6 +107,14 @@ class Materi extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
+        // Validasi mata pelajaran (guru hanya bisa upload untuk mata pelajaran yang diajar)
+        $mataPelajaranGuru = $this->jadwalModel->getMataPelajaranByGuru($guruId);
+        $mataPelajaranIds = array_column($mataPelajaranGuru, 'mata_pelajaran');
+        
+        if (!in_array($this->request->getPost('mata_pelajaran'), $mataPelajaranIds)) {
+            return redirect()->back()->withInput()->with('error', 'Anda tidak berhak mengupload materi untuk mata pelajaran ini');
+        }
+
         // Upload file
         $file = $this->request->getFile('file_materi');
         
@@ -102,7 +143,7 @@ class Materi extends BaseController
             ];
 
             if ($this->materiModel->insert($data)) {
-                return redirect()->to('admin/materi')->with('success', 'Materi berhasil ditambahkan');
+                return redirect()->to('guru/materi')->with('success', 'Materi berhasil ditambahkan');
             } else {
                 return redirect()->back()->withInput()->with('error', 'Gagal menambahkan materi');
             }
@@ -113,14 +154,30 @@ class Materi extends BaseController
 
     public function edit($id = null)
     {
+        $userId = session('user_id');
+        
+        // Get guru_id from database using user_id
+        $guru = $this->db->table('guru')->where('user_id', $userId)->get()->getRowArray();
+        
+        if (!$guru) {
+            return redirect()->to('guru/dashboard')->with('error', 'Data guru tidak ditemukan');
+        }
+        
+        $guruId = $guru['id'];
+        
         $materi = $this->materiModel->getMateriWithRelations($id);
         
         if (!$materi) {
-            return redirect()->to('admin/materi')->with('error', 'Materi tidak ditemukan');
+            return redirect()->to('guru/materi')->with('error', 'Materi tidak ditemukan');
         }
 
-        // Get mata pelajaran dari jadwal
-        $mataPelajaran = $this->jadwalModel->getMataPelajaranList();
+        // Validasi kepemilikan materi
+        if ($materi['uploaded_by'] != session('user_id')) {
+            return redirect()->to('guru/materi')->with('error', 'Anda tidak berhak mengedit materi ini');
+        }
+
+        // Get mata pelajaran yang diajar oleh guru
+        $mataPelajaran = $this->jadwalModel->getMataPelajaranByGuru($guruId);
 
         $data = [
             'title' => 'Edit Materi/Modul',
@@ -128,15 +185,31 @@ class Materi extends BaseController
             'mata_pelajaran' => $mataPelajaran
         ];
 
-        return view('admin/materi/edit', $data);
+        return view('guru/materi/edit', $data);
     }
 
     public function update($id = null)
     {
+        $userId = session('user_id');
+        
+        // Get guru_id from database using user_id
+        $guru = $this->db->table('guru')->where('user_id', $userId)->get()->getRowArray();
+        
+        if (!$guru) {
+            return redirect()->to('guru/dashboard')->with('error', 'Data guru tidak ditemukan');
+        }
+        
+        $guruId = $guru['id'];
+        
         $materi = $this->materiModel->find($id);
         
         if (!$materi) {
-            return redirect()->to('admin/materi')->with('error', 'Materi tidak ditemukan');
+            return redirect()->to('guru/materi')->with('error', 'Materi tidak ditemukan');
+        }
+
+        // Validasi kepemilikan materi
+        if ($materi['uploaded_by'] != session('user_id')) {
+            return redirect()->to('guru/materi')->with('error', 'Anda tidak berhak mengedit materi ini');
         }
 
         // Validasi input
@@ -176,6 +249,14 @@ class Materi extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
+        // Validasi mata pelajaran
+        $mataPelajaranGuru = $this->jadwalModel->getMataPelajaranByGuru($guruId);
+        $mataPelajaranIds = array_column($mataPelajaranGuru, 'mata_pelajaran');
+        
+        if (!in_array($this->request->getPost('mata_pelajaran'), $mataPelajaranIds)) {
+            return redirect()->back()->withInput()->with('error', 'Anda tidak berhak mengupload materi untuk mata pelajaran ini');
+        }
+
         // Update data
         $data = [
             'judul' => $this->request->getPost('judul'),
@@ -207,7 +288,7 @@ class Materi extends BaseController
         }
 
         if ($this->materiModel->update($id, $data)) {
-            return redirect()->to('admin/materi')->with('success', 'Materi berhasil diperbarui');
+            return redirect()->to('guru/materi')->with('success', 'Materi berhasil diperbarui');
         } else {
             return redirect()->back()->withInput()->with('error', 'Gagal memperbarui materi');
         }
@@ -218,7 +299,12 @@ class Materi extends BaseController
         $materi = $this->materiModel->find($id);
         
         if (!$materi) {
-            return redirect()->to('admin/materi')->with('error', 'Materi tidak ditemukan');
+            return redirect()->to('guru/materi')->with('error', 'Materi tidak ditemukan');
+        }
+
+        // Validasi kepemilikan materi
+        if ($materi['uploaded_by'] != session('user_id')) {
+            return redirect()->to('guru/materi')->with('error', 'Anda tidak berhak menghapus materi ini');
         }
 
         // Hapus file
@@ -227,9 +313,9 @@ class Materi extends BaseController
         }
 
         if ($this->materiModel->delete($id)) {
-            return redirect()->to('admin/materi')->with('success', 'Materi berhasil dihapus');
+            return redirect()->to('guru/materi')->with('success', 'Materi berhasil dihapus');
         } else {
-            return redirect()->to('admin/materi')->with('error', 'Gagal menghapus materi');
+            return redirect()->to('guru/materi')->with('error', 'Gagal menghapus materi');
         }
     }
 
@@ -238,7 +324,7 @@ class Materi extends BaseController
         $materi = $this->materiModel->find($id);
         
         if (!$materi) {
-            return redirect()->to('admin/materi')->with('error', 'Materi tidak ditemukan');
+            return redirect()->to('guru/materi')->with('error', 'Materi tidak ditemukan');
         }
 
         $filePath = ROOTPATH . 'public/' . $materi['file_path'];
@@ -255,7 +341,7 @@ class Materi extends BaseController
             readfile($filePath);
             exit;
         } else {
-            return redirect()->to('admin/materi')->with('error', 'File tidak ditemukan');
+            return redirect()->to('guru/materi')->with('error', 'File tidak ditemukan');
         }
     }
 } 

@@ -178,6 +178,27 @@ class JadwalModel extends Model
         return $this->where('semester', $semester)->countAllResults();
     }
 
+    public function getMataPelajaranList()
+    {
+        return $this->db->table('jadwal')
+                       ->distinct()
+                       ->select('mata_pelajaran')
+                       ->orderBy('mata_pelajaran', 'ASC')
+                       ->get()
+                       ->getResultArray();
+    }
+
+    public function getMataPelajaranByGuru($guruId)
+    {
+        return $this->db->table('jadwal')
+                       ->distinct()
+                       ->select('mata_pelajaran')
+                       ->where('guru_id', $guruId)
+                       ->orderBy('mata_pelajaran', 'ASC')
+                       ->get()
+                       ->getResultArray();
+    }
+
     // Legacy methods for backward compatibility
     public function getAllJadwal()
     {
