@@ -18,7 +18,6 @@
                             <th>Nama Kelas</th>
                             <th>Tingkat</th>
                             <th>Jurusan</th>
-                            <th>Wali Kelas</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -30,7 +29,6 @@
                                 <span class="badge bg-info"><?= esc($k['tingkat']) ?></span>
                             </td>
                             <td><?= esc($k['nama_jurusan']) ?></td>
-                            <td><?= esc($k['wali_kelas']) ?></td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>

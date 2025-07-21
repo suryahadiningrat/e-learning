@@ -3,7 +3,7 @@
 <?= $this->section('content') ?>
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Input Nilai - <?= $jadwal['mata_pelajaran'] ?></h1>
+        <h1 class="h3 mb-0 text-gray-800">Input Nilai - <?= $jadwal['nama_mata_pelajaran'] ?></h1>
         <a href="<?= base_url('guru/nilai/mata-pelajaran/' . $jadwal['jurusan_id']) ?>" class="btn btn-secondary btn-sm">
             <i class="fas fa-arrow-left fa-sm"></i> Kembali
         </a>
@@ -26,7 +26,7 @@
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">
-                Input Nilai Siswa - <?= $jadwal['mata_pelajaran'] ?> (<?= $jadwal['nama_kelas'] ?>)
+                Input Nilai Siswa - <?= $jadwal['nama_mata_pelajaran'] ?> (<?= $jadwal['nama_kelas'] ?>)
             </h6>
         </div>
         <div class="card-body">

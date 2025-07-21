@@ -1,27 +1,42 @@
 <?php
+
 namespace App\Controllers\Siswa;
+
 use App\Controllers\BaseController;
 use App\Models\JadwalModel;
 use App\Models\SiswaModel;
 
 class Jadwal extends BaseController
 {
+    protected $jadwalModel;
+    protected $siswaModel;
+
+    public function __construct()
+    {
+        $this->jadwalModel = new JadwalModel();
+        $this->siswaModel = new SiswaModel();
+    }
+
     public function index()
     {
-        $jadwalModel = new JadwalModel();
-        $siswaModel = new SiswaModel();
-        $userId = session()->get('user_id');
-        $siswa = $siswaModel->where('user_id', $userId)->first();
-        $kelasId = $siswa['kelas_id'] ?? null;
-        $jadwal = [];
-        if ($kelasId) {
-            $jadwal = $jadwalModel->getJadwalByKelas($kelasId);
+        $userId = session('user_id');
+        
+        // Get siswa data
+        $siswa = $this->siswaModel->getSiswaByUserId($userId);
+        
+        if (!$siswa) {
+            return redirect()->to('siswa/dashboard')->with('error', 'Data siswa tidak ditemukan');
         }
+        
+        // Get jadwal berdasarkan kelas siswa
+        $jadwal = $this->jadwalModel->getJadwalByKelas($siswa['kelas_id']);
+        
         $data = [
-            'title' => 'Jadwal Siswa',
+            'title' => 'Jadwal Pelajaran',
             'jadwal' => $jadwal,
-            'kelas' => $siswa['kelas_id'] ?? null
+            'siswa' => $siswa
         ];
+
         return view('siswa/jadwal/index', $data);
     }
 } 

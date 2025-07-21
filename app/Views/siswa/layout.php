@@ -76,6 +76,11 @@
                                 <i class="fas fa-book"></i> Materi
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?= (strpos(current_url(), 'siswa/ulangan') !== false) ? 'active' : '' ?>" href="<?= base_url('siswa/ulangan') ?>">
+                                <i class="fas fa-clipboard-list"></i> Ulangan
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </nav>

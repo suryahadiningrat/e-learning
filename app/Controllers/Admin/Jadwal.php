@@ -6,18 +6,21 @@ use App\Controllers\BaseController;
 use App\Models\JadwalModel;
 use App\Models\GuruModel;
 use App\Models\KelasModel;
+use App\Models\MataPelajaranModel;
 
 class Jadwal extends BaseController
 {
     protected $jadwalModel;
     protected $guruModel;
     protected $kelasModel;
+    protected $mataPelajaranModel;
 
     public function __construct()
     {
         $this->jadwalModel = new JadwalModel();
         $this->guruModel = new GuruModel();
         $this->kelasModel = new KelasModel();
+        $this->mataPelajaranModel = new MataPelajaranModel();
     }
 
     public function index()
@@ -35,7 +38,8 @@ class Jadwal extends BaseController
         $data = [
             'title' => 'Tambah Jadwal',
             'guru' => $this->guruModel->getGuruWithRelations(),
-            'kelas' => $this->kelasModel->getKelasWithRelations()
+            'kelas' => $this->kelasModel->getKelasWithRelations(),
+            'mata_pelajaran' => $this->mataPelajaranModel->getAktifMataPelajaran()
         ];
 
         return view('admin/jadwal/create', $data);
@@ -66,7 +70,7 @@ class Jadwal extends BaseController
         $rules = [
             'guru_id' => 'required|numeric',
             'kelas_id' => 'required|numeric',
-            'mata_pelajaran' => 'required|min_length[2]|max_length[100]',
+            'mata_pelajaran_id' => 'required|numeric',
             'hari' => 'required|in_list[Senin,Selasa,Rabu,Kamis,Jumat,Sabtu]',
             'jam_mulai' => 'required|regex_match[/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/]',
             'jam_selesai' => 'required|regex_match[/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/]',
@@ -83,10 +87,9 @@ class Jadwal extends BaseController
                 'required' => 'Kelas harus dipilih',
                 'numeric' => 'Kelas tidak valid'
             ],
-            'mata_pelajaran' => [
-                'required' => 'Mata pelajaran harus diisi',
-                'min_length' => 'Mata pelajaran minimal 2 karakter',
-                'max_length' => 'Mata pelajaran maksimal 100 karakter'
+            'mata_pelajaran_id' => [
+                'required' => 'Mata pelajaran harus dipilih',
+                'numeric' => 'Mata pelajaran tidak valid'
             ],
             'hari' => [
                 'required' => 'Hari harus dipilih',
@@ -129,7 +132,7 @@ class Jadwal extends BaseController
             $jadwalData = [
                 'guru_id' => $guruId,
                 'kelas_id' => $kelasId,
-                'mata_pelajaran' => $this->request->getPost('mata_pelajaran'),
+                'mata_pelajaran_id' => $this->request->getPost('mata_pelajaran_id'),
                 'hari' => $hari,
                 'jam_mulai' => $jamMulai,
                 'jam_selesai' => $jamSelesai,
@@ -167,7 +170,8 @@ class Jadwal extends BaseController
             'title' => 'Edit Jadwal',
             'jadwal' => $jadwal,
             'guru' => $this->guruModel->getGuruWithRelations(),
-            'kelas' => $this->kelasModel->getKelasWithRelations()
+            'kelas' => $this->kelasModel->getKelasWithRelations(),
+            'mata_pelajaran' => $this->mataPelajaranModel->getAktifMataPelajaran()
         ];
 
         return view('admin/jadwal/edit', $data);
@@ -204,7 +208,7 @@ class Jadwal extends BaseController
         $rules = [
             'guru_id' => 'required|numeric',
             'kelas_id' => 'required|numeric',
-            'mata_pelajaran' => 'required|min_length[2]|max_length[100]',
+            'mata_pelajaran_id' => 'required|numeric',
             'hari' => 'required|in_list[Senin,Selasa,Rabu,Kamis,Jumat,Sabtu]',
             'jam_mulai' => 'required|regex_match[/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/]',
             'jam_selesai' => 'required|regex_match[/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/]',
@@ -221,10 +225,9 @@ class Jadwal extends BaseController
                 'required' => 'Kelas harus dipilih',
                 'numeric' => 'Kelas tidak valid'
             ],
-            'mata_pelajaran' => [
-                'required' => 'Mata pelajaran harus diisi',
-                'min_length' => 'Mata pelajaran minimal 2 karakter',
-                'max_length' => 'Mata pelajaran maksimal 100 karakter'
+            'mata_pelajaran_id' => [
+                'required' => 'Mata pelajaran harus dipilih',
+                'numeric' => 'Mata pelajaran tidak valid'
             ],
             'hari' => [
                 'required' => 'Hari harus dipilih',
@@ -267,7 +270,7 @@ class Jadwal extends BaseController
             $jadwalData = [
                 'guru_id' => $guruId,
                 'kelas_id' => $kelasId,
-                'mata_pelajaran' => $this->request->getPost('mata_pelajaran'),
+                'mata_pelajaran_id' => $this->request->getPost('mata_pelajaran_id'),
                 'hari' => $hari,
                 'jam_mulai' => $jamMulai,
                 'jam_selesai' => $jamSelesai,

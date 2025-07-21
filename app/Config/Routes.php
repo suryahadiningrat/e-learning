@@ -37,6 +37,15 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->post('jurusan/update/(:num)', 'Admin\Jurusan::update/$1');
     $routes->get('jurusan/delete/(:num)', 'Admin\Jurusan::delete/$1');
     
+    // Mata Pelajaran routes
+    $routes->get('mata-pelajaran', 'Admin\MataPelajaran::index');
+    $routes->get('mata-pelajaran/create', 'Admin\MataPelajaran::create');
+    $routes->post('mata-pelajaran/store', 'Admin\MataPelajaran::store');
+    $routes->get('mata-pelajaran/edit/(:num)', 'Admin\MataPelajaran::edit/$1');
+    $routes->post('mata-pelajaran/update/(:num)', 'Admin\MataPelajaran::update/$1');
+    $routes->get('mata-pelajaran/delete/(:num)', 'Admin\MataPelajaran::delete/$1');
+    $routes->get('mata-pelajaran/toggle-status/(:num)', 'Admin\MataPelajaran::toggleStatus/$1');
+    
     $routes->get('siswa', 'Admin\Siswa::index');
     $routes->get('siswa/create', 'Admin\Siswa::create');
     $routes->post('siswa/store', 'Admin\Siswa::store');
@@ -97,6 +106,19 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->post('tugas/update/(:num)', 'Admin\Tugas::update/$1');
     $routes->get('tugas/delete/(:num)', 'Admin\Tugas::delete/$1');
     
+    // Ulangan routes
+    $routes->get('ulangan', 'Admin\Ulangan::index');
+    $routes->get('ulangan/create', 'Admin\Ulangan::create');
+    $routes->post('ulangan/store', 'Admin\Ulangan::store');
+    $routes->get('ulangan/edit/(:num)', 'Admin\Ulangan::edit/$1');
+    $routes->post('ulangan/update/(:num)', 'Admin\Ulangan::update/$1');
+    $routes->get('ulangan/delete/(:num)', 'Admin\Ulangan::delete/$1');
+    $routes->get('ulangan/publish/(:num)', 'Admin\Ulangan::publish/$1');
+    $routes->get('ulangan/close/(:num)', 'Admin\Ulangan::close/$1');
+    $routes->get('ulangan/preview/(:num)', 'Admin\Ulangan::preview/$1');
+    $routes->get('ulangan/hasil/(:num)', 'Admin\Ulangan::hasil/$1');
+    $routes->get('ulangan/detail-hasil/(:num)/(:num)', 'Admin\Ulangan::detailHasil/$1/$2');
+    
     // Setting System routes
     $routes->get('setting-system', 'Admin\SettingSystem::index');
     $routes->post('setting-system/update-logo', 'Admin\SettingSystem::updateLogo');
@@ -139,6 +161,19 @@ $routes->group('guru', ['filter' => 'auth:role:guru'], function($routes) {
     $routes->post('materi/update/(:num)', 'Guru\Materi::update/$1');
     $routes->get('materi/delete/(:num)', 'Guru\Materi::delete/$1');
     $routes->get('materi/download/(:num)', 'Guru\Materi::download/$1');
+    
+    // Ulangan routes untuk Guru
+    $routes->get('ulangan', 'Guru\Ulangan::index');
+    $routes->get('ulangan/create', 'Guru\Ulangan::create');
+    $routes->post('ulangan/store', 'Guru\Ulangan::store');
+    $routes->get('ulangan/edit/(:num)', 'Guru\Ulangan::edit/$1');
+    $routes->post('ulangan/update/(:num)', 'Guru\Ulangan::update/$1');
+    $routes->get('ulangan/delete/(:num)', 'Guru\Ulangan::delete/$1');
+    $routes->get('ulangan/publish/(:num)', 'Guru\Ulangan::publish/$1');
+    $routes->get('ulangan/close/(:num)', 'Guru\Ulangan::close/$1');
+    $routes->get('ulangan/preview/(:num)', 'Guru\Ulangan::preview/$1');
+    $routes->get('ulangan/hasil/(:num)', 'Guru\Ulangan::hasil/$1');
+    $routes->get('ulangan/detail-hasil/(:num)/(:num)', 'Guru\Ulangan::detailHasil/$1/$2');
 });
 
 // Routes untuk Guru
@@ -158,6 +193,9 @@ $routes->group('siswa', ['filter' => 'auth:siswa'], function($routes) {
     $routes->get('/', 'Siswa\Dashboard::index');
     $routes->get('dashboard', 'Siswa\Dashboard::index');
     
+    // Data Jadwal untuk Siswa
+    $routes->get('jadwal', 'Siswa\Jadwal::index');
+    
     // Data Nilai untuk Siswa
     $routes->get('nilai', 'Siswa\Nilai::index');
     $routes->get('nilai/export', 'Siswa\Nilai::export');
@@ -165,4 +203,12 @@ $routes->group('siswa', ['filter' => 'auth:siswa'], function($routes) {
     // Data Materi untuk Siswa
     $routes->get('materi', 'Siswa\Materi::index');
     $routes->get('materi/download/(:num)', 'Siswa\Materi::download/$1');
+    
+    // Data Ulangan untuk Siswa
+    $routes->get('ulangan', 'Siswa\Ulangan::index');
+    $routes->get('ulangan/kerjakan/(:num)', 'Siswa\Ulangan::kerjakan/$1');
+    $routes->post('ulangan/save-jawaban', 'Siswa\Ulangan::saveJawaban');
+    $routes->post('ulangan/submit-jawaban', 'Siswa\Ulangan::submitJawaban');
+    $routes->get('ulangan/hasil/(:num)', 'Siswa\Ulangan::hasil/$1');
+    $routes->get('ulangan/riwayat', 'Siswa\Ulangan::riwayat');
 });

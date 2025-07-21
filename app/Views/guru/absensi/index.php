@@ -46,7 +46,7 @@
                                 <td><span class="badge bg-info"><?= date('d/m/Y', strtotime($item['tanggal'])) ?></span></td>
                                 <td><strong><?= $item['nama_siswa'] ?></strong><br><small class="text-muted">NIS: <?= $item['nis'] ?></small></td>
                                 <td><?= $item['nama_kelas'] ?><br><small class="text-muted"><?= $item['nama_jurusan'] ?></small></td>
-                                <td><strong><?= $item['mata_pelajaran'] ?></strong></td>
+                                <td><strong><?= $item['nama_mata_pelajaran'] ?></strong></td>
                                 <td><?= $item['nama_guru'] ?></td>
                                 <td><?= $item['hari'] ?></td>
                                 <td><?= $item['jam_mulai'] ?> - <?= $item['jam_selesai'] ?></td>

@@ -43,7 +43,7 @@
                                     <strong><?= $j['nama_kelas'] ?? '-' ?></strong><br>
                                     <small class="text-muted"><?= $j['nama_jurusan'] ?? '-' ?> (<?= $j['tingkat'] ?? '-' ?>)</small>
                                 </td>
-                                <td><strong><?= $j['mata_pelajaran'] ?? '-' ?></strong></td>
+                                <td><strong><?= $j['nama_mata_pelajaran'] ?? '-' ?></strong></td>
                                 <td>
                                     <?php 
                                     $hariColors = [

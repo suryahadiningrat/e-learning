@@ -7,6 +7,7 @@ use App\Models\NilaiModel;
 use App\Models\JurusanModel;
 use App\Models\JadwalModel;
 use App\Models\SiswaModel;
+use App\Models\MataPelajaranModel;
 
 class Nilai extends BaseController
 {
@@ -14,6 +15,7 @@ class Nilai extends BaseController
     protected $jurusanModel;
     protected $jadwalModel;
     protected $siswaModel;
+    protected $mataPelajaranModel;
 
     public function __construct()
     {
@@ -21,6 +23,7 @@ class Nilai extends BaseController
         $this->jurusanModel = new JurusanModel();
         $this->jadwalModel = new JadwalModel();
         $this->siswaModel = new SiswaModel();
+        $this->mataPelajaranModel = new MataPelajaranModel();
     }
 
     // Step 1: Tampilkan semua jurusan
@@ -67,7 +70,8 @@ class Nilai extends BaseController
         // Get jadwal info dengan jurusan_id
         $db = \Config\Database::connect();
         $jadwal = $db->table('jadwal j')
-                    ->select('j.*, k.nama_kelas, k.jurusan_id, jur.nama_jurusan')
+                    ->select('j.*, mp.nama as nama_mata_pelajaran, k.nama_kelas, k.jurusan_id, jur.nama_jurusan')
+                    ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
                     ->join('kelas k', 'k.id = j.kelas_id')
                     ->join('jurusan jur', 'jur.id = k.jurusan_id')
                     ->where('j.id', $jadwalId)
@@ -95,7 +99,7 @@ class Nilai extends BaseController
         }
 
         $data = [
-            'title' => 'Input Nilai - ' . $jadwal['mata_pelajaran'],
+            'title' => 'Input Nilai - ' . $jadwal['nama_mata_pelajaran'],
             'jadwal' => $jadwal,
             'siswa' => $siswa,
             'nilai_existing' => $nilaiFormatted

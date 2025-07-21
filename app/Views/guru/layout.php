@@ -112,8 +112,13 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'guru/jurusan') !== false) || (strpos(current_url(), 'guru/kelas') !== false) ? 'active' : '' ?>" href="<?= base_url('guru/jurusan') ?>">
-                                <i class="fas fa-building"></i> Data Jurusan/Kelas
+                            <a class="nav-link <?= (strpos(current_url(), 'guru/jurusan') !== false) ? 'active' : '' ?>" href="<?= base_url('guru/jurusan') ?>">
+                                <i class="fas fa-building"></i> Data Jurusan
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?= (strpos(current_url(), 'guru/kelas') !== false) ? 'active' : '' ?>" href="<?= base_url('guru/kelas') ?>">
+                                <i class="fas fa-building"></i> Data Kelas
                             </a>
                         </li>
                         <li class="nav-item">
@@ -128,7 +133,12 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link <?= (strpos(current_url(), 'guru/materi') !== false) ? 'active' : '' ?>" href="<?= base_url('guru/materi') ?>">
-                                <i class="fas fa-book"></i> Data Materi/Modul
+                                <i class="fas fa-book"></i> Materi/Modul
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?= (strpos(current_url(), 'guru/ulangan') !== false) ? 'active' : '' ?>" href="<?= base_url('guru/ulangan') ?>">
+                                <i class="fas fa-clipboard-list"></i> Ulangan
                             </a>
                         </li>
                     </ul>

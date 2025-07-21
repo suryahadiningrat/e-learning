@@ -104,8 +104,18 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'admin/jurusan') !== false) || (strpos(current_url(), 'admin/kelas') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/jurusan') ?>">
-                                <i class="fas fa-building"></i> Data Jurusan/Kelas
+                            <a class="nav-link <?= (strpos(current_url(), 'admin/jurusan') !== false) ? 'active' : ''?>" href="<?= base_url('admin/jurusan') ?>">
+                                <i class="fas fa-building"></i> Data Jurusan
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?= (strpos(current_url(), 'admin/kelas') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/kelas') ?>">
+                                <i class="fas fa-building"></i> Data Kelas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?= (strpos(current_url(), 'admin/mata-pelajaran') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/mata-pelajaran') ?>">
+                                <i class="fas fa-book-open"></i> Data Mata Pelajaran
                             </a>
                         </li>
                         <li class="nav-item">
@@ -124,7 +134,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'admin/ulangan') !== false) ? 'active' : '' ?>" href="#">
+                            <a class="nav-link <?= (strpos(current_url(), 'admin/ulangan') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/ulangan') ?>">
                                 <i class="fas fa-file-alt"></i> Data Ulangan (Membuat Soal Online)
                             </a>
                         </li>

@@ -46,9 +46,10 @@ class JadwalModel extends Model
     public function getJadwalWithRelations($id = null)
     {
         $builder = $this->db->table('jadwal j')
-                           ->select('j.*, u.full_name as nama_guru, g.bidang_studi, k.nama_kelas, k.tingkat, jur.nama_jurusan')
+                           ->select('j.*, u.full_name as nama_guru, g.bidang_studi, mp.nama as nama_mata_pelajaran, k.nama_kelas, k.tingkat, jur.nama_jurusan')
                            ->join('guru g', 'g.id = j.guru_id')
                            ->join('users u', 'u.id = g.user_id')
+                           ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
                            ->join('kelas k', 'k.id = j.kelas_id')
                            ->join('jurusan jur', 'jur.id = k.jurusan_id');
 
@@ -64,33 +65,52 @@ class JadwalModel extends Model
     public function getJadwalByGuru($guruId)
     {
         return $this->db->table('jadwal j')
-                       ->select('j.*, k.nama_kelas, k.tingkat, jur.nama_jurusan')
+                       ->select('j.*, mp.nama as nama_mata_pelajaran, k.nama_kelas, jr.nama_jurusan, g.full_name as nama_guru')
+                       ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
                        ->join('kelas k', 'k.id = j.kelas_id')
-                       ->join('jurusan jur', 'jur.id = k.jurusan_id')
+                       ->join('jurusan jr', 'jr.id = k.jurusan_id')
+                       ->join('users g', 'g.id = j.guru_id')
                        ->where('j.guru_id', $guruId)
                        ->orderBy('j.hari', 'ASC')
                        ->orderBy('j.jam_mulai', 'ASC')
-                       ->get()->getResultArray();
+                       ->get()
+                       ->getResultArray();
+    }
+
+    public function getJadwalByGuruAndId($guruId, $jadwalId)
+    {
+        return $this->db->table('jadwal j')
+                       ->select('j.*, mp.nama as nama_mata_pelajaran, k.nama_kelas, jr.nama_jurusan, g.full_name as nama_guru')
+                       ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
+                       ->join('kelas k', 'k.id = j.kelas_id')
+                       ->join('jurusan jr', 'jr.id = k.jurusan_id')
+                       ->join('users g', 'g.id = j.guru_id')
+                       ->where('j.guru_id', $guruId)
+                       ->where('j.id', $jadwalId)
+                       ->get()
+                       ->getRowArray();
     }
 
     public function getJadwalByKelas($kelasId)
     {
         return $this->db->table('jadwal j')
-                       ->select('j.*, u.full_name as nama_guru, g.bidang_studi')
-                       ->join('guru g', 'g.id = j.guru_id')
-                       ->join('users u', 'u.id = g.user_id')
+                       ->select('j.*, mp.nama as nama_mata_pelajaran, g.full_name as nama_guru')
+                       ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
+                       ->join('users g', 'g.id = j.guru_id')
                        ->where('j.kelas_id', $kelasId)
                        ->orderBy('j.hari', 'ASC')
                        ->orderBy('j.jam_mulai', 'ASC')
-                       ->get()->getResultArray();
+                       ->get()
+                       ->getResultArray();
     }
 
     public function getJadwalByHari($hari)
     {
         return $this->db->table('jadwal j')
-                       ->select('j.*, u.full_name as nama_guru, g.bidang_studi, k.nama_kelas, k.tingkat, jur.nama_jurusan')
+                       ->select('j.*, u.full_name as nama_guru, g.bidang_studi, mp.nama as nama_mata_pelajaran, k.nama_kelas, k.tingkat, jur.nama_jurusan')
                        ->join('guru g', 'g.id = j.guru_id')
                        ->join('users u', 'u.id = g.user_id')
+                       ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
                        ->join('kelas k', 'k.id = j.kelas_id')
                        ->join('jurusan jur', 'jur.id = k.jurusan_id')
                        ->where('j.hari', $hari)
@@ -137,9 +157,10 @@ class JadwalModel extends Model
     public function getJadwalBySemester($semester, $tahunAjaran = null)
     {
         $builder = $this->db->table('jadwal j')
-                           ->select('j.*, u.full_name as nama_guru, g.bidang_studi, k.nama_kelas, k.tingkat, jur.nama_jurusan')
+                           ->select('j.*, u.full_name as nama_guru, g.bidang_studi, mp.nama as nama_mata_pelajaran, k.nama_kelas, k.tingkat, jur.nama_jurusan')
                            ->join('guru g', 'g.id = j.guru_id')
                            ->join('users u', 'u.id = g.user_id')
+                           ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
                            ->join('kelas k', 'k.id = j.kelas_id')
                            ->join('jurusan jur', 'jur.id = k.jurusan_id')
                            ->where('j.semester', $semester);
@@ -180,21 +201,23 @@ class JadwalModel extends Model
 
     public function getMataPelajaranList()
     {
-        return $this->db->table('jadwal')
-                       ->distinct()
-                       ->select('mata_pelajaran')
-                       ->orderBy('mata_pelajaran', 'ASC')
+        return $this->db->table('mata_pelajaran')
+                       ->select('id, nama, kode')
+                       ->where('status', 1)
+                       ->orderBy('nama', 'ASC')
                        ->get()
                        ->getResultArray();
     }
 
     public function getMataPelajaranByGuru($guruId)
     {
-        return $this->db->table('jadwal')
+        return $this->db->table('jadwal j')
+                       ->select('mp.id, mp.nama, mp.kode')
+                       ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
+                       ->where('j.guru_id', $guruId)
+                       ->where('mp.status', 1)
                        ->distinct()
-                       ->select('mata_pelajaran')
-                       ->where('guru_id', $guruId)
-                       ->orderBy('mata_pelajaran', 'ASC')
+                       ->orderBy('mp.nama', 'ASC')
                        ->get()
                        ->getResultArray();
     }

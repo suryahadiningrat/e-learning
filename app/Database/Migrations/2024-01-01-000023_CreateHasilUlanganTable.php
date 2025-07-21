@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateUlanganTable extends Migration
+class CreateHasilUlanganTable extends Migration
 {
     public function up()
     {
@@ -15,42 +15,37 @@ class CreateUlanganTable extends Migration
                 'unsigned'       => true,
                 'auto_increment' => true,
             ],
-            'guru_id' => [
+            'ulangan_id' => [
                 'type'       => 'INT',
                 'constraint' => 11,
                 'unsigned'   => true,
             ],
-            'kelas_id' => [
+            'siswa_id' => [
                 'type'       => 'INT',
                 'constraint' => 11,
                 'unsigned'   => true,
             ],
-            'judul' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 200,
-            ],
-            'mata_pelajaran' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 100,
-            ],
-            'deskripsi' => [
+            'jawaban_json' => [
                 'type' => 'TEXT',
                 'null' => true,
             ],
+            'nilai' => [
+                'type'       => 'DECIMAL',
+                'constraint' => '5,2',
+                'default'    => 0.00,
+            ],
             'waktu_mulai' => [
                 'type' => 'DATETIME',
+                'null' => true,
             ],
             'waktu_selesai' => [
                 'type' => 'DATETIME',
-            ],
-            'durasi_menit' => [
-                'type'       => 'INT',
-                'constraint' => 11,
+                'null' => true,
             ],
             'status' => [
                 'type'       => 'ENUM',
-                'constraint' => ['Draft', 'Aktif', 'Selesai'],
-                'default'    => 'Draft',
+                'constraint' => ['sedang_mengerjakan', 'selesai', 'timeout'],
+                'default'    => 'sedang_mengerjakan',
             ],
             'created_at' => [
                 'type' => 'DATETIME',
@@ -63,13 +58,14 @@ class CreateUlanganTable extends Migration
         ]);
         
         $this->forge->addKey('id', true);
-        $this->forge->addForeignKey('guru_id', 'guru', 'id', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('kelas_id', 'kelas', 'id', 'CASCADE', 'CASCADE');
-        $this->forge->createTable('ulangan');
+        $this->forge->addForeignKey('ulangan_id', 'ulangan', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('siswa_id', 'siswa', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addUniqueKey(['ulangan_id', 'siswa_id']);
+        $this->forge->createTable('hasil_ulangan');
     }
 
     public function down()
     {
-        $this->forge->dropTable('ulangan');
+        $this->forge->dropTable('hasil_ulangan');
     }
 } 

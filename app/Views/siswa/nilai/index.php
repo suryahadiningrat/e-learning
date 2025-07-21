@@ -103,7 +103,7 @@
                             <?php foreach ($nilai as $index => $item): ?>
                                 <tr>
                                     <td><?= $index + 1 ?></td>
-                                    <td><?= $item['mata_pelajaran'] ?></td>
+                                    <td><?= $item['nama_mata_pelajaran'] ?></td>
                                     <td><?= $item['nama_kelas'] ?></td>
                                     
                                     <?php 

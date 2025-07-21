@@ -90,6 +90,17 @@ class SiswaModel extends Model
                        ->getRowArray();
     }
 
+    public function getSiswaByUserId($userId)
+    {
+        return $this->db->table('siswa s')
+                       ->select('s.*, k.nama_kelas, jr.nama_jurusan')
+                       ->join('kelas k', 'k.id = s.kelas_id')
+                       ->join('jurusan jr', 'jr.id = k.jurusan_id')
+                       ->where('s.user_id', $userId)
+                       ->get()
+                       ->getRowArray();
+    }
+
     public function getTotalSiswa()
     {
         return $this->countAll();

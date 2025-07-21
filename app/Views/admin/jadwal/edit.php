@@ -64,14 +64,20 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="mata_pelajaran" class="form-label">Mata Pelajaran <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control <?= session('errors.mata_pelajaran') ? 'is-invalid' : '' ?>" 
-                                   id="mata_pelajaran" name="mata_pelajaran" 
-                                   value="<?= old('mata_pelajaran', $jadwal['mata_pelajaran'] ?? '') ?>" 
-                                   placeholder="Contoh: Matematika, Bahasa Indonesia" required>
-                            <?php if (session('errors.mata_pelajaran')): ?>
+                            <label for="mata_pelajaran_id" class="form-label">Mata Pelajaran <span class="text-danger">*</span></label>
+                            <select class="form-select <?= session('errors.mata_pelajaran_id') ? 'is-invalid' : '' ?>" 
+                                    id="mata_pelajaran_id" name="mata_pelajaran_id" required>
+                                <option value="">Pilih Mata Pelajaran</option>
+                                <?php foreach ($mata_pelajaran ?? [] as $mapel): ?>
+                                    <option value="<?= $mapel['id'] ?>" 
+                                            <?= (old('mata_pelajaran_id', $jadwal['mata_pelajaran_id'] ?? '') == $mapel['id']) ? 'selected' : '' ?>>
+                                        <?= $mapel['nama'] ?> (<?= $mapel['kode'] ?>)
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <?php if (session('errors.mata_pelajaran_id')): ?>
                                 <div class="invalid-feedback">
-                                    <?= session('errors.mata_pelajaran') ?>
+                                    <?= session('errors.mata_pelajaran_id') ?>
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -210,7 +216,7 @@
 // Auto-fill mata pelajaran berdasarkan bidang studi guru
 document.getElementById('guru_id').addEventListener('change', function() {
     const guruSelect = this;
-    const mataPelajaranInput = document.getElementById('mata_pelajaran');
+    const mataPelajaranInput = document.getElementById('mata_pelajaran_id');
     
     if (guruSelect.value) {
         const selectedOption = guruSelect.options[guruSelect.selectedIndex];

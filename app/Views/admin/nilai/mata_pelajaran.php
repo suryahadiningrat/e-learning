@@ -39,7 +39,7 @@
                                     Mata Pelajaran
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    <?= $mapel['mata_pelajaran'] ?>
+                                    <?= $mapel['nama_mata_pelajaran'] ?>
                                 </div>
                                 <div class="text-xs text-gray-600">
                                     Kelas: <?= $mapel['nama_kelas'] ?>

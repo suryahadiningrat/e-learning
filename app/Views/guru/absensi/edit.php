@@ -164,8 +164,8 @@ document.getElementById('kelas_id').addEventListener('change', function() {
                 data.forEach(jadwal => {
                     const option = document.createElement('option');
                     option.value = jadwal.id;
-                    option.textContent = `${jadwal.mata_pelajaran} (${jadwal.hari} ${jadwal.jam_mulai}-${jadwal.jam_selesai})`;
-                    option.dataset.mataPelajaran = jadwal.mata_pelajaran;
+                    option.textContent = `${jadwal.nama_mata_pelajaran} (${jadwal.hari} ${jadwal.jam_mulai}-${jadwal.jam_selesai})`;
+                    option.dataset.mataPelajaran = jadwal.nama_mata_pelajaran;
                     option.dataset.hari = jadwal.hari;
                     option.dataset.jamMulai = jadwal.jam_mulai;
                     option.dataset.jamSelesai = jadwal.jam_selesai;

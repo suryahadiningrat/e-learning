@@ -48,7 +48,7 @@
                                 <td><?= $no++ ?></td>
                                 <td><?= $item['judul'] ?></td>
                                 <td>
-                                    <span class="badge bg-info"><?= $item['mata_pelajaran'] ?></span>
+                                    <span class="badge bg-info"><?= $item['nama_mata_pelajaran'] ?></span>
                                 </td>
                                 <td>
                                     <?= strlen($item['deskripsi']) > 100 ? substr($item['deskripsi'], 0, 100) . '...' : $item['deskripsi'] ?>

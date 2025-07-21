@@ -70,7 +70,7 @@
                                     <small class="text-muted"><?= $item['nama_jurusan'] ?></small>
                                 </td>
                                 <td>
-                                    <strong><?= $item['mata_pelajaran'] ?></strong>
+                                    <strong><?= $item['nama_mata_pelajaran'] ?></strong>
                                 </td>
                                 <td>
                                     <?= $item['nama_guru'] ?>

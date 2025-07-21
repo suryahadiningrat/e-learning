@@ -77,9 +77,10 @@ class Nilai extends BaseController
         // Get jadwal info dengan jurusan_id dan verifikasi guru
         $db = \Config\Database::connect();
         $jadwal = $db->table('jadwal j')
-                    ->select('j.*, k.nama_kelas, k.jurusan_id, jur.nama_jurusan')
+                    ->select('j.*, k.nama_kelas, k.jurusan_id, jur.nama_jurusan, mp.nama as nama_mata_pelajaran')
                     ->join('kelas k', 'k.id = j.kelas_id')
                     ->join('jurusan jur', 'jur.id = k.jurusan_id')
+                    ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
                     ->where('j.id', $jadwalId)
                     ->where('j.guru_id', $guruId) // Pastikan guru yang mengajar
                     ->get()
@@ -106,7 +107,7 @@ class Nilai extends BaseController
         }
 
         $data = [
-            'title' => 'Input Nilai - ' . $jadwal['mata_pelajaran'],
+            'title' => 'Input Nilai - ' . $jadwal['nama_mata_pelajaran'],
             'jadwal' => $jadwal,
             'siswa' => $siswa,
             'nilai_existing' => $nilaiFormatted
@@ -267,7 +268,7 @@ class Nilai extends BaseController
             $sheet->setCellValue('B' . $row, $item['nis']);
             $sheet->setCellValue('C' . $row, $item['nama_siswa']);
             $sheet->setCellValue('D' . $row, $item['nama_kelas']);
-            $sheet->setCellValue('E' . $row, $item['mata_pelajaran']);
+            $sheet->setCellValue('E' . $row, $item['nama_mata_pelajaran']);
             
             $col = 'F'; // Start from F (after mata pelajaran)
             

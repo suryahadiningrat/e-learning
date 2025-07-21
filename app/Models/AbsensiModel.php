@@ -42,12 +42,13 @@ class AbsensiModel extends Model
     public function getAbsensiWithRelations($id = null)
     {
         $builder = $this->db->table('absensi a')
-                           ->select('a.*, s.nis, s.nisn, s.kelas_id, u.full_name as nama_siswa, k.nama_kelas, k.tingkat, jur.nama_jurusan, j.mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
+                           ->select('a.*, s.nis, s.nisn, s.kelas_id, u.full_name as nama_siswa, k.nama_kelas, k.tingkat, jur.nama_jurusan, mp.nama as nama_mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
                            ->join('siswa s', 's.id = a.siswa_id')
                            ->join('users u', 'u.id = s.user_id')
                            ->join('kelas k', 'k.id = s.kelas_id')
                            ->join('jurusan jur', 'jur.id = k.jurusan_id')
                            ->join('jadwal j', 'j.id = a.jadwal_id')
+                           ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
                            ->join('guru g', 'g.id = j.guru_id')
                            ->join('users ug', 'ug.id = g.user_id');
 
@@ -64,8 +65,9 @@ class AbsensiModel extends Model
     public function getAbsensiBySiswa($siswaId, $startDate = null, $endDate = null)
     {
         $builder = $this->db->table('absensi a')
-                           ->select('a.*, j.mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
+                           ->select('a.*, mp.nama as nama_mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
                            ->join('jadwal j', 'j.id = a.jadwal_id')
+                           ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
                            ->join('guru g', 'g.id = j.guru_id')
                            ->join('users ug', 'ug.id = g.user_id')
                            ->where('a.siswa_id', $siswaId);
@@ -87,10 +89,11 @@ class AbsensiModel extends Model
     public function getAbsensiByKelas($kelasId, $tanggal = null)
     {
         $builder = $this->db->table('absensi a')
-                           ->select('a.*, s.nis, s.nisn, u.full_name as nama_siswa, j.mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
+                           ->select('a.*, s.nis, s.nisn, u.full_name as nama_siswa, mp.nama as nama_mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
                            ->join('siswa s', 's.id = a.siswa_id')
                            ->join('users u', 'u.id = s.user_id')
                            ->join('jadwal j', 'j.id = a.jadwal_id')
+                           ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
                            ->join('guru g', 'g.id = j.guru_id')
                            ->join('users ug', 'ug.id = g.user_id')
                            ->where('s.kelas_id', $kelasId);
@@ -125,12 +128,13 @@ class AbsensiModel extends Model
     public function getAbsensiByTanggal($tanggal)
     {
         return $this->db->table('absensi a')
-                       ->select('a.*, s.nis, s.nisn, u.full_name as nama_siswa, k.nama_kelas, k.tingkat, jur.nama_jurusan, j.mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
+                       ->select('a.*, s.nis, s.nisn, u.full_name as nama_siswa, k.nama_kelas, k.tingkat, jur.nama_jurusan, mp.nama as nama_mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
                        ->join('siswa s', 's.id = a.siswa_id')
                        ->join('users u', 'u.id = s.user_id')
                        ->join('kelas k', 'k.id = s.kelas_id')
                        ->join('jurusan jur', 'jur.id = k.jurusan_id')
                        ->join('jadwal j', 'j.id = a.jadwal_id')
+                       ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
                        ->join('guru g', 'g.id = j.guru_id')
                        ->join('users ug', 'ug.id = g.user_id')
                        ->where('a.tanggal', $tanggal)
@@ -229,12 +233,13 @@ class AbsensiModel extends Model
     public function getAbsensiForExport($startDate = null, $endDate = null, $kelasId = null)
     {
         $builder = $this->db->table('absensi a')
-                           ->select('a.*, s.nis, s.nisn, u.full_name as nama_siswa, k.nama_kelas, k.tingkat, jur.nama_jurusan, j.mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
+                           ->select('a.*, s.nis, s.nisn, u.full_name as nama_siswa, k.nama_kelas, k.tingkat, jur.nama_jurusan, mp.nama as nama_mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
                            ->join('siswa s', 's.id = a.siswa_id')
                            ->join('users u', 'u.id = s.user_id')
                            ->join('kelas k', 'k.id = s.kelas_id')
                            ->join('jurusan jur', 'jur.id = k.jurusan_id')
                            ->join('jadwal j', 'j.id = a.jadwal_id')
+                           ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
                            ->join('guru g', 'g.id = j.guru_id')
                            ->join('users ug', 'ug.id = g.user_id');
 
@@ -262,12 +267,13 @@ class AbsensiModel extends Model
     public function getAbsensiWithRelationsFiltered($startDate = null, $endDate = null, $kelasId = null)
     {
         $builder = $this->db->table('absensi a')
-            ->select('a.*, s.nis, s.nisn, s.kelas_id, u.full_name as nama_siswa, k.nama_kelas, k.tingkat, jur.nama_jurusan, j.mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
+            ->select('a.*, s.nis, s.nisn, s.kelas_id, u.full_name as nama_siswa, k.nama_kelas, k.tingkat, jur.nama_jurusan, mp.nama as nama_mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
             ->join('siswa s', 's.id = a.siswa_id')
             ->join('users u', 'u.id = s.user_id')
             ->join('kelas k', 'k.id = s.kelas_id')
             ->join('jurusan jur', 'jur.id = k.jurusan_id')
             ->join('jadwal j', 'j.id = a.jadwal_id')
+            ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
             ->join('guru g', 'g.id = j.guru_id')
             ->join('users ug', 'ug.id = g.user_id');
         if ($startDate) {

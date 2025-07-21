@@ -36,13 +36,12 @@
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="mata_pelajaran" class="form-label">Mata Pelajaran <span class="text-danger">*</span></label>
-                            <select class="form-select" id="mata_pelajaran" name="mata_pelajaran" required>
+                            <label for="mata_pelajaran_id" class="form-label">Mata Pelajaran <span class="text-danger">*</span></label>
+                            <select class="form-select" id="mata_pelajaran_id" name="mata_pelajaran_id" required>
                                 <option value="">Pilih Mata Pelajaran</option>
                                 <?php foreach ($mata_pelajaran as $mapel): ?>
-                                    <option value="<?= $mapel['mata_pelajaran'] ?>" 
-                                            <?= old('mata_pelajaran', $materi['mata_pelajaran']) == $mapel['mata_pelajaran'] ? 'selected' : '' ?>>
-                                        <?= $mapel['mata_pelajaran'] ?>
+                                    <option value="<?= $mapel['id'] ?>" <?= old('mata_pelajaran_id', $materi['mata_pelajaran_id']) == $mapel['id'] ? 'selected' : '' ?>>
+                                        <?= $mapel['nama'] ?> (<?= $mapel['kode'] ?>)
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -60,25 +59,18 @@
                     <input type="file" class="form-control" id="file_materi" name="file_materi">
                     <div class="form-text">
                         Format yang diizinkan: PDF, DOC, DOCX, PPT, PPTX, TXT. Maksimal 10MB.
-                        <br>Kosongkan jika tidak ingin mengubah file.
+                        <br>Biarkan kosong jika tidak ingin mengubah file.
                     </div>
-                    
-                    <!-- File saat ini -->
-                    <div class="mt-2">
-                        <small class="text-muted">File saat ini:</small><br>
-                        <div class="d-flex align-items-center">
-                            <i class="<?= get_file_icon($materi['file_type']) ?> me-2"></i>
-                            <div>
-                                <small class="text-muted"><?= $materi['file_name'] ?></small><br>
-                                <small class="text-muted"><?= format_file_size($materi['file_size']) ?></small>
-                            </div>
+                    <?php if ($materi['file_path']): ?>
+                        <div class="mt-2">
+                            <small class="text-muted">File saat ini: <?= $materi['file_name'] ?></small>
                         </div>
-                    </div>
+                    <?php endif; ?>
                 </div>
 
                 <div class="d-flex justify-content-end">
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Update
+                        <i class="fas fa-save"></i> Simpan Perubahan
                     </button>
                 </div>
             </form>

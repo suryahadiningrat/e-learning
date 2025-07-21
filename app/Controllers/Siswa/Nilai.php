@@ -144,7 +144,7 @@ class Nilai extends BaseController
         $no = 1;
         foreach ($nilai as $item) {
             $sheet->setCellValue('A' . $row, $no);
-            $sheet->setCellValue('B' . $row, $item['mata_pelajaran']);
+            $sheet->setCellValue('B' . $row, $item['nama_mata_pelajaran']);
             $sheet->setCellValue('C' . $row, $item['nama_kelas']);
             
             $col = 'D'; // Start from D (after kelas)

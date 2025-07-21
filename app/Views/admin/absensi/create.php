@@ -56,6 +56,11 @@
                             <select class="form-select <?= session('errors.jadwal_id') ? 'is-invalid' : '' ?>" 
                                     id="jadwal_id" name="jadwal_id" required>
                                 <option value="">Pilih Jadwal</option>
+                                <?php foreach ($jadwal ?? [] as $j): ?>
+                                    <option value="<?= $j['id'] ?>" <?= old('jadwal_id') == $j['id'] ? 'selected' : '' ?>>
+                                        <?= $j['nama_mata_pelajaran'] ?> - <?= $j['nama_kelas'] ?> (<?= $j['hari'] ?> <?= $j['jam_mulai'] ?>)
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                             <?php if (session('errors.jadwal_id')): ?>
                                 <div class="invalid-feedback">
@@ -178,8 +183,8 @@ document.getElementById('kelas_id').addEventListener('change', function() {
                 data.forEach(jadwal => {
                     const option = document.createElement('option');
                     option.value = jadwal.id;
-                    option.textContent = `${jadwal.mata_pelajaran} (${jadwal.hari} ${jadwal.jam_mulai}-${jadwal.jam_selesai})`;
-                    option.dataset.mataPelajaran = jadwal.mata_pelajaran;
+                    option.textContent = `${jadwal.nama_mata_pelajaran} (${jadwal.hari} ${jadwal.jam_mulai}-${jadwal.jam_selesai})`;
+                    option.dataset.mataPelajaran = jadwal.nama_mata_pelajaran;
                     option.dataset.hari = jadwal.hari;
                     option.dataset.jamMulai = jadwal.jam_mulai;
                     option.dataset.jamSelesai = jadwal.jam_selesai;
