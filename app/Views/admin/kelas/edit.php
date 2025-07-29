@@ -20,14 +20,17 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="nama_kelas" class="form-label">Nama Kelas <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control <?= session('errors.nama_kelas') ? 'is-invalid' : '' ?>" 
-                                   id="nama_kelas" name="nama_kelas" 
-                                   value="<?= old('nama_kelas', $kelas['nama_kelas'] ?? '') ?>" 
-                                   placeholder="Contoh: X IPA 1, XI IPS 2" required>
-                            <?php if (session('errors.nama_kelas')): ?>
+                            <label for="tingkat" class="form-label">Tingkat <span class="text-danger">*</span></label>
+                            <select class="form-select <?= session('errors.tingkat') ? 'is-invalid' : '' ?>" 
+                                    id="tingkat" name="tingkat" required>
+                                <option value="">Pilih Tingkat</option>
+                                <option value="X" <?= (old('tingkat', $kelas['tingkat'] ?? '') == 'X') ? 'selected' : '' ?>>X (Kelas 10)</option>
+                                <option value="XI" <?= (old('tingkat', $kelas['tingkat'] ?? '') == 'XI') ? 'selected' : '' ?>>XI (Kelas 11)</option>
+                                <option value="XII" <?= (old('tingkat', $kelas['tingkat'] ?? '') == 'XII') ? 'selected' : '' ?>>XII (Kelas 12)</option>
+                            </select>
+                            <?php if (session('errors.tingkat')): ?>
                                 <div class="invalid-feedback">
-                                    <?= session('errors.nama_kelas') ?>
+                                    <?= session('errors.tingkat') ?>
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -58,22 +61,44 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="tingkat" class="form-label">Tingkat <span class="text-danger">*</span></label>
-                            <select class="form-select <?= session('errors.tingkat') ? 'is-invalid' : '' ?>" 
-                                    id="tingkat" name="tingkat" required>
-                                <option value="">Pilih Tingkat</option>
-                                <option value="X" <?= (old('tingkat', $kelas['tingkat'] ?? '') == 'X') ? 'selected' : '' ?>>X (Kelas 10)</option>
-                                <option value="XI" <?= (old('tingkat', $kelas['tingkat'] ?? '') == 'XI') ? 'selected' : '' ?>>XI (Kelas 11)</option>
-                                <option value="XII" <?= (old('tingkat', $kelas['tingkat'] ?? '') == 'XII') ? 'selected' : '' ?>>XII (Kelas 12)</option>
-                            </select>
-                            <?php if (session('errors.tingkat')): ?>
+                            <label for="kode_jurusan" class="form-label">Kode Jurusan <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control <?= session('errors.kode_jurusan') ? 'is-invalid' : '' ?>" 
+                                   id="kode_jurusan" name="kode_jurusan" 
+                                   value="<?= old('kode_jurusan', $kelas['kode_jurusan'] ?? '') ?>" 
+                                   placeholder="Contoh: TKJ" required maxlength="10" 
+                                   oninput="this.value = this.value.toUpperCase()">
+                            <div class="form-text">
+                                Masukkan singkatan jurusan (2-10 karakter)
+                            </div>
+                            <?php if (session('errors.kode_jurusan')): ?>
                                 <div class="invalid-feedback">
-                                    <?= session('errors.tingkat') ?>
+                                    <?= session('errors.kode_jurusan') ?>
                                 </div>
                             <?php endif; ?>
                         </div>
                     </div>
-                    
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="paralel" class="form-label">Kelas Paralel <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control <?= session('errors.paralel') ? 'is-invalid' : '' ?>" 
+                                   id="paralel" name="paralel" 
+                                   value="<?= old('paralel', $kelas['paralel'] ?? '') ?>" 
+                                   placeholder="Contoh: A" required maxlength="1" 
+                                   oninput="this.value = this.value.toUpperCase()">
+                            <div class="form-text">
+                                Masukkan huruf kelas (A, B, C, dst)
+                            </div>
+                            <?php if (session('errors.paralel')): ?>
+                                <div class="invalid-feedback">
+                                    <?= session('errors.paralel') ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="kapasitas" class="form-label">Kapasitas <span class="text-danger">*</span></label>
@@ -89,6 +114,15 @@
                                     <?= session('errors.kapasitas') ?>
                                 </div>
                             <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Preview Nama Kelas</label>
+                            <div class="form-control bg-light" id="preview">
+                                ...
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -158,14 +192,29 @@ function generateNamaKelas() {
             jurusanShort = 'IPA';
         } else if (jurusanText.includes('Ilmu Pengetahuan Sosial')) {
             jurusanShort = 'IPS';
-        } else if (jurusanText.includes('Bahasa')) {
-            jurusanShort = 'Bahasa';
         }
-        
-        // Generate nama kelas
-        const namaKelas = `${tingkat} ${jurusanShort} 1`;
-        namaKelasInput.value = namaKelas;
     }
 }
+            function updatePreview() {
+    const tingkat = document.getElementById('tingkat').value;
+    const kodeJurusan = document.getElementById('kode_jurusan').value;
+    const paralel = document.getElementById('paralel').value;
+    
+    const preview = document.getElementById('preview');
+    
+    if (tingkat && kodeJurusan && paralel) {
+        preview.textContent = `${tingkat} ${kodeJurusan} ${paralel}`;
+    } else {
+        preview.textContent = '...';
+    }
+}
+
+// Add event listeners to all input fields
+document.getElementById('tingkat').addEventListener('change', updatePreview);
+document.getElementById('kode_jurusan').addEventListener('input', updatePreview);
+document.getElementById('paralel').addEventListener('input', updatePreview);
+
+// Update preview on page load
+updatePreview();
 </script>
-<?= $this->endSection() ?> 
+<?= $this->endSection() ?>

@@ -1,4 +1,4 @@
-<?= $this->extend('layout/template'); ?>
+<?= $this->extend('siswa/layout'); ?>
 
 <?= $this->section('content'); ?>
 <div class="container-fluid">
@@ -25,23 +25,37 @@
                         </div>
                     <?php endif; ?>
 
-                    <form action="<?= base_url('siswa/user-pengguna/update') ?>" method="post">
+                    <form action="<?= base_url('siswa/user-pengguna/update') ?>" method="post" enctype="multipart/form-data">
                         <?= csrf_field() ?>
-                        <div class="form-group">
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <img src="<?= $user['photo'] ? base_url('uploads/profile/' . $user['photo']) : base_url('assets/img/default-profile.png') ?>" 
+                                     class="img-thumbnail" alt="Profile Photo" id="preview-photo">
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <label for="photo">Photo Profile</label>
+                                    <input type="file" class="form-control" id="photo" name="photo" accept="image/*" onchange="previewImage(this)">
+                                    <small class="text-muted">Format: JPG, JPEG, PNG. Maksimal 2MB</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
                             <label for="full_name">Nama Lengkap</label>
                             <input type="text" class="form-control" id="full_name" name="full_name" value="<?= $user['full_name'] ?>" required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group mb-3">
                             <label for="email">Email</label>
                             <input type="email" class="form-control" id="email" name="email" value="<?= $user['email'] ?>" required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group mb-3">
                             <label for="username">Username</label>
                             <input type="text" class="form-control" id="username" name="username" value="<?= $user['username'] ?>" required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group mb-4">
                             <label for="password">Password Baru (Kosongkan jika tidak ingin mengubah)</label>
                             <input type="password" class="form-control" id="password" name="password">
+                            <small class="text-muted">Minimal 6 karakter</small>
                         </div>
                         <button type="submit" class="btn btn-primary">Update Profile</button>
                     </form>
@@ -51,3 +65,15 @@
     </div>
 </div>
 <?= $this->endSection(); ?>
+
+<script>
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview-photo').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>

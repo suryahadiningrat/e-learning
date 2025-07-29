@@ -13,7 +13,7 @@ class KelasModel extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'nama_kelas', 'jurusan_id', 'kapasitas', 'tingkat', 'created_at', 'updated_at'
+        'tingkat', 'kode_jurusan', 'paralel', 'jurusan_id', 'kapasitas', 'created_at', 'updated_at'
     ];
 
     // Dates
@@ -24,10 +24,11 @@ class KelasModel extends Model
 
     // Validation
     protected $validationRules      = [
-        'nama_kelas' => 'required|min_length[2]|max_length[50]',
+        'tingkat' => 'required|in_list[X,XI,XII]',
+        'kode_jurusan' => 'required|min_length[2]|max_length[10]',
+        'paralel' => 'required|alpha|max_length[1]',
         'jurusan_id' => 'required|numeric',
-        'kapasitas' => 'required|numeric|greater_than[0]|less_than_equal_to[50]',
-        'tingkat' => 'required|in_list[X,XI,XII]'
+        'kapasitas' => 'required|numeric|greater_than[0]|less_than_equal_to[50]'
     ];
     protected $validationMessages   = [];
     protected $skipValidation       = false;
@@ -38,10 +39,15 @@ class KelasModel extends Model
     protected $beforeInsert   = [];
     protected $beforeUpdate   = [];
 
+    public function getNamaKelas($tingkat, $kodeJurusan, $paralel)
+    {
+        return strtoupper("{$tingkat} {$kodeJurusan} {$paralel}");
+    }
+
     public function getKelasWithRelations($id = null)
     {
         $builder = $this->db->table('kelas k')
-                           ->select('k.*, j.nama_jurusan, COUNT(s.id) as jumlah_siswa')
+                           ->select('k.*, j.nama_jurusan, COUNT(s.id) as jumlah_siswa, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas')
                            ->join('jurusan j', 'j.id = k.jurusan_id')
                            ->join('siswa s', 's.kelas_id = k.id', 'left')
                            ->groupBy('k.id');
@@ -56,7 +62,7 @@ class KelasModel extends Model
     public function getKelasByJurusan($jurusanId)
     {
         return $this->db->table('kelas k')
-                       ->select('k.*, j.nama_jurusan')
+                       ->select('k.*, j.nama_jurusan, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas')
                        ->join('jurusan j', 'j.id = k.jurusan_id')
                        ->where('k.jurusan_id', $jurusanId)
                        ->get()
@@ -66,7 +72,7 @@ class KelasModel extends Model
     public function getKelasByTingkat($tingkat)
     {
         return $this->db->table('kelas k')
-                       ->select('k.*, j.nama_jurusan')
+                       ->select('k.*, j.nama_jurusan, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas')
                        ->join('jurusan j', 'j.id = k.jurusan_id')
                        ->where('k.tingkat', $tingkat)
                        ->get()

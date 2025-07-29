@@ -69,6 +69,10 @@
         .border-left-secondary {
             border-left: 0.25rem solid #858796 !important;
         }
+        .nav-link.dropdown-toggle img {
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -156,8 +160,18 @@
                         
                         <div class="navbar-nav ms-auto">
                             <div class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-user-circle"></i>
+                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                                    <?php 
+                                    $userModel = new \App\Models\UserModel();
+                                    $user = $userModel->find(session()->get('user_id'));
+                                    if (!empty($user['photo'])): ?>
+                                        <img src="<?= base_url('uploads/profile/' . $user['photo']) ?>" 
+                                             class="rounded-circle me-2" 
+                                             alt="Profile Photo" 
+                                             style="width: 32px; height: 32px; object-fit: cover;">
+                                    <?php else: ?>
+                                        <i class="fas fa-user-circle fa-lg me-2"></i>
+                                    <?php endif; ?>
                                     <?= session()->get('username') ?>
                                 </a>
                                 <ul class="dropdown-menu">

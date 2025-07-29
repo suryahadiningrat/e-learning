@@ -48,6 +48,10 @@
             background-color: #f8f9fc;
             border-bottom: 1px solid #e3e6f0;
         }
+        .nav-link.dropdown-toggle img {
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -61,6 +65,11 @@
                         <small class="text-white-50">Panel Siswa</small>
                     </div>
                     <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link <?= (strpos(current_url(), 'siswa/dashboard') !== false) ? 'active' : '' ?>" href="<?= base_url('siswa/dashboard') ?>">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link <?= (strpos(current_url(), 'siswa/jadwal') !== false) ? 'active' : '' ?>" href="<?= base_url('siswa/jadwal') ?>">
                                 <i class="fas fa-calendar-alt"></i> Jadwal
@@ -81,6 +90,11 @@
                                 <i class="fas fa-clipboard-list"></i> Ulangan
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?= (strpos(current_url(), 'siswa/user-pengguna') !== false) ? 'active' : '' ?>" href="<?= base_url('siswa/user-pengguna') ?>">
+                                <i class="fas fa-user-cog"></i> User Pengguna
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -93,13 +107,22 @@
                         </button>
                         <div class="navbar-nav ms-auto">
                             <div class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-user-circle"></i>
+                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                                    <?php 
+                                    $userModel = new \App\Models\UserModel();
+                                    $user = $userModel->find(session()->get('user_id'));
+                                    if (!empty($user['photo'])): ?>
+                                        <img src="<?= base_url('uploads/profile/' . $user['photo']) ?>" 
+                                             class="rounded-circle me-2" 
+                                             alt="Profile Photo" 
+                                             style="width: 32px; height: 32px; object-fit: cover;">
+                                    <?php else: ?>
+                                        <i class="fas fa-user-circle fa-lg me-2"></i>
+                                    <?php endif; ?>
                                     <?= session()->get('username') ?>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> Profile</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                                    <li><a class="dropdown-item" href="<?= base_url('siswa/user-pengguna') ?>"><i class="fas fa-user"></i> Profile</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="<?= base_url('auth/logout') ?>"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                                 </ul>

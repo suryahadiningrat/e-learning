@@ -40,20 +40,28 @@ class Kelas extends BaseController
     public function store()
     {
         // Validasi input dengan pengecekan manual untuk unique
-        $namaKelas = $this->request->getPost('nama_kelas');
+        $tingkat = $this->request->getPost('tingkat');
+        $kodeJurusan = $this->request->getPost('kode_jurusan');
+        $paralel = $this->request->getPost('paralel');
         
-        // Cek nama kelas unique
-        $existingKelas = $this->kelasModel->where('nama_kelas', $namaKelas)->first();
+        // Cek kombinasi kelas unique
+        $existingKelas = $this->kelasModel->where([
+            'tingkat' => $tingkat,
+            'kode_jurusan' => $kodeJurusan,
+            'paralel' => $paralel
+        ])->first();
+        
         if ($existingKelas) {
-            return redirect()->back()->withInput()->with('error', 'Nama kelas sudah digunakan');
+            return redirect()->back()->withInput()->with('error', 'Kombinasi kelas sudah digunakan');
         }
 
         // Validasi input lainnya
         $rules = [
-            'nama_kelas' => 'required|min_length[2]|max_length[50]',
+            'tingkat' => 'required|in_list[X,XI,XII]',
+            'kode_jurusan' => 'required|min_length[2]|max_length[10]',
+            'paralel' => 'required|alpha|max_length[1]',
             'jurusan_id' => 'required|numeric',
-            'kapasitas' => 'required|numeric|greater_than[0]|less_than_equal_to[50]',
-            'tingkat' => 'required|in_list[X,XI,XII]'
+            'kapasitas' => 'required|numeric|greater_than[0]|less_than_equal_to[50]'
         ];
 
         $messages = [
@@ -89,10 +97,11 @@ class Kelas extends BaseController
         try {
             // Buat data kelas
             $kelasData = [
-                'nama_kelas' => $namaKelas,
+                'tingkat' => $this->request->getPost('tingkat'),
+                'kode_jurusan' => $this->request->getPost('kode_jurusan'),
+                'paralel' => strtoupper($this->request->getPost('paralel')),
                 'jurusan_id' => $this->request->getPost('jurusan_id'),
                 'kapasitas' => $this->request->getPost('kapasitas'),
-                'tingkat' => $this->request->getPost('tingkat'),
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ];
@@ -139,22 +148,28 @@ class Kelas extends BaseController
         }
 
         // Validasi input dengan pengecekan manual untuk unique
-        $namaKelas = $this->request->getPost('nama_kelas');
+        $tingkat = $this->request->getPost('tingkat');
+        $kodeJurusan = $this->request->getPost('kode_jurusan');
+        $paralel = $this->request->getPost('paralel');
         
-        // Cek nama kelas unique (kecuali untuk kelas yang sedang diedit)
-        $existingKelas = $this->kelasModel->where('nama_kelas', $namaKelas)
-                                         ->where('id !=', $id)
-                                         ->first();
+        // Cek kombinasi kelas unique (kecuali untuk kelas yang sedang diedit)
+        $existingKelas = $this->kelasModel->where([
+            'tingkat' => $tingkat,
+            'kode_jurusan' => $kodeJurusan,
+            'paralel' => $paralel
+        ])->where('id !=', $id)->first();
+        
         if ($existingKelas) {
-            return redirect()->back()->withInput()->with('error', 'Nama kelas sudah digunakan');
+            return redirect()->back()->withInput()->with('error', 'Kombinasi kelas sudah digunakan');
         }
 
         // Validasi input lainnya
         $rules = [
-            'nama_kelas' => 'required|min_length[2]|max_length[50]',
+            'tingkat' => 'required|in_list[X,XI,XII]',
+            'kode_jurusan' => 'required|min_length[2]|max_length[10]',
+            'paralel' => 'required|alpha|max_length[1]',
             'jurusan_id' => 'required|numeric',
-            'kapasitas' => 'required|numeric|greater_than[0]|less_than_equal_to[50]',
-            'tingkat' => 'required|in_list[X,XI,XII]'
+            'kapasitas' => 'required|numeric|greater_than[0]|less_than_equal_to[50]'
         ];
 
         $messages = [
@@ -190,10 +205,11 @@ class Kelas extends BaseController
         try {
             // Update data kelas
             $kelasData = [
-                'nama_kelas' => $namaKelas,
+                'tingkat' => $this->request->getPost('tingkat'),
+                'kode_jurusan' => $this->request->getPost('kode_jurusan'),
+                'paralel' => strtoupper($this->request->getPost('paralel')),
                 'jurusan_id' => $this->request->getPost('jurusan_id'),
                 'kapasitas' => $this->request->getPost('kapasitas'),
-                'tingkat' => $this->request->getPost('tingkat'),
                 'updated_at' => date('Y-m-d H:i:s')
             ];
 
