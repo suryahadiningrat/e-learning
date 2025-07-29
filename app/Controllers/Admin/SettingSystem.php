@@ -147,6 +147,69 @@ class SettingSystem extends BaseController
         return redirect()->to('admin/setting-system')->with('success', 'Tahun ajaran berhasil diperbarui');
     }
 
+    public function updateSidebarColor()
+    {
+        // Validasi input
+        $rules = [
+            'role' => 'required|in_list[admin,guru,siswa]',
+            'color' => 'required'
+        ];
+
+        $messages = [
+            'role' => [
+                'required' => 'Role harus dipilih',
+                'in_list' => 'Role tidak valid'
+            ],
+            'color' => [
+                'required' => 'Warna harus diisi'
+            ]
+        ];
+
+        if (!$this->validate($rules, $messages)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $this->validator->getErrors()
+            ]);
+        }
+
+        $role = $this->request->getPost('role');
+        $color = $this->request->getPost('color');
+        
+        // Update setting di database
+        $this->updateSetting('sidebar_color_' . $role, $color);
+
+        // Update session untuk semua warna sidebar
+        $db = \Config\Database::connect();
+        $colors = $db->table('settings')
+            ->whereIn('key', ['sidebar_color_admin', 'sidebar_color_guru', 'sidebar_color_siswa'])
+            ->get()
+            ->getResultArray();
+        
+        // Set default colors
+        $defaultColors = [
+            'admin' => 'linear-gradient(to bottom, #4e73df, #224abe)',
+            'guru' => 'linear-gradient(to bottom, #1cc88a, #169b6b)',
+            'siswa' => 'linear-gradient(to bottom, #f6c23e, #dda20a)'
+        ];
+
+        // Initialize session with default colors first
+        foreach ($defaultColors as $roleKey => $defaultColor) {
+            session()->set('sidebar_color_' . $roleKey, $defaultColor);
+        }
+
+        // Override with colors from database
+        foreach ($colors as $colorData) {
+            session()->set($colorData['key'], $colorData['value']);
+        }
+        
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => 'Warna sidebar berhasil diperbarui',
+            'refresh' => true
+        ]);
+    }
+
     private function getSettings()
     {
         $db = \Config\Database::connect();

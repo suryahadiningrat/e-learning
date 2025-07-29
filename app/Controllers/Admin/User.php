@@ -17,8 +17,8 @@ class User extends BaseController
     public function index()
     {
         $data = [
-            'title' => 'Manajemen User',
-            'users' => $this->userModel->findAll(),
+            'title' => 'User Aktivasi',
+            'users' => $this->userModel->getInactiveUsers(),
         ];
 
         return view('admin/users', $data);

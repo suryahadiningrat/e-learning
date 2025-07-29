@@ -1,13 +1,18 @@
 <?php
-namespace App\Controllers\Guru;
+namespace App\Controllers\Siswa;
 use App\Controllers\BaseController;
 use App\Models\UserModel;
 
 class UserPengguna extends BaseController {
     public function index() {
         $userModel = new UserModel();
-        $users = $userModel->findAll();
-        return view('guru/user_pengguna/index', ['users' => $users, 'title' => 'User Pengguna']);
+        $userId = session()->get('user_id'); // Mengambil ID user yang sedang login
+        $user = $userModel->find($userId);
+        
+        return view('siswa/user_pengguna/profile', [
+            'user' => $user,
+            'title' => 'Profile Saya'
+        ]);
     }
 
     public function update() {
@@ -27,7 +32,6 @@ class UserPengguna extends BaseController {
         }
 
         $userModel->update($userId, $data);
-        
-        return redirect()->to('guru/user-pengguna')->with('message', 'Profile berhasil diupdate');
+        return redirect()->to('siswa/user-pengguna')->with('message', 'Profile berhasil diupdate');
     }
-} 
+}

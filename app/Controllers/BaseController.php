@@ -49,6 +49,25 @@ abstract class BaseController extends Controller
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
         // Do Not Edit This Line
+        // Get sidebar color from settings
+        $db = \Config\Database::connect();
+        $role = session()->get('role');
+        $sidebarColor = $db->table('settings')
+            ->where('key', 'sidebar_color_' . $role)
+            ->get()
+            ->getRowArray();
+
+        // Set default colors if not set
+        $defaultColors = [
+            'admin' => 'linear-gradient(to bottom, #4e73df, #224abe)',
+            'guru' => 'linear-gradient(to bottom, #1cc88a, #169b6b)',
+            'siswa' => 'linear-gradient(to bottom, #f6c23e, #dda20a)'
+        ];
+
+        $sidebarColorValue = $sidebarColor ? $sidebarColor['value'] : ($defaultColors[$role] ?? $defaultColors['admin']);
+        session()->set([
+            'sidebar_color_' . $role => $sidebarColorValue
+        ]);
         parent::initController($request, $response, $logger);
 
         // Preload any models, libraries, etc, here.

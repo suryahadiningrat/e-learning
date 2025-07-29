@@ -13,6 +13,18 @@ $routes->get('auth/register', 'Auth::register');
 $routes->post('auth/processRegister', 'Auth::processRegister');
 $routes->get('auth/logout', 'Auth::logout');
 
+// Guru Routes
+$routes->group('guru', ['filter' => 'auth:role:guru'], function($routes) {
+    $routes->get('user-pengguna', 'Guru\UserPengguna::index');
+    $routes->post('user-pengguna/update', 'Guru\UserPengguna::update');
+});
+
+// Siswa Routes
+$routes->group('siswa', ['filter' => 'auth:role:siswa'], function($routes) {
+    $routes->get('user-pengguna', 'Siswa\UserPengguna::index');
+    $routes->post('user-pengguna/update', 'Siswa\UserPengguna::update');
+});
+
 // Admin Routes
 $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->get('dashboard', 'Admin\Dashboard::index');
@@ -124,6 +136,7 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->post('setting-system/update-logo', 'Admin\SettingSystem::updateLogo');
     $routes->post('setting-system/update-background', 'Admin\SettingSystem::updateBackground');
     $routes->post('setting-system/update-tahun-ajaran', 'Admin\SettingSystem::updateTahunAjaran');
+    $routes->post('setting-system/update-sidebar-color', 'Admin\SettingSystem::updateSidebarColor');
 });
 
 // Guru Routes

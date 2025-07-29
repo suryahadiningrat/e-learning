@@ -11,7 +11,7 @@
     <style>
         .sidebar {
             min-height: 100vh;
-            background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+            background: <?= session()->get('sidebar_color_' . session()->get('role')) ?? 'linear-gradient(to bottom, #f6c23e, #dda20a)' ?>;
         }
         .sidebar .nav-link {
             color: rgba(255,255,255,.8);
