@@ -40,7 +40,7 @@ class Siswa extends BaseController
         
         $data = [
             'title' => 'Tambah Siswa',
-            'kelas' => $this->kelasModel->findAll(),
+            'kelas' => $this->kelasModel->getKelasWithRelations(),
             'users' => $availableUsers
         ];
 
@@ -189,7 +189,7 @@ class Siswa extends BaseController
         $data = [
             'title' => 'Edit Siswa',
             'siswa' => $siswa,
-            'kelas' => $this->kelasModel->findAll(),
+            'kelas' => $this->kelasModel->getKelasWithRelations(),
             'users' => $availableUsers
         ];
 

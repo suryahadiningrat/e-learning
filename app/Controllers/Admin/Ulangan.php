@@ -36,7 +36,7 @@ class Ulangan extends BaseController
     {
         $data = [
             'title' => 'Tambah Ulangan',
-            'kelas' => $this->kelasModel->findAll(),
+            'kelas' => $this->kelasModel->getKelasWithRelations(),
             'mata_pelajaran' => $this->mataPelajaranModel->getAktifMataPelajaran()
         ];
 
@@ -143,7 +143,7 @@ class Ulangan extends BaseController
         $data = [
             'title' => 'Edit Ulangan',
             'ulangan' => $ulangan,
-            'kelas' => $this->kelasModel->findAll(),
+            'kelas' => $this->kelasModel->getKelasWithRelations(),
             'mata_pelajaran' => $this->mataPelajaranModel->getAktifMataPelajaran()
         ];
 
