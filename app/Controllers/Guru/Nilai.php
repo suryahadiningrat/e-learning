@@ -77,7 +77,7 @@ class Nilai extends BaseController
         // Get jadwal info dengan jurusan_id dan verifikasi guru
         $db = \Config\Database::connect();
         $jadwal = $db->table('jadwal j')
-                    ->select('j.*, k.nama_kelas, k.jurusan_id, jur.nama_jurusan, mp.nama as nama_mata_pelajaran')
+                    ->select('j.*, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, k.jurusan_id, jur.nama_jurusan, mp.nama as nama_mata_pelajaran')
                     ->join('kelas k', 'k.id = j.kelas_id')
                     ->join('jurusan jur', 'jur.id = k.jurusan_id')
                     ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')

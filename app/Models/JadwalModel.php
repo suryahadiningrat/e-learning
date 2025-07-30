@@ -46,7 +46,7 @@ class JadwalModel extends Model
     public function getJadwalWithRelations($id = null)
     {
         $builder = $this->db->table('jadwal j')
-                           ->select('j.*, u.full_name as nama_guru, g.bidang_studi, mp.nama as nama_mata_pelajaran, k.nama_kelas, k.tingkat, jur.nama_jurusan')
+                           ->select('j.*, u.full_name as nama_guru, g.bidang_studi, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, k.tingkat, jur.nama_jurusan')
                            ->join('guru g', 'g.id = j.guru_id')
                            ->join('users u', 'u.id = g.user_id')
                            ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
@@ -65,7 +65,7 @@ class JadwalModel extends Model
     public function getJadwalByGuru($guruId)
     {
         return $this->db->table('jadwal j')
-                       ->select('j.*, mp.nama as nama_mata_pelajaran, k.nama_kelas, jr.nama_jurusan, g.full_name as nama_guru')
+                       ->select('j.*, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, jr.nama_jurusan, g.full_name as nama_guru')
                        ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
                        ->join('kelas k', 'k.id = j.kelas_id')
                        ->join('jurusan jr', 'jr.id = k.jurusan_id')
@@ -80,7 +80,7 @@ class JadwalModel extends Model
     public function getJadwalByGuruAndId($guruId, $jadwalId)
     {
         return $this->db->table('jadwal j')
-                       ->select('j.*, mp.nama as nama_mata_pelajaran, k.nama_kelas, jr.nama_jurusan, g.full_name as nama_guru')
+                       ->select('j.*, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, jr.nama_jurusan, g.full_name as nama_guru')
                        ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
                        ->join('kelas k', 'k.id = j.kelas_id')
                        ->join('jurusan jr', 'jr.id = k.jurusan_id')
@@ -107,7 +107,7 @@ class JadwalModel extends Model
     public function getJadwalByHari($hari)
     {
         return $this->db->table('jadwal j')
-                       ->select('j.*, u.full_name as nama_guru, g.bidang_studi, mp.nama as nama_mata_pelajaran, k.nama_kelas, k.tingkat, jur.nama_jurusan')
+                       ->select('j.*, u.full_name as nama_guru, g.bidang_studi, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, k.tingkat, jur.nama_jurusan')
                        ->join('guru g', 'g.id = j.guru_id')
                        ->join('users u', 'u.id = g.user_id')
                        ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
@@ -157,7 +157,7 @@ class JadwalModel extends Model
     public function getJadwalBySemester($semester, $tahunAjaran = null)
     {
         $builder = $this->db->table('jadwal j')
-                           ->select('j.*, u.full_name as nama_guru, g.bidang_studi, mp.nama as nama_mata_pelajaran, k.nama_kelas, k.tingkat, jur.nama_jurusan')
+                           ->select('j.*, u.full_name as nama_guru, g.bidang_studi, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, k.tingkat, jur.nama_jurusan')
                            ->join('guru g', 'g.id = j.guru_id')
                            ->join('users u', 'u.id = g.user_id')
                            ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')

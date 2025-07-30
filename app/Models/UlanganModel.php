@@ -46,7 +46,7 @@ class UlanganModel extends Model
     public function getUlanganWithRelations($id = null)
     {
         $builder = $this->db->table('ulangan u')
-                           ->select('u.*, mp.nama as nama_mata_pelajaran, k.nama_kelas, u2.full_name as nama_creator')
+                           ->select('u.*, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, u2.full_name as nama_creator')
                            ->join('mata_pelajaran mp', 'mp.id = u.mata_pelajaran_id')
                            ->join('kelas k', 'k.id = u.kelas_id')
                            ->join('users u2', 'u2.id = u.created_by');
@@ -61,7 +61,7 @@ class UlanganModel extends Model
     public function getUlanganByCreator($userId)
     {
         return $this->db->table('ulangan u')
-                       ->select('u.*, mp.nama as nama_mata_pelajaran, k.nama_kelas, u2.full_name as nama_creator')
+                       ->select('u.*, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, u2.full_name as nama_creator')
                        ->join('mata_pelajaran mp', 'mp.id = u.mata_pelajaran_id')
                        ->join('kelas k', 'k.id = u.kelas_id')
                        ->join('users u2', 'u2.id = u.created_by')
@@ -74,7 +74,7 @@ class UlanganModel extends Model
     public function getUlanganByKelas($kelasId)
     {
         return $this->db->table('ulangan u')
-                       ->select('u.*, mp.nama as nama_mata_pelajaran, k.nama_kelas, jr.nama_jurusan, us.full_name as nama_creator')
+                       ->select('u.*, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, jr.nama_jurusan, us.full_name as nama_creator')
                        ->join('mata_pelajaran mp', 'mp.id = u.mata_pelajaran_id')
                        ->join('kelas k', 'k.id = u.kelas_id')
                        ->join('jurusan jr', 'jr.id = k.jurusan_id')
@@ -89,7 +89,7 @@ class UlanganModel extends Model
     public function getUlanganById($ulanganId)
     {
         return $this->db->table('ulangan u')
-                       ->select('u.*, mp.nama as nama_mata_pelajaran, k.nama_kelas, k.id as kelas_id, jr.nama_jurusan, us.full_name as nama_creator')
+                       ->select('u.*, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, k.id as kelas_id, jr.nama_jurusan, us.full_name as nama_creator')
                        ->join('mata_pelajaran mp', 'mp.id = u.mata_pelajaran_id')
                        ->join('kelas k', 'k.id = u.kelas_id')
                        ->join('jurusan jr', 'jr.id = k.jurusan_id')
@@ -136,7 +136,7 @@ class UlanganModel extends Model
     public function getUlanganByMataPelajaran($mataPelajaranId)
     {
         return $this->db->table('ulangan u')
-                       ->select('u.*, mp.nama as nama_mata_pelajaran, k.nama_kelas, u2.full_name as nama_creator')
+                       ->select('u.*, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, u2.full_name as nama_creator')
                        ->join('mata_pelajaran mp', 'mp.id = u.mata_pelajaran_id')
                        ->join('kelas k', 'k.id = u.kelas_id')
                        ->join('users u2', 'u2.id = u.created_by')
@@ -149,7 +149,7 @@ class UlanganModel extends Model
     public function getPublishedUlangan()
     {
         return $this->db->table('ulangan u')
-                       ->select('u.*, k.nama_kelas, u2.full_name as nama_creator')
+                       ->select('u.*, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, u2.full_name as nama_creator')
                        ->join('kelas k', 'k.id = u.kelas_id')
                        ->join('users u2', 'u2.id = u.created_by')
                        ->where('u.status', 'published')
@@ -182,7 +182,7 @@ class UlanganModel extends Model
     {
         $now = date('Y-m-d H:i:s');
         return $this->db->table('ulangan u')
-                       ->select('u.*, k.nama_kelas, u2.full_name as nama_creator')
+                       ->select('u.*, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, u2.full_name as nama_creator')
                        ->join('kelas k', 'k.id = u.kelas_id')
                        ->join('users u2', 'u2.id = u.created_by')
                        ->where('u.status', 'published')
@@ -215,7 +215,7 @@ class UlanganModel extends Model
     public function getUlanganByGuru($guruId)
     {
         return $this->db->table('ulangan u')
-                       ->select('u.*, mp.nama as nama_mata_pelajaran, k.nama_kelas, us.full_name as nama_creator')
+                       ->select('u.*, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, us.full_name as nama_creator')
                        ->join('mata_pelajaran mp', 'mp.id = u.mata_pelajaran_id')
                        ->join('kelas k', 'k.id = u.kelas_id')
                        ->join('users us', 'us.id = u.created_by')
@@ -228,7 +228,7 @@ class UlanganModel extends Model
     public function getUlanganByGuruAndId($guruId, $ulanganId)
     {
         return $this->db->table('ulangan u')
-                       ->select('u.*, mp.nama as nama_mata_pelajaran, k.nama_kelas, COALESCE(jr.nama_jurusan, "Umum") as nama_jurusan, us.full_name as nama_creator')
+                       ->select('u.*, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, COALESCE(jr.nama_jurusan, "Umum") as nama_jurusan, us.full_name as nama_creator')
                        ->join('mata_pelajaran mp', 'mp.id = u.mata_pelajaran_id')
                        ->join('kelas k', 'k.id = u.kelas_id')
                        ->join('jurusan jr', 'jr.id = k.jurusan_id', 'left')
@@ -242,7 +242,7 @@ class UlanganModel extends Model
     public function getHasilUlangan($ulanganId)
     {
         return $this->db->table('hasil_ulangan hu')
-                       ->select('hu.*, s.nis, u.full_name as nama_siswa, k.nama_kelas')
+                       ->select('hu.*, s.nis, u.full_name as nama_siswa, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas')
                        ->join('siswa s', 's.id = hu.siswa_id')
                        ->join('users u', 'u.id = s.user_id')
                        ->join('kelas k', 'k.id = s.kelas_id')
@@ -255,7 +255,7 @@ class UlanganModel extends Model
     public function getDetailHasilUlangan($ulanganId, $siswaId)
     {
         return $this->db->table('hasil_ulangan hu')
-                       ->select('hu.*, s.nis, u.full_name as nama_siswa, k.nama_kelas')
+                       ->select('hu.*, s.nis, u.full_name as nama_siswa, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas')
                        ->join('siswa s', 's.id = hu.siswa_id')
                        ->join('users u', 'u.id = s.user_id')
                        ->join('kelas k', 'k.id = s.kelas_id')

@@ -73,11 +73,11 @@ class Ulangan extends BaseController
         
         // Get kelas yang diajar oleh guru
         $kelas = $this->db->table('jadwal j')
-                         ->select('j.kelas_id as id, k.nama_kelas, COALESCE(jur.nama_jurusan, "Umum") as nama_jurusan')
+                         ->select('j.kelas_id as id, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, COALESCE(jur.nama_jurusan, "Umum") as nama_jurusan')
                          ->join('kelas k', 'k.id = j.kelas_id')
                          ->join('jurusan jur', 'jur.id = k.jurusan_id', 'left')
                          ->where('j.guru_id', $guruId)
-                         ->groupBy('j.kelas_id, k.nama_kelas, jur.nama_jurusan')
+                         ->groupBy('j.kelas_id, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, jur.nama_jurusan')
                          ->get()
                          ->getResultArray();
         
@@ -265,11 +265,11 @@ class Ulangan extends BaseController
         
         // Get kelas yang diajar oleh guru
         $kelas = $this->db->table('jadwal j')
-                         ->select('j.kelas_id as id, k.nama_kelas, COALESCE(jur.nama_jurusan, "Umum") as nama_jurusan')
+                         ->select('j.kelas_id as id, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, COALESCE(jur.nama_jurusan, "Umum") as nama_jurusan')
                          ->join('kelas k', 'k.id = j.kelas_id')
                          ->join('jurusan jur', 'jur.id = k.jurusan_id', 'left')
                          ->where('j.guru_id', $guruId)
-                         ->groupBy('j.kelas_id, k.nama_kelas, jur.nama_jurusan')
+                         ->groupBy('j.kelas_id, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, jur.nama_jurusan')
                          ->get()
                          ->getResultArray();
         
@@ -514,7 +514,7 @@ class Ulangan extends BaseController
         
         // Get detail hasil ulangan dengan data siswa
         $hasil = $this->db->table('hasil_ulangan hu')
-                         ->select('hu.*, s.nis, u.full_name as nama_siswa, k.nama_kelas')
+                         ->select('hu.*, s.nis, u.full_name as nama_siswa, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas')
                          ->join('siswa s', 's.id = hu.siswa_id')
                          ->join('users u', 'u.id = s.user_id')
                          ->join('kelas k', 'k.id = s.kelas_id')

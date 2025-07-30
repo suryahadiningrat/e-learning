@@ -42,7 +42,7 @@ class AbsensiModel extends Model
     public function getAbsensiWithRelations($id = null)
     {
         $builder = $this->db->table('absensi a')
-                           ->select('a.*, s.nis, s.nisn, s.kelas_id, u.full_name as nama_siswa, k.nama_kelas, k.tingkat, jur.nama_jurusan, mp.nama as nama_mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
+                           ->select('a.*, s.nis, s.nisn, s.kelas_id, u.full_name as nama_siswa, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, k.tingkat, jur.nama_jurusan, mp.nama as nama_mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
                            ->join('siswa s', 's.id = a.siswa_id')
                            ->join('users u', 'u.id = s.user_id')
                            ->join('kelas k', 'k.id = s.kelas_id')
@@ -111,7 +111,7 @@ class AbsensiModel extends Model
     public function getAbsensiByJadwal($jadwalId, $tanggal = null)
     {
         $builder = $this->db->table('absensi a')
-                           ->select('a.*, s.nis, s.nisn, u.full_name as nama_siswa, k.nama_kelas')
+                           ->select('a.*, s.nis, s.nisn, u.full_name as nama_siswa, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas')
                            ->join('siswa s', 's.id = a.siswa_id')
                            ->join('users u', 'u.id = s.user_id')
                            ->join('kelas k', 'k.id = s.kelas_id')
@@ -128,7 +128,7 @@ class AbsensiModel extends Model
     public function getAbsensiByTanggal($tanggal)
     {
         return $this->db->table('absensi a')
-                       ->select('a.*, s.nis, s.nisn, u.full_name as nama_siswa, k.nama_kelas, k.tingkat, jur.nama_jurusan, mp.nama as nama_mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
+                       ->select('a.*, s.nis, s.nisn, u.full_name as nama_siswa, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, k.tingkat, jur.nama_jurusan, mp.nama as nama_mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
                        ->join('siswa s', 's.id = a.siswa_id')
                        ->join('users u', 'u.id = s.user_id')
                        ->join('kelas k', 'k.id = s.kelas_id')
@@ -138,7 +138,7 @@ class AbsensiModel extends Model
                        ->join('guru g', 'g.id = j.guru_id')
                        ->join('users ug', 'ug.id = g.user_id')
                        ->where('a.tanggal', $tanggal)
-                       ->orderBy('k.nama_kelas', 'ASC')
+                       ->orderBy("k.tingkat, k.kode_jurusan, k.paralel")
                        ->orderBy('u.full_name', 'ASC')
                        ->orderBy('j.jam_mulai', 'ASC')
                        ->get()->getResultArray();
@@ -233,7 +233,7 @@ class AbsensiModel extends Model
     public function getAbsensiForExport($startDate = null, $endDate = null, $kelasId = null)
     {
         $builder = $this->db->table('absensi a')
-                           ->select('a.*, s.nis, s.nisn, u.full_name as nama_siswa, k.nama_kelas, k.tingkat, jur.nama_jurusan, mp.nama as nama_mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
+                           ->select('a.*, s.nis, s.nisn, u.full_name as nama_siswa, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, k.tingkat, jur.nama_jurusan, mp.nama as nama_mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
                            ->join('siswa s', 's.id = a.siswa_id')
                            ->join('users u', 'u.id = s.user_id')
                            ->join('kelas k', 'k.id = s.kelas_id')
@@ -257,7 +257,7 @@ class AbsensiModel extends Model
         }
 
         return $builder->orderBy('a.tanggal', 'DESC')
-                      ->orderBy('k.nama_kelas', 'ASC')
+                      ->orderBy("k.tingkat, k.kode_jurusan, k.paralel")
                       ->orderBy('u.full_name', 'ASC')
                       ->orderBy('j.hari', 'ASC')
                       ->orderBy('j.jam_mulai', 'ASC')
@@ -267,7 +267,7 @@ class AbsensiModel extends Model
     public function getAbsensiWithRelationsFiltered($startDate = null, $endDate = null, $kelasId = null)
     {
         $builder = $this->db->table('absensi a')
-            ->select('a.*, s.nis, s.nisn, s.kelas_id, u.full_name as nama_siswa, k.nama_kelas, k.tingkat, jur.nama_jurusan, mp.nama as nama_mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
+            ->select('a.*, s.nis, s.nisn, s.kelas_id, u.full_name as nama_siswa, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, k.tingkat, jur.nama_jurusan, mp.nama as nama_mata_pelajaran, j.hari, j.jam_mulai, j.jam_selesai, ug.full_name as nama_guru')
             ->join('siswa s', 's.id = a.siswa_id')
             ->join('users u', 'u.id = s.user_id')
             ->join('kelas k', 'k.id = s.kelas_id')

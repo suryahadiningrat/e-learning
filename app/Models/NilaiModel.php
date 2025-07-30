@@ -56,7 +56,7 @@ class NilaiModel extends Model
     {
         $builder = $this->db->table('nilai n')
                            ->select('n.*, s.nis, u.full_name as nama_siswa, 
-                                    mp.nama as nama_mata_pelajaran, k.nama_kelas, jur.nama_jurusan')
+                                    mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, jur.nama_jurusan')
                            ->join('siswa s', 's.id = n.siswa_id')
                            ->join('users u', 'u.id = s.user_id')
                            ->join('jadwal j', 'j.id = n.jadwal_id')
@@ -79,7 +79,7 @@ class NilaiModel extends Model
     public function getNilaiBySiswa($siswaId)
     {
         return $this->db->table('nilai n')
-                       ->select('n.*, mp.nama as nama_mata_pelajaran, k.nama_kelas, jur.nama_jurusan')
+                       ->select('n.*, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, jur.nama_jurusan')
                        ->join('jadwal j', 'j.id = n.jadwal_id')
                        ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
                        ->join('kelas k', 'k.id = j.kelas_id')
@@ -93,7 +93,7 @@ class NilaiModel extends Model
     {
         return $this->db->table('nilai n')
                        ->select('n.*, s.nis, u.full_name as nama_siswa, 
-                                mp.nama as nama_mata_pelajaran, k.nama_kelas, jur.nama_jurusan')
+                                mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, jur.nama_jurusan')
                        ->join('siswa s', 's.id = n.siswa_id')
                        ->join('users u', 'u.id = s.user_id')
                        ->join('jadwal j', 'j.id = n.jadwal_id')
@@ -108,12 +108,12 @@ class NilaiModel extends Model
     public function getMataPelajaranByJurusan($jurusanId)
     {
         return $this->db->table('jadwal j')
-                       ->select('j.id, mp.nama as nama_mata_pelajaran, j.kelas_id, k.nama_kelas, jur.nama_jurusan, jur.id as jurusan_id')
+                       ->select('j.id, mp.nama as nama_mata_pelajaran, j.kelas_id, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, jur.nama_jurusan, jur.id as jurusan_id')
                        ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
                        ->join('kelas k', 'k.id = j.kelas_id')
                        ->join('jurusan jur', 'jur.id = k.jurusan_id')
                        ->where('jur.id', $jurusanId)
-                       ->groupBy('j.id, mp.nama, j.kelas_id, k.nama_kelas, jur.nama_jurusan, jur.id')
+                       ->groupBy('j.id, mp.nama, j.kelas_id, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, jur.nama_jurusan, jur.id')
                        ->get()
                        ->getResultArray();
     }
@@ -121,7 +121,7 @@ class NilaiModel extends Model
     public function getSiswaByJadwal($jadwalId)
     {
         return $this->db->table('siswa s')
-                       ->select('s.*, u.full_name as nama_siswa, k.nama_kelas')
+                       ->select('s.*, u.full_name as nama_siswa, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas')
                        ->join('users u', 'u.id = s.user_id')
                        ->join('kelas k', 'k.id = s.kelas_id')
                        ->join('jadwal j', 'j.kelas_id = s.kelas_id')
@@ -175,13 +175,13 @@ class NilaiModel extends Model
     public function getMataPelajaranByGuruAndJurusan($guruId, $jurusanId)
     {
         return $this->db->table('jadwal j')
-                       ->select('j.id, mp.nama as nama_mata_pelajaran, j.kelas_id, k.nama_kelas, jur.nama_jurusan, jur.id as jurusan_id')
+                       ->select('j.id, mp.nama as nama_mata_pelajaran, j.kelas_id, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, jur.nama_jurusan, jur.id as jurusan_id')
                        ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
                        ->join('kelas k', 'k.id = j.kelas_id')
                        ->join('jurusan jur', 'jur.id = k.jurusan_id')
                        ->where('j.guru_id', $guruId)
                        ->where('jur.id', $jurusanId)
-                       ->groupBy('j.id, mp.nama, j.kelas_id, k.nama_kelas, jur.nama_jurusan, jur.id')
+                       ->groupBy('j.id, mp.nama, j.kelas_id, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, jur.nama_jurusan, jur.id')
                        ->get()
                        ->getResultArray();
     }
@@ -190,7 +190,7 @@ class NilaiModel extends Model
     {
         return $this->db->table('nilai n')
                        ->select('n.*, s.nis, u.full_name as nama_siswa, 
-                                mp.nama as nama_mata_pelajaran, k.nama_kelas, jur.nama_jurusan')
+                                mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, jur.nama_jurusan')
                        ->join('siswa s', 's.id = n.siswa_id')
                        ->join('users u', 'u.id = s.user_id')
                        ->join('jadwal j', 'j.id = n.jadwal_id')

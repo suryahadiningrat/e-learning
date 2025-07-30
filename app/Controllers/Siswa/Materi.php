@@ -24,7 +24,7 @@ class Materi extends BaseController
         // Get siswa berdasarkan user_id
         $db = \Config\Database::connect();
         $siswa = $db->table('siswa s')
-                   ->select('s.*, u.username, u.full_name, u.email, u.is_active, k.nama_kelas, k.jurusan_id, j.nama_jurusan')
+                   ->select('s.*, u.username, u.full_name, u.email, u.is_active, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, k.jurusan_id, j.nama_jurusan')
                    ->join('users u', 'u.id = s.user_id')
                    ->join('kelas k', 'k.id = s.kelas_id')
                    ->join('jurusan j', 'j.id = k.jurusan_id')

@@ -373,7 +373,7 @@ class Ulangan extends BaseController
 
         // Get data siswa
         $siswa = $this->db->table('siswa s')
-                         ->select('s.*, u.full_name as nama_siswa, k.nama_kelas')
+                         ->select('s.*, u.full_name as nama_siswa, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas')
                          ->join('users u', 'u.id = s.user_id')
                          ->join('kelas k', 'k.id = s.kelas_id')
                          ->where('s.id', $siswaId)

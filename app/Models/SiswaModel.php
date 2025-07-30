@@ -47,7 +47,7 @@ class SiswaModel extends Model
     {
         $builder = $this->db->table('siswa s')
                            ->select('s.*, u.username, u.full_name, u.email, u.is_active, 
-                                    k.nama_kelas, k.jurusan_id, j.nama_jurusan')
+                                    CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, k.jurusan_id, j.nama_jurusan')
                            ->join('users u', 'u.id = s.user_id')
                            ->join('kelas k', 'k.id = s.kelas_id')
                            ->join('jurusan j', 'j.id = k.jurusan_id');
@@ -93,7 +93,7 @@ class SiswaModel extends Model
     public function getSiswaByUserId($userId)
     {
         return $this->db->table('siswa s')
-                       ->select('s.*, k.nama_kelas, jr.nama_jurusan')
+                       ->select('s.*, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, jr.nama_jurusan')
                        ->join('kelas k', 'k.id = s.kelas_id')
                        ->join('jurusan jr', 'jr.id = k.jurusan_id')
                        ->where('s.user_id', $userId)
