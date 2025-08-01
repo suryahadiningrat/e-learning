@@ -65,11 +65,6 @@ class Kelas extends BaseController
         ];
 
         $messages = [
-            'nama_kelas' => [
-                'required' => 'Nama kelas harus diisi',
-                'min_length' => 'Nama kelas minimal 2 karakter',
-                'max_length' => 'Nama kelas maksimal 50 karakter'
-            ],
             'jurusan_id' => [
                 'required' => 'Jurusan harus dipilih',
                 'numeric' => 'Jurusan tidak valid'
@@ -173,11 +168,6 @@ class Kelas extends BaseController
         ];
 
         $messages = [
-            'nama_kelas' => [
-                'required' => 'Nama kelas harus diisi',
-                'min_length' => 'Nama kelas minimal 2 karakter',
-                'max_length' => 'Nama kelas maksimal 50 karakter'
-            ],
             'jurusan_id' => [
                 'required' => 'Jurusan harus dipilih',
                 'numeric' => 'Jurusan tidak valid'

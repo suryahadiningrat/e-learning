@@ -77,7 +77,7 @@ class Ulangan extends BaseController
                          ->join('kelas k', 'k.id = j.kelas_id')
                          ->join('jurusan jur', 'jur.id = k.jurusan_id', 'left')
                          ->where('j.guru_id', $guruId)
-                         ->groupBy('j.kelas_id, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, jur.nama_jurusan')
+                         ->groupBy('j.kelas_id, k.tingkat, k.kode_jurusan, k.paralel, jur.nama_jurusan')
                          ->get()
                          ->getResultArray();
         
@@ -269,7 +269,7 @@ class Ulangan extends BaseController
                          ->join('kelas k', 'k.id = j.kelas_id')
                          ->join('jurusan jur', 'jur.id = k.jurusan_id', 'left')
                          ->where('j.guru_id', $guruId)
-                         ->groupBy('j.kelas_id, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, jur.nama_jurusan')
+                         ->groupBy('j.kelas_id, k.tingkat, k.kode_jurusan, k.paralel, jur.nama_jurusan')
                          ->get()
                          ->getResultArray();
         

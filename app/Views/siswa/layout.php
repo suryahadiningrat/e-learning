@@ -61,6 +61,14 @@
             <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
                 <div class="position-sticky pt-3">
                     <div class="text-center mb-4">
+                        <?php
+                        // Load setting helper
+                        helper('setting');
+                        $logoUrl = get_logo_sekolah();
+                        ?>
+                        <?php if ($logoUrl): ?>
+                            <img src="<?= $logoUrl ?>" alt="Logo Sekolah" class="mb-2" style="max-width: 60px; max-height: 60px; object-fit: contain;">
+                        <?php endif; ?>
                         <h4 class="text-white">E-Learning SMK</h4>
                         <small class="text-white-50">Panel Siswa</small>
                     </div>
@@ -68,6 +76,11 @@
                         <li class="nav-item">
                             <a class="nav-link <?= (strpos(current_url(), 'siswa/dashboard') !== false) ? 'active' : '' ?>" href="<?= base_url('siswa/dashboard') ?>">
                                 <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?= (strpos(current_url(), 'siswa/user-pengguna') !== false) ? 'active' : '' ?>" href="<?= base_url('siswa/user-pengguna') ?>">
+                                <i class="fas fa-user-cog"></i> User
                             </a>
                         </li>
                         <li class="nav-item">
@@ -88,11 +101,6 @@
                         <li class="nav-item">
                             <a class="nav-link <?= (strpos(current_url(), 'siswa/ulangan') !== false) ? 'active' : '' ?>" href="<?= base_url('siswa/ulangan') ?>">
                                 <i class="fas fa-clipboard-list"></i> Ulangan
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'siswa/user-pengguna') !== false) ? 'active' : '' ?>" href="<?= base_url('siswa/user-pengguna') ?>">
-                                <i class="fas fa-user-cog"></i> User Pengguna
                             </a>
                         </li>
                     </ul>

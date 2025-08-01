@@ -113,7 +113,7 @@ class NilaiModel extends Model
                        ->join('kelas k', 'k.id = j.kelas_id')
                        ->join('jurusan jur', 'jur.id = k.jurusan_id')
                        ->where('jur.id', $jurusanId)
-                       ->groupBy('j.id, mp.nama, j.kelas_id, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, jur.nama_jurusan, jur.id')
+                       ->groupBy('j.id, mp.nama, j.kelas_id, k.tingkat, k.kode_jurusan, k.paralel, jur.nama_jurusan, jur.id')
                        ->get()
                        ->getResultArray();
     }
@@ -181,7 +181,7 @@ class NilaiModel extends Model
                        ->join('jurusan jur', 'jur.id = k.jurusan_id')
                        ->where('j.guru_id', $guruId)
                        ->where('jur.id', $jurusanId)
-                       ->groupBy('j.id, mp.nama, j.kelas_id, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, jur.nama_jurusan, jur.id')
+                       ->groupBy('j.id, mp.nama, j.kelas_id, k.tingkat, k.kode_jurusan, k.paralel, jur.nama_jurusan, jur.id')
                        ->get()
                        ->getResultArray();
     }

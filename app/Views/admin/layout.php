@@ -61,6 +61,14 @@
             <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
                 <div class="position-sticky pt-3">
                     <div class="text-center mb-4">
+                        <?php
+                        // Load setting helper
+                        helper('setting');
+                        $logoUrl = get_logo_sekolah();
+                        ?>
+                        <?php if ($logoUrl): ?>
+                            <img src="<?= $logoUrl ?>" alt="Logo Sekolah" class="mb-2" style="max-width: 60px; max-height: 60px; object-fit: contain;">
+                        <?php endif; ?>
                         <h4 class="text-white">E-Learning SMK</h4>
                         <small class="text-white-50">Panel Admin</small>
                     </div>
@@ -73,13 +81,18 @@
                             </h6>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link <?= (strpos(current_url(), 'admin/dashboar') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/dashboard') ?>">
+                                <i class="fas fa-users"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link <?= (strpos(current_url(), 'admin/users') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/users') ?>">
-                                <i class="fas fa-users"></i> User Aktivasi
+                                <i class="fas fa-users"></i> User Aktivation
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link <?= (strpos(current_url(), 'admin/user-pengguna') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/user-pengguna') ?>">
-                                <i class="fas fa-user-cog"></i> User Pengguna
+                                <i class="fas fa-user-cog"></i> User
                             </a>
                         </li>
                         <li class="nav-item">

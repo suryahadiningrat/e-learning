@@ -1,6 +1,33 @@
 <?= $this->extend('admin/layout') ?>
 
 <?= $this->section('content') ?>
+<?php
+// Function to extract hex color from gradient or return the color itself
+function extractColorFromGradient($colorValue, $defaultColor) {
+    if (empty($colorValue)) {
+        return $defaultColor;
+    }
+    
+    // If it's a gradient, extract the first color
+    if (strpos($colorValue, 'linear-gradient') !== false) {
+        // Extract color from gradient pattern like "linear-gradient(to bottom, #4e73df, #224abe)"
+        preg_match('/#[a-fA-F0-9]{6}/', $colorValue, $matches);
+        return !empty($matches) ? $matches[0] : $defaultColor;
+    }
+    
+    // If it's already a hex color, return it
+    if (preg_match('/^#[a-fA-F0-9]{6}$/', $colorValue)) {
+        return $colorValue;
+    }
+    
+    return $defaultColor;
+}
+
+// Extract colors for each role
+$adminColor = extractColorFromGradient($settings['sidebar_color_admin'] ?? '', '#4e73df');
+$guruColor = extractColorFromGradient($settings['sidebar_color_guru'] ?? '', '#1cc88a');
+$siswaColor = extractColorFromGradient($settings['sidebar_color_siswa'] ?? '', '#f6c23e');
+?>
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Setting System</h1>
@@ -47,54 +74,6 @@
                         </div>
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-upload me-2"></i>Upload Logo
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Background Sistem -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">
-                <i class="fas fa-palette me-2"></i>Background Sistem
-            </h6>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="text-center mb-3">
-                        <?php if (isset($settings['background_sistem']) && $settings['background_sistem']): ?>
-                            <img src="<?= base_url('uploads/background/' . $settings['background_sistem']) ?>" 
-                                 alt="Background Sistem" class="img-fluid border rounded" 
-                                 style="max-height: 200px; max-width: 100%;">
-                        <?php else: ?>
-                            <div class="border rounded d-flex align-items-center justify-content-center" 
-                                 style="height: 200px; background-color: #f8f9fa;">
-                                <span class="text-muted">Background belum diupload</span>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <form action="<?= base_url('admin/setting-system/update-background') ?>" method="post" enctype="multipart/form-data">
-                        <?= csrf_field() ?>
-                        <div class="mb-3">
-                            <label for="background" class="form-label">Upload Background Baru</label>
-                            <input type="file" class="form-control <?= session('errors.background') ? 'is-invalid' : '' ?>" 
-                                   id="background" name="background" accept="image/*" required>
-                            <div class="form-text">
-                                Format: JPG, JPEG, PNG, GIF | Maksimal: 5MB
-                            </div>
-                            <?php if (session('errors.background')): ?>
-                                <div class="invalid-feedback">
-                                    <?= session('errors.background') ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-upload me-2"></i>Upload Background
                         </button>
                     </form>
                 </div>
@@ -156,7 +135,7 @@
                         <div class="input-group">
                             <input type="text" class="form-control color-picker" id="adminColor" 
                                    data-role="admin"
-                                   value="<?= $settings['sidebar_color_admin'] ?? '#4e73df' ?>">
+                                   value="<?= $adminColor ?>">
                         </div>
                         <div class="mt-2">
                             <div class="sidebar-preview rounded" style="height: 50px; background: <?= $settings['sidebar_color_admin'] ?? 'linear-gradient(to bottom, #4e73df, #224abe)' ?>"></div>
@@ -171,7 +150,7 @@
                         <div class="input-group">
                             <input type="text" class="form-control color-picker" id="guruColor" 
                                    data-role="guru"
-                                   value="<?= $settings['sidebar_color_guru'] ?? '#1cc88a' ?>">
+                                   value="<?= $guruColor ?>">
                         </div>
                         <div class="mt-2">
                             <div class="sidebar-preview rounded" style="height: 50px; background: <?= $settings['sidebar_color_guru'] ?? 'linear-gradient(to bottom, #1cc88a, #169b6b)' ?>"></div>
@@ -186,7 +165,7 @@
                         <div class="input-group">
                             <input type="text" class="form-control color-picker" id="siswaColor" 
                                    data-role="siswa"
-                                   value="<?= $settings['sidebar_color_siswa'] ?? '#f6c23e' ?>">
+                                   value="<?= $siswaColor ?>">
                         </div>
                         <div class="mt-2">
                             <div class="sidebar-preview rounded" style="height: 50px; background: <?= $settings['sidebar_color_siswa'] ?? 'linear-gradient(to bottom, #f6c23e, #dda20a)' ?>"></div>
@@ -263,23 +242,10 @@ document.getElementById('logo').addEventListener('change', function(e) {
     }
 });
 
-document.getElementById('background').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const preview = document.querySelectorAll('.col-md-4 img')[1] || document.querySelectorAll('.col-md-4 .border')[1];
-            if (preview) {
-                if (preview.tagName === 'IMG') {
-                    preview.src = e.target.result;
-                } else {
-                    preview.innerHTML = `<img src="${e.target.result}" alt="Preview" class="img-fluid border rounded" style="max-height: 200px; max-width: 100%;">`;
-                }
-            }
-        };
-        reader.readAsDataURL(file);
-    }
-});
+// Load TinyColor for color manipulation first
+const tinyColorScript = document.createElement('script');
+tinyColorScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.2/tinycolor.min.js';
+document.head.appendChild(tinyColorScript);
 
 // Load Spectrum Color Picker
 const spectrumCss = document.createElement('link');
@@ -291,15 +257,28 @@ const spectrumJs = document.createElement('script');
 spectrumJs.src = 'https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.1/spectrum.min.js';
 document.head.appendChild(spectrumJs);
 
-// Initialize color pickers after Spectrum is loaded
-spectrumJs.onload = function() {
+// Initialize color pickers after both libraries are loaded
+let scriptsLoaded = 0;
+function checkScriptsLoaded() {
+    scriptsLoaded++;
+    if (scriptsLoaded === 2) {
+        initializeColorPickers();
+    }
+}
+
+tinyColorScript.onload = checkScriptsLoaded;
+spectrumJs.onload = checkScriptsLoaded;
+
+function initializeColorPickers() {
     $('.color-picker').spectrum({
         showInput: true,
         showInitial: true,
         preferredFormat: "hex",
         showPalette: true,
         showSelectionPalette: true,
-        showAlpha: true,
+        showAlpha: false,
+        allowEmpty: false,
+        clickoutFiresChange: true,
         palette: [
             ['#4e73df', '#224abe'], // Admin default
             ['#1cc88a', '#169b6b'], // Guru default
@@ -308,11 +287,17 @@ spectrumJs.onload = function() {
         change: function(color) {
             const role = $(this).data('role');
             const startColor = color.toHexString();
-            // Create slightly darker color for gradient
-            const endColor = tinycolor(startColor).darken(10).toString();
+            
+            // Update the input field value immediately
+            $(this).val(startColor);
+            
+            // Create slightly darker color for gradient - ensure tinycolor is available
+            const endColor = typeof tinycolor !== 'undefined' ? 
+                tinycolor(startColor).darken(15).toHexString() : 
+                startColor;
             const gradientValue = `linear-gradient(to bottom, ${startColor}, ${endColor})`;
             
-            // Update preview
+            // Update preview immediately
             $(this).closest('.form-group').find('.sidebar-preview').css('background', gradientValue);
             
             // Save to database via AJAX
@@ -321,7 +306,8 @@ spectrumJs.onload = function() {
                 type: 'POST',
                 data: {
                     role: role,
-                    color: gradientValue
+                    color: gradientValue,
+                    <?= csrf_token() ?>: '<?= csrf_hash() ?>'
                 },
                 success: function(response) {
                     if (response.success) {
@@ -352,15 +338,31 @@ spectrumJs.onload = function() {
                     });
                 }
             });
+        },
+        move: function(color) {
+            // Update preview during color selection (real-time preview)
+            const role = $(this).data('role');
+            const startColor = color.toHexString();
+            
+            // Update the input field value during move
+            $(this).val(startColor);
+            
+            const endColor = typeof tinycolor !== 'undefined' ? 
+                tinycolor(startColor).darken(15).toHexString() : 
+                startColor;
+            const gradientValue = `linear-gradient(to bottom, ${startColor}, ${endColor})`;
+            
+            // Update preview in real-time
+            $(this).closest('.form-group').find('.sidebar-preview').css('background', gradientValue);
+        },
+        show: function(color) {
+            // Ensure the input shows the correct color when opened
+            $(this).val(color.toHexString());
         }
     });
-};
+}
 </script>
 
-<!-- Load TinyColor for color manipulation -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.2/tinycolor.min.js"></script>
-
-<!-- Load SweetAlert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- SweetAlert2 is already included in the main layout -->
 
 <?= $this->endSection() ?> 
