@@ -57,12 +57,14 @@ class Jadwal extends BaseController
         // Cek konflik jadwal guru
         $konflikGuru = $this->jadwalModel->checkGuruConflict($guruId, $hari, $jamMulai, $jamSelesai);
         if ($konflikGuru) {
+            log_message('warning', 'Admin Jadwal Store - Konflik jadwal guru detected. Guru ID: ' . $guruId . ', Hari: ' . $hari . ', Jam: ' . $jamMulai . '-' . $jamSelesai);
             return redirect()->back()->withInput()->with('error', 'Guru sudah memiliki jadwal pada waktu tersebut');
         }
         
         // Cek konflik jadwal kelas
         $konflikKelas = $this->jadwalModel->checkKelasConflict($kelasId, $hari, $jamMulai, $jamSelesai);
         if ($konflikKelas) {
+            log_message('warning', 'Admin Jadwal Store - Konflik jadwal kelas detected. Kelas ID: ' . $kelasId . ', Hari: ' . $hari . ', Jam: ' . $jamMulai . '-' . $jamSelesai);
             return redirect()->back()->withInput()->with('error', 'Kelas sudah memiliki jadwal pada waktu tersebut');
         }
 
@@ -120,6 +122,7 @@ class Jadwal extends BaseController
 
         // Validasi jam selesai harus lebih besar dari jam mulai
         if (strtotime($jamSelesai) <= strtotime($jamMulai)) {
+            log_message('warning', 'Admin Jadwal Store - Invalid time range. Jam mulai: ' . $jamMulai . ', Jam selesai: ' . $jamSelesai);
             return redirect()->back()->withInput()->with('error', 'Jam selesai harus lebih besar dari jam mulai');
         }
 
@@ -142,18 +145,34 @@ class Jadwal extends BaseController
                 'updated_at' => date('Y-m-d H:i:s')
             ];
 
-            $db->table('jadwal')->insert($jadwalData);
+            // Log data yang akan diinsert
+            log_message('debug', 'Admin Jadwal Store - Data to insert: ' . json_encode($jadwalData));
+
+            $result = $db->table('jadwal')->insert($jadwalData);
+
+            // Log hasil insert
+            if ($result) {
+                $insertId = $db->insertID();
+                log_message('debug', 'Admin Jadwal Store - Insert successful, ID: ' . $insertId);
+            } else {
+                log_message('error', 'Admin Jadwal Store - Insert failed, no result returned');
+            }
 
             $db->transComplete();
 
             if ($db->transStatus() === false) {
-                return redirect()->back()->withInput()->with('error', 'Gagal menambahkan jadwal');
+                $error = $db->error();
+                log_message('error', 'Admin Jadwal Store - Transaction failed. Error: ' . json_encode($error));
+                return redirect()->back()->withInput()->with('error', 'Gagal menambahkan jadwal. Error: ' . ($error['message'] ?? 'Unknown error'));
             }
 
+            log_message('info', 'Admin Jadwal Store - Jadwal berhasil ditambahkan untuk Guru ID: ' . $guruId . ', Kelas ID: ' . $kelasId);
             return redirect()->to('admin/jadwal')->with('success', 'Jadwal berhasil ditambahkan');
 
         } catch (\Exception $e) {
             $db->transRollback();
+            log_message('error', 'Admin Jadwal Store - Exception occurred: ' . $e->getMessage() . ' at line ' . $e->getLine() . ' in ' . $e->getFile());
+            log_message('error', 'Admin Jadwal Store - Stack trace: ' . $e->getTraceAsString());
             return redirect()->back()->withInput()->with('error', 'Gagal menambahkan jadwal: ' . $e->getMessage());
         }
     }
@@ -195,12 +214,14 @@ class Jadwal extends BaseController
         // Cek konflik jadwal guru (kecuali jadwal yang sedang diedit)
         $konflikGuru = $this->jadwalModel->checkGuruConflict($guruId, $hari, $jamMulai, $jamSelesai, $id);
         if ($konflikGuru) {
+            log_message('warning', 'Admin Jadwal Update - Konflik jadwal guru detected. Guru ID: ' . $guruId . ', Hari: ' . $hari . ', Jam: ' . $jamMulai . '-' . $jamSelesai . ', Jadwal ID: ' . $id);
             return redirect()->back()->withInput()->with('error', 'Guru sudah memiliki jadwal pada waktu tersebut');
         }
         
         // Cek konflik jadwal kelas (kecuali jadwal yang sedang diedit)
         $konflikKelas = $this->jadwalModel->checkKelasConflict($kelasId, $hari, $jamMulai, $jamSelesai, $id);
         if ($konflikKelas) {
+            log_message('warning', 'Admin Jadwal Update - Konflik jadwal kelas detected. Kelas ID: ' . $kelasId . ', Hari: ' . $hari . ', Jam: ' . $jamMulai . '-' . $jamSelesai . ', Jadwal ID: ' . $id);
             return redirect()->back()->withInput()->with('error', 'Kelas sudah memiliki jadwal pada waktu tersebut');
         }
 
@@ -258,6 +279,7 @@ class Jadwal extends BaseController
 
         // Validasi jam selesai harus lebih besar dari jam mulai
         if (strtotime($jamSelesai) <= strtotime($jamMulai)) {
+            log_message('warning', 'Admin Jadwal Update - Invalid time range. Jam mulai: ' . $jamMulai . ', Jam selesai: ' . $jamSelesai . ', Jadwal ID: ' . $id);
             return redirect()->back()->withInput()->with('error', 'Jam selesai harus lebih besar dari jam mulai');
         }
 
@@ -279,18 +301,34 @@ class Jadwal extends BaseController
                 'updated_at' => date('Y-m-d H:i:s')
             ];
 
-            $db->table('jadwal')->where('id', $id)->update($jadwalData);
+            // Log data yang akan diupdate
+            log_message('debug', 'Admin Jadwal Update - Data to update for ID ' . $id . ': ' . json_encode($jadwalData));
+
+            $result = $db->table('jadwal')->where('id', $id)->update($jadwalData);
+
+            // Log hasil update
+            if ($result) {
+                $affectedRows = $db->affectedRows();
+                log_message('debug', 'Admin Jadwal Update - Update successful, affected rows: ' . $affectedRows);
+            } else {
+                log_message('error', 'Admin Jadwal Update - Update failed, no result returned');
+            }
 
             $db->transComplete();
 
             if ($db->transStatus() === false) {
-                return redirect()->back()->withInput()->with('error', 'Gagal memperbarui jadwal');
+                $error = $db->error();
+                log_message('error', 'Admin Jadwal Update - Transaction failed. Error: ' . json_encode($error));
+                return redirect()->back()->withInput()->with('error', 'Gagal memperbarui jadwal. Error: ' . ($error['message'] ?? 'Unknown error'));
             }
 
+            log_message('info', 'Admin Jadwal Update - Jadwal ID ' . $id . ' berhasil diperbarui untuk Guru ID: ' . $guruId . ', Kelas ID: ' . $kelasId);
             return redirect()->to('admin/jadwal')->with('success', 'Jadwal berhasil diperbarui');
 
         } catch (\Exception $e) {
             $db->transRollback();
+            log_message('error', 'Admin Jadwal Update - Exception occurred: ' . $e->getMessage() . ' at line ' . $e->getLine() . ' in ' . $e->getFile());
+            log_message('error', 'Admin Jadwal Update - Stack trace: ' . $e->getTraceAsString());
             return redirect()->back()->withInput()->with('error', 'Gagal memperbarui jadwal: ' . $e->getMessage());
         }
     }
@@ -308,19 +346,35 @@ class Jadwal extends BaseController
         $db->transStart();
 
         try {
+            // Log jadwal yang akan dihapus
+            log_message('debug', 'Admin Jadwal Delete - Attempting to delete jadwal ID: ' . $id);
+
             // Hapus data jadwal
-            $db->table('jadwal')->where('id', $id)->delete();
+            $result = $db->table('jadwal')->where('id', $id)->delete();
+
+            // Log hasil delete
+            if ($result) {
+                $affectedRows = $db->affectedRows();
+                log_message('debug', 'Admin Jadwal Delete - Delete successful, affected rows: ' . $affectedRows);
+            } else {
+                log_message('error', 'Admin Jadwal Delete - Delete failed, no result returned');
+            }
 
             $db->transComplete();
 
             if ($db->transStatus() === false) {
-                return redirect()->to('admin/jadwal')->with('error', 'Gagal menghapus jadwal');
+                $error = $db->error();
+                log_message('error', 'Admin Jadwal Delete - Transaction failed. Error: ' . json_encode($error));
+                return redirect()->to('admin/jadwal')->with('error', 'Gagal menghapus jadwal. Error: ' . ($error['message'] ?? 'Unknown error'));
             }
 
+            log_message('info', 'Admin Jadwal Delete - Jadwal ID ' . $id . ' berhasil dihapus');
             return redirect()->to('admin/jadwal')->with('success', 'Jadwal berhasil dihapus');
 
         } catch (\Exception $e) {
             $db->transRollback();
+            log_message('error', 'Admin Jadwal Delete - Exception occurred: ' . $e->getMessage() . ' at line ' . $e->getLine() . ' in ' . $e->getFile());
+            log_message('error', 'Admin Jadwal Delete - Stack trace: ' . $e->getTraceAsString());
             return redirect()->to('admin/jadwal')->with('error', 'Gagal menghapus jadwal: ' . $e->getMessage());
         }
     }
