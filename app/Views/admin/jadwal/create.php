@@ -25,7 +25,7 @@
                                     id="guru_id" name="guru_id" required>
                                 <option value="">Pilih Guru</option>
                                 <?php foreach ($guru ?? [] as $guru_item): ?>
-                                    <option value="<?= $guru_item['user_id'] ?>" <?= old('guru_id') == $guru_item['user_id'] ? 'selected' : '' ?>>
+                                    <option value="<?= $guru_item['id'] ?>" <?= old('guru_id') == $guru_item['id'] ? 'selected' : '' ?>>
                                         <?= $guru_item['full_name'] ?> (<?= $guru_item['bidang_studi'] ?? '-' ?>)
                                     </option>
                                 <?php endforeach; ?>

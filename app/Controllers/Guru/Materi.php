@@ -5,6 +5,7 @@ namespace App\Controllers\Guru;
 use App\Controllers\BaseController;
 use App\Models\MateriModel;
 use App\Models\JadwalModel;
+use App\Models\MataPelajaranModel;
 
 class Materi extends BaseController
 {
@@ -30,9 +31,11 @@ class Materi extends BaseController
             return redirect()->to('guru/dashboard')->with('error', 'Data guru tidak ditemukan');
         }
         
+        $guruId = $guru['id'];
+        
         $data = [
             'title' => 'Data Materi/Modul',
-            'materi' => $this->materiModel->getMateriByGuru($userId)
+            'materi' => $this->materiModel->getMateriByGuru($guruId)
         ];
 
         return view('guru/materi/index', $data);
@@ -51,18 +54,19 @@ class Materi extends BaseController
         
         $guruId = $guru['id'];
         
-        // Get mata pelajaran yang diajar oleh guru
-        $mataPelajaran = $this->db->table('jadwal j')
-                                 ->select('j.mata_pelajaran_id as id, mp.nama as nama_mata_pelajaran')
-                                 ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
-                                 ->where('j.guru_id', $guruId)
-                                 ->groupBy('j.mata_pelajaran_id, mp.nama')
-                                 ->get()
-                                 ->getResultArray();
+        // Get jadwal yang diajar oleh guru
+        $jadwal = $this->db->table('jadwal j')
+                          ->select('j.id as jadwal_id, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, j.hari, j.jam_mulai, j.jam_selesai')
+                          ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
+                          ->join('kelas k', 'k.id = j.kelas_id')
+                          ->where('j.guru_id', $guruId)
+                          ->orderBy('mp.nama, k.tingkat, k.kode_jurusan, k.paralel')
+                          ->get()
+                          ->getResultArray();
 
         $data = [
             'title' => 'Tambah Materi/Modul',
-            'mata_pelajaran' => $mataPelajaran
+            'jadwal' => $jadwal
         ];
 
         return view('guru/materi/create', $data);
@@ -84,7 +88,7 @@ class Materi extends BaseController
         // Validasi input
         $rules = [
             'judul' => 'required|min_length[3]|max_length[255]',
-            'mata_pelajaran_id' => 'required|numeric',
+            'jadwal_id' => 'required|numeric',
             'deskripsi' => 'required|min_length[10]',
             'file_materi' => 'uploaded[file_materi]|max_size[file_materi,10240]|ext_in[file_materi,pdf,doc,docx,ppt,pptx,txt]'
         ];
@@ -95,9 +99,9 @@ class Materi extends BaseController
                 'min_length' => 'Judul minimal 3 karakter',
                 'max_length' => 'Judul maksimal 255 karakter'
             ],
-            'mata_pelajaran_id' => [
-                'required' => 'Mata pelajaran harus dipilih',
-                'numeric' => 'Mata pelajaran tidak valid'
+            'jadwal_id' => [
+                'required' => 'Jadwal harus dipilih',
+                'numeric' => 'Jadwal tidak valid'
             ],
             'deskripsi' => [
                 'required' => 'Deskripsi harus diisi',
@@ -114,18 +118,17 @@ class Materi extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        // Validasi mata pelajaran (guru hanya bisa upload untuk mata pelajaran yang diajar)
-        $mataPelajaranGuru = $this->db->table('jadwal j')
-                                     ->select('j.mata_pelajaran_id')
-                                     ->where('j.guru_id', $guruId)
-                                     ->groupBy('j.mata_pelajaran_id')
-                                     ->get()
-                                     ->getResultArray();
+        // Validasi jadwal (guru hanya bisa upload untuk jadwal yang diajar)
+        $jadwalGuru = $this->db->table('jadwal j')
+                              ->select('j.id as jadwal_id')
+                              ->where('j.guru_id', $guruId)
+                              ->get()
+                              ->getResultArray();
         
-        $mataPelajaranIds = array_column($mataPelajaranGuru, 'mata_pelajaran_id');
+        $jadwalIds = array_column($jadwalGuru, 'jadwal_id');
         
-        if (!in_array($this->request->getPost('mata_pelajaran_id'), $mataPelajaranIds)) {
-            return redirect()->back()->withInput()->with('error', 'Anda tidak berhak mengupload materi untuk mata pelajaran ini');
+        if (!in_array($this->request->getPost('jadwal_id'), $jadwalIds)) {
+            return redirect()->back()->withInput()->with('error', 'Anda tidak berhak mengupload materi untuk jadwal ini');
         }
 
         // Upload file
@@ -144,7 +147,7 @@ class Materi extends BaseController
             // Simpan data materi
             $data = [
                 'judul' => $this->request->getPost('judul'),
-                'mata_pelajaran_id' => $this->request->getPost('mata_pelajaran_id'),
+                'jadwal_id' => $this->request->getPost('jadwal_id'),
                 'deskripsi' => $this->request->getPost('deskripsi'),
                 'file_path' => 'uploads/materi/' . $newName,
                 'file_name' => $originalName,
@@ -195,19 +198,20 @@ class Materi extends BaseController
             return redirect()->to('guru/materi')->with('error', 'Anda tidak berhak mengedit materi ini');
         }
 
-        // Get mata pelajaran yang diajar oleh guru
-        $mataPelajaran = $this->db->table('jadwal j')
-                                 ->select('j.mata_pelajaran_id as id, mp.nama as nama_mata_pelajaran')
-                                 ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
-                                 ->where('j.guru_id', $guruId)
-                                 ->groupBy('j.mata_pelajaran_id, mp.nama')
-                                 ->get()
-                                 ->getResultArray();
+        // Get jadwal yang diajar oleh guru
+        $jadwal = $this->db->table('jadwal j')
+                          ->select('j.id as jadwal_id, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, j.hari, j.jam_mulai, j.jam_selesai')
+                          ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
+                          ->join('kelas k', 'k.id = j.kelas_id')
+                          ->where('j.guru_id', $guruId)
+                          ->orderBy('mp.nama, k.tingkat, k.kode_jurusan, k.paralel')
+                          ->get()
+                          ->getResultArray();
 
         $data = [
             'title' => 'Edit Materi/Modul',
             'materi' => $materi,
-            'mata_pelajaran' => $mataPelajaran
+            'jadwal' => $jadwal
         ];
 
         return view('guru/materi/edit', $data);
@@ -240,7 +244,7 @@ class Materi extends BaseController
         // Validasi input
         $rules = [
             'judul' => 'required|min_length[3]|max_length[255]',
-            'mata_pelajaran' => 'required',
+            'jadwal_id' => 'required|numeric',
             'deskripsi' => 'required|min_length[10]'
         ];
 
@@ -250,8 +254,9 @@ class Materi extends BaseController
                 'min_length' => 'Judul minimal 3 karakter',
                 'max_length' => 'Judul maksimal 255 karakter'
             ],
-            'mata_pelajaran' => [
-                'required' => 'Mata pelajaran harus dipilih'
+            'jadwal_id' => [
+                'required' => 'Jadwal harus dipilih',
+                'numeric' => 'Jadwal tidak valid'
             ],
             'deskripsi' => [
                 'required' => 'Deskripsi harus diisi',
@@ -274,24 +279,23 @@ class Materi extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        // Validasi mata pelajaran
-        $mataPelajaranGuru = $this->db->table('jadwal j')
-                                     ->select('j.mata_pelajaran_id')
-                                     ->where('j.guru_id', $guruId)
-                                     ->groupBy('j.mata_pelajaran_id')
-                                     ->get()
-                                     ->getResultArray();
+        // Validasi jadwal
+        $jadwalGuru = $this->db->table('jadwal j')
+                              ->select('j.id as jadwal_id')
+                              ->where('j.guru_id', $guruId)
+                              ->get()
+                              ->getResultArray();
         
-        $mataPelajaranIds = array_column($mataPelajaranGuru, 'mata_pelajaran_id');
+        $jadwalIds = array_column($jadwalGuru, 'jadwal_id');
         
-        if (!in_array($this->request->getPost('mata_pelajaran_id'), $mataPelajaranIds)) {
-            return redirect()->back()->withInput()->with('error', 'Anda tidak berhak mengupload materi untuk mata pelajaran ini');
+        if (!in_array($this->request->getPost('jadwal_id'), $jadwalIds)) {
+            return redirect()->back()->withInput()->with('error', 'Anda tidak berhak mengupload materi untuk jadwal ini');
         }
 
         // Update data
         $data = [
             'judul' => $this->request->getPost('judul'),
-            'mata_pelajaran_id' => $this->request->getPost('mata_pelajaran_id'),
+            'jadwal_id' => $this->request->getPost('jadwal_id'),
             'deskripsi' => $this->request->getPost('deskripsi'),
             'updated_at' => date('Y-m-d H:i:s')
         ];

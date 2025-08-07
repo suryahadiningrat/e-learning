@@ -82,7 +82,7 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link <?= (strpos(current_url(), 'admin/dashboar') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/dashboard') ?>">
-                                <i class="fas fa-users"></i> Dashboard
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
                             </a>
                         </li>
                         <li class="nav-item">

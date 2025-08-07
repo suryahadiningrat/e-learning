@@ -36,13 +36,13 @@
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="mata_pelajaran" class="form-label">Mata Pelajaran <span class="text-danger">*</span></label>
-                            <select class="form-select" id="mata_pelajaran" name="mata_pelajaran" required>
-                                <option value="">Pilih Mata Pelajaran</option>
-                                <?php foreach ($mata_pelajaran as $mapel): ?>
-                                    <option value="<?= $mapel['mata_pelajaran'] ?>" 
-                                            <?= old('mata_pelajaran', $materi['mata_pelajaran']) == $mapel['mata_pelajaran'] ? 'selected' : '' ?>>
-                                        <?= $mapel['mata_pelajaran'] ?>
+                            <label for="jadwal_id" class="form-label">Jadwal <span class="text-danger">*</span></label>
+                            <select class="form-select" id="jadwal_id" name="jadwal_id" required>
+                                <option value="">Pilih Jadwal</option>
+                                <?php foreach ($jadwal as $jadwal_item): ?>
+                                    <option value="<?= $jadwal_item['jadwal_id'] ?>" 
+                                            <?= old('jadwal_id', $materi['jadwal_id']) == $jadwal_item['jadwal_id'] ? 'selected' : '' ?>>
+                                        <?= $jadwal_item['nama_mata_pelajaran'] ?> - <?= $jadwal_item['nama_kelas'] ?> (<?= $jadwal_item['hari'] ?>, <?= $jadwal_item['jam_mulai'] ?>-<?= $jadwal_item['jam_selesai'] ?>)
                                     </option>
                                 <?php endforeach; ?>
                             </select>

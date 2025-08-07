@@ -32,12 +32,12 @@ class Materi extends BaseController
 
     public function create()
     {
-        // Get mata pelajaran dari database
-        $mataPelajaran = $this->mataPelajaranModel->getAktifMataPelajaran();
+        // Get jadwal yang tersedia
+        $jadwal = $this->jadwalModel->getJadwalWithRelations();
 
         $data = [
             'title' => 'Tambah Materi/Modul',
-            'mata_pelajaran' => $mataPelajaran
+            'jadwal' => $jadwal
         ];
 
         return view('admin/materi/create', $data);
@@ -48,7 +48,7 @@ class Materi extends BaseController
         // Validasi input
         $rules = [
             'judul' => 'required|min_length[3]|max_length[255]',
-            'mata_pelajaran_id' => 'required|numeric',
+            'jadwal_id' => 'required|numeric',
             'deskripsi' => 'required|min_length[10]',
             'file_materi' => 'uploaded[file_materi]|max_size[file_materi,10240]|ext_in[file_materi,pdf,doc,docx,ppt,pptx,txt]'
         ];
@@ -59,9 +59,9 @@ class Materi extends BaseController
                 'min_length' => 'Judul minimal 3 karakter',
                 'max_length' => 'Judul maksimal 255 karakter'
             ],
-            'mata_pelajaran_id' => [
-                'required' => 'Mata pelajaran harus dipilih',
-                'numeric' => 'Mata pelajaran tidak valid'
+            'jadwal_id' => [
+                'required' => 'Jadwal harus dipilih',
+                'numeric' => 'Jadwal tidak valid'
             ],
             'deskripsi' => [
                 'required' => 'Deskripsi harus diisi',
@@ -94,7 +94,7 @@ class Materi extends BaseController
             // Simpan data materi
             $data = [
                 'judul' => $this->request->getPost('judul'),
-                'mata_pelajaran_id' => $this->request->getPost('mata_pelajaran_id'),
+                'jadwal_id' => $this->request->getPost('jadwal_id'),
                 'deskripsi' => $this->request->getPost('deskripsi'),
                 'file_path' => 'uploads/materi/' . $newName,
                 'file_name' => $originalName,
@@ -123,13 +123,13 @@ class Materi extends BaseController
             return redirect()->to('admin/materi')->with('error', 'Materi tidak ditemukan');
         }
 
-        // Get mata pelajaran dari database
-        $mataPelajaran = $this->mataPelajaranModel->getAktifMataPelajaran();
+        // Get jadwal yang tersedia
+        $jadwal = $this->jadwalModel->getJadwalWithRelations();
 
         $data = [
             'title' => 'Edit Materi/Modul',
             'materi' => $materi,
-            'mata_pelajaran' => $mataPelajaran
+            'jadwal' => $jadwal
         ];
 
         return view('admin/materi/edit', $data);
@@ -146,7 +146,7 @@ class Materi extends BaseController
         // Validasi input
         $rules = [
             'judul' => 'required|min_length[3]|max_length[255]',
-            'mata_pelajaran_id' => 'required|numeric',
+            'jadwal_id' => 'required|numeric',
             'deskripsi' => 'required|min_length[10]'
         ];
 
@@ -156,9 +156,9 @@ class Materi extends BaseController
                 'min_length' => 'Judul minimal 3 karakter',
                 'max_length' => 'Judul maksimal 255 karakter'
             ],
-            'mata_pelajaran_id' => [
-                'required' => 'Mata pelajaran harus dipilih',
-                'numeric' => 'Mata pelajaran tidak valid'
+            'jadwal_id' => [
+                'required' => 'Jadwal harus dipilih',
+                'numeric' => 'Jadwal tidak valid'
             ],
             'deskripsi' => [
                 'required' => 'Deskripsi harus diisi',
@@ -184,7 +184,7 @@ class Materi extends BaseController
         // Update data
         $data = [
             'judul' => $this->request->getPost('judul'),
-            'mata_pelajaran_id' => $this->request->getPost('mata_pelajaran_id'),
+            'jadwal_id' => $this->request->getPost('jadwal_id'),
             'deskripsi' => $this->request->getPost('deskripsi'),
             'updated_at' => date('Y-m-d H:i:s')
         ];

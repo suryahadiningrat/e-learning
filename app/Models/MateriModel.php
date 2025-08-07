@@ -13,7 +13,7 @@ class MateriModel extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'judul', 'mata_pelajaran_id', 'deskripsi', 'file_path', 'file_name', 
+        'judul', 'jadwal_id', 'deskripsi', 'file_path', 'file_name', 
         'file_size', 'file_type', 'uploaded_by', 'created_at', 'updated_at'
     ];
 
@@ -26,7 +26,7 @@ class MateriModel extends Model
     // Validation
     protected $validationRules      = [
         'judul' => 'required|min_length[3]|max_length[255]',
-        'mata_pelajaran_id' => 'required|numeric',
+        'jadwal_id' => 'required|numeric',
         'deskripsi' => 'required|min_length[10]',
         'uploaded_by' => 'required|numeric'
     ];
@@ -42,8 +42,10 @@ class MateriModel extends Model
     public function getMateriWithRelations($id = null)
     {
         $builder = $this->db->table('materi m')
-                           ->select('m.*, mp.nama as nama_mata_pelajaran, u.full_name as nama_uploader')
-                           ->join('mata_pelajaran mp', 'mp.id = m.mata_pelajaran_id')
+                           ->select('m.*, j.id as jadwal_id, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, j.hari, j.jam_mulai, j.jam_selesai, u.full_name as nama_uploader')
+                           ->join('jadwal j', 'j.id = m.jadwal_id')
+                           ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
+                           ->join('kelas k', 'k.id = j.kelas_id')
                            ->join('users u', 'u.id = m.uploaded_by');
 
         if ($id) {
@@ -56,10 +58,12 @@ class MateriModel extends Model
     public function getMateriByGuru($guruId)
     {
         return $this->db->table('materi m')
-                       ->select('m.*, mp.nama as nama_mata_pelajaran, u.full_name as nama_uploader')
-                       ->join('mata_pelajaran mp', 'mp.id = m.mata_pelajaran_id')
+                       ->select('m.*, j.id as jadwal_id, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, j.hari, j.jam_mulai, j.jam_selesai, u.full_name as nama_uploader')
+                       ->join('jadwal j', 'j.id = m.jadwal_id')
+                       ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
+                       ->join('kelas k', 'k.id = j.kelas_id')
                        ->join('users u', 'u.id = m.uploaded_by')
-                       ->where('m.uploaded_by', $guruId)
+                       ->where('j.guru_id', $guruId)
                        ->orderBy('m.created_at', 'DESC')
                        ->get()
                        ->getResultArray();
@@ -68,8 +72,10 @@ class MateriModel extends Model
     public function getAllMateri()
     {
         return $this->db->table('materi m')
-                       ->select('m.*, mp.nama as nama_mata_pelajaran, u.full_name as nama_uploader')
-                       ->join('mata_pelajaran mp', 'mp.id = m.mata_pelajaran_id')
+                       ->select('m.*, j.id as jadwal_id, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, j.hari, j.jam_mulai, j.jam_selesai, u.full_name as nama_uploader')
+                       ->join('jadwal j', 'j.id = m.jadwal_id')
+                       ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
+                       ->join('kelas k', 'k.id = j.kelas_id')
                        ->join('users u', 'u.id = m.uploaded_by')
                        ->orderBy('m.created_at', 'DESC')
                        ->get()
@@ -79,10 +85,12 @@ class MateriModel extends Model
     public function getMateriByMataPelajaran($mataPelajaranId)
     {
         return $this->db->table('materi m')
-                       ->select('m.*, mp.nama as nama_mata_pelajaran, u.full_name as nama_uploader')
-                       ->join('mata_pelajaran mp', 'mp.id = m.mata_pelajaran_id')
+                       ->select('m.*, j.id as jadwal_id, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, j.hari, j.jam_mulai, j.jam_selesai, u.full_name as nama_uploader')
+                       ->join('jadwal j', 'j.id = m.jadwal_id')
+                       ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
+                       ->join('kelas k', 'k.id = j.kelas_id')
                        ->join('users u', 'u.id = m.uploaded_by')
-                       ->where('m.mata_pelajaran_id', $mataPelajaranId)
+                       ->where('j.mata_pelajaran_id', $mataPelajaranId)
                        ->orderBy('m.created_at', 'DESC')
                        ->get()
                        ->getResultArray();
@@ -95,12 +103,37 @@ class MateriModel extends Model
 
     public function getTotalMateriByGuru($guruId)
     {
-        return $this->where('uploaded_by', $guruId)->countAllResults();
+        return $this->db->table('materi m')
+                       ->join('jadwal j', 'j.id = m.jadwal_id')
+                       ->where('j.guru_id', $guruId)
+                       ->countAllResults();
+    }
+
+    public function getMateriByJadwal($jadwalId)
+    {
+        return $this->db->table('materi m')
+                       ->select('m.*, j.id as jadwal_id, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, j.hari, j.jam_mulai, j.jam_selesai, u.full_name as nama_uploader')
+                       ->join('jadwal j', 'j.id = m.jadwal_id')
+                       ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
+                       ->join('kelas k', 'k.id = j.kelas_id')
+                       ->join('users u', 'u.id = m.uploaded_by')
+                       ->where('m.jadwal_id', $jadwalId)
+                       ->orderBy('m.created_at', 'DESC')
+                       ->get()
+                       ->getResultArray();
+    }
+
+    public function getTotalMateriByJadwal($jadwalId)
+    {
+        return $this->where('jadwal_id', $jadwalId)->countAllResults();
     }
 
     public function getTotalMateriByMataPelajaran($mataPelajaranId)
     {
-        return $this->where('mata_pelajaran_id', $mataPelajaranId)->countAllResults();
+        return $this->db->table('materi m')
+                       ->join('jadwal j', 'j.id = m.jadwal_id')
+                       ->where('j.mata_pelajaran_id', $mataPelajaranId)
+                       ->countAllResults();
     }
 
     public function formatFileSize($bytes)
