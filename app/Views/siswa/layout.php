@@ -103,6 +103,11 @@
                                 <i class="fas fa-clipboard-list"></i> Ulangan
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?= (strpos(current_url(), 'siswa/tugas') !== false) ? 'active' : '' ?>" href="<?= base_url('siswa/tugas') ?>">
+                                <i class="fas fa-link"></i> Link Pengumpulan Tugas
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </nav>

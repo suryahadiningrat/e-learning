@@ -21,8 +21,38 @@ $routes->group('guru', ['filter' => 'auth:role:guru'], function($routes) {
 
 // Siswa Routes
 $routes->group('siswa', ['filter' => 'auth:role:siswa'], function($routes) {
+    $routes->get('/', 'Siswa\Dashboard::index');
+    $routes->get('dashboard', 'Siswa\Dashboard::index');
     $routes->get('user-pengguna', 'Siswa\UserPengguna::index');
     $routes->post('user-pengguna/update', 'Siswa\UserPengguna::update');
+    
+    // Data Jadwal untuk Siswa
+    $routes->get('jadwal', 'Siswa\Jadwal::index');
+    
+    // Data Nilai untuk Siswa
+    $routes->get('nilai', 'Siswa\Nilai::index');
+    $routes->get('nilai/export', 'Siswa\Nilai::export');
+    
+    // Data Materi untuk Siswa
+    $routes->get('materi', 'Siswa\Materi::index');
+    $routes->get('materi/download/(:num)', 'Siswa\Materi::download/$1');
+    
+    // Data Tugas untuk Siswa
+    $routes->get('tugas', 'Siswa\Tugas::index');
+    $routes->get('tugas/detail/(:num)', 'Siswa\Tugas::detail/$1');
+    $routes->post('tugas/submit/(:num)', 'Siswa\Tugas::submit/$1');
+    $routes->post('tugas/submit', 'Siswa\Tugas::submit');
+    $routes->post('tugas/update', 'Siswa\Tugas::update');
+    $routes->post('tugas/edit-submission/(:num)', 'Siswa\Tugas::editSubmission/$1');
+    $routes->post('tugas/delete-submission/(:num)', 'Siswa\Tugas::deleteSubmission/$1');
+    
+    // Data Ulangan untuk Siswa
+    $routes->get('ulangan', 'Siswa\Ulangan::index');
+    $routes->get('ulangan/kerjakan/(:num)', 'Siswa\Ulangan::kerjakan/$1');
+    $routes->post('ulangan/save-jawaban', 'Siswa\Ulangan::saveJawaban');
+    $routes->post('ulangan/submit-jawaban', 'Siswa\Ulangan::submitJawaban');
+    $routes->get('ulangan/hasil/(:num)', 'Siswa\Ulangan::hasil/$1');
+    $routes->get('ulangan/riwayat', 'Siswa\Ulangan::riwayat');
 });
 
 // Admin Routes
@@ -117,6 +147,8 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->get('tugas/edit/(:num)', 'Admin\Tugas::edit/$1');
     $routes->post('tugas/update/(:num)', 'Admin\Tugas::update/$1');
     $routes->get('tugas/delete/(:num)', 'Admin\Tugas::delete/$1');
+    $routes->post('tugas/delete/(:num)', 'Admin\Tugas::delete/$1');
+    $routes->get('tugas/detail/(:num)', 'Admin\Tugas::detail/$1');
     
     // Ulangan routes
     $routes->get('ulangan', 'Admin\Ulangan::index');
@@ -175,6 +207,19 @@ $routes->group('guru', ['filter' => 'auth:role:guru'], function($routes) {
     $routes->get('materi/delete/(:num)', 'Guru\Materi::delete/$1');
     $routes->get('materi/download/(:num)', 'Guru\Materi::download/$1');
     
+    // Tugas routes untuk Guru
+    $routes->get('tugas', 'Guru\Tugas::index');
+    $routes->get('tugas/create', 'Guru\Tugas::create');
+    $routes->post('tugas/store', 'Guru\Tugas::store');
+    $routes->get('tugas/edit/(:num)', 'Guru\Tugas::edit/$1');
+    $routes->post('tugas/update/(:num)', 'Guru\Tugas::update/$1');
+    $routes->get('tugas/delete/(:num)', 'Guru\Tugas::delete/$1');
+    $routes->post('tugas/delete/(:num)', 'Guru\Tugas::delete/$1');
+    $routes->get('tugas/detail/(:num)', 'Guru\Tugas::detail/$1');
+    $routes->post('tugas/feedback', 'Guru\Tugas::feedback');
+    $routes->post('tugas/reminder', 'Guru\Tugas::reminder');
+    $routes->get('tugas/export/(:num)', 'Guru\Tugas::export/$1');
+    
     // Ulangan routes untuk Guru
     $routes->get('ulangan', 'Guru\Ulangan::index');
     $routes->get('ulangan/create', 'Guru\Ulangan::create');
@@ -201,27 +246,4 @@ $routes->group('guru', ['filter' => 'auth:guru'], function($routes) {
     $routes->get('nilai/export/(:num)', 'Guru\Nilai::export/$1');
 });
 
-// Siswa Routes
-$routes->group('siswa', ['filter' => 'auth:siswa'], function($routes) {
-    $routes->get('/', 'Siswa\Dashboard::index');
-    $routes->get('dashboard', 'Siswa\Dashboard::index');
-    
-    // Data Jadwal untuk Siswa
-    $routes->get('jadwal', 'Siswa\Jadwal::index');
-    
-    // Data Nilai untuk Siswa
-    $routes->get('nilai', 'Siswa\Nilai::index');
-    $routes->get('nilai/export', 'Siswa\Nilai::export');
-    
-    // Data Materi untuk Siswa
-    $routes->get('materi', 'Siswa\Materi::index');
-    $routes->get('materi/download/(:num)', 'Siswa\Materi::download/$1');
-    
-    // Data Ulangan untuk Siswa
-    $routes->get('ulangan', 'Siswa\Ulangan::index');
-    $routes->get('ulangan/kerjakan/(:num)', 'Siswa\Ulangan::kerjakan/$1');
-    $routes->post('ulangan/save-jawaban', 'Siswa\Ulangan::saveJawaban');
-    $routes->post('ulangan/submit-jawaban', 'Siswa\Ulangan::submitJawaban');
-    $routes->get('ulangan/hasil/(:num)', 'Siswa\Ulangan::hasil/$1');
-    $routes->get('ulangan/riwayat', 'Siswa\Ulangan::riwayat');
-});
+

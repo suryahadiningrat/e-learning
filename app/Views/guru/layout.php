@@ -153,6 +153,11 @@
                                 <i class="fas fa-clipboard-list"></i> Ulangan
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?= (strpos(current_url(), 'guru/tugas') !== false) ? 'active' : '' ?>" href="<?= base_url('guru/tugas') ?>">
+                                <i class="fas fa-link"></i> Data Link Pengumpulan Tugas
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -222,20 +227,6 @@
                 lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Semua"]]
             });
         }
-        
-        // Initialize all tables with class 'table'
-        $('.table').each(function() {
-            if (!$(this).hasClass('dataTable')) {
-                $(this).DataTable({
-                    language: {
-                        url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
-                    },
-                    responsive: true,
-                    pageLength: 10,
-                    lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Semua"]]
-                });
-            }
-        });
     });
     
     // SweetAlert untuk flash messages
