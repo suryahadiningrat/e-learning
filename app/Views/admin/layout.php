@@ -209,6 +209,19 @@
     
     <script>
     // SweetAlert untuk flash messages
+    $(document).ready(function() {
+        if ($('#dataTable').length) {
+            $('#dataTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
+                },
+                responsive: true,
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Semua"]]
+            });
+        }
+    });
+    
     <?php if (session()->getFlashdata('success')) : ?>
         Swal.fire({
             icon: 'success',

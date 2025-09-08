@@ -219,18 +219,6 @@
 </div>
 
 <script>
-$(document).ready(function() {
-    $('#dataTable').DataTable({
-        responsive: true,
-        order: [[1, 'desc'], [6, 'asc'], [7, 'asc']], // Sort by date desc, then day asc, then time asc
-        columnDefs: [
-            { orderable: false, targets: -1 } // Disable sorting for action column
-        ],
-        language: {
-            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
-        }
-    });
-});
 
 function deleteAbsensi(id) {
     const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
