@@ -16,7 +16,6 @@
                         <tr>
                             <th>No</th>
                             <th>NIS</th>
-                            <th>NISN</th>
                             <th>Nama</th>
                             <th>Kelas</th>
                             <th>Jurusan</th>
@@ -29,7 +28,6 @@
                         <tr>
                             <td><?= $no++ ?></td>
                             <td><strong><?= esc($siswa['nis']) ?></strong></td>
-                            <td><?= esc($siswa['nisn']) ?></td>
                             <td><?= esc($siswa['full_name']) ?></td>
                             <td>
                                 <span class="badge bg-primary"><?= esc($siswa['nama_kelas']) ?></span>

@@ -36,8 +36,8 @@
                                     <label for="status">Status <span class="text-danger">*</span></label>
                                     <select class="form-control" id="status" name="status" required>
                                         <option value="">Pilih Status</option>
-                                        <option value="1" <?= old('status') == '1' ? 'selected' : '' ?>>Aktif</option>
-                                        <option value="0" <?= old('status') == '0' ? 'selected' : '' ?>>Nonaktif</option>
+                                        <option value="aktif" <?= old('status') == 'aktif' ? 'selected' : '' ?>>Aktif</option>
+                                        <option value="nonaktif" <?= old('status') == 'nonaktif' ? 'selected' : '' ?>>Nonaktif</option>
                                     </select>
                                 </div>
                                 

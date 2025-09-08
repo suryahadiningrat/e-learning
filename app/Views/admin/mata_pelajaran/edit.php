@@ -56,8 +56,8 @@
                         <div class="form-group">
                             <label for="status">Status</label>
                             <select class="form-control" id="status" name="status">
-                                <option value="1" <?= old('status', $mata_pelajaran['status']) == '1' ? 'selected' : '' ?>>Aktif</option>
-                                <option value="0" <?= old('status', $mata_pelajaran['status']) == '0' ? 'selected' : '' ?>>Tidak Aktif</option>
+                                <option value="aktif" <?= old('status', $mata_pelajaran['status']) == 'aktif' ? 'selected' : '' ?>>Aktif</option>
+                                <option value="nonaktif" <?= old('status', $mata_pelajaran['status']) == 'nonaktif' ? 'selected' : '' ?>>Tidak Aktif</option>
                             </select>
                         </div>
 

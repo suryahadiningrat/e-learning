@@ -26,7 +26,7 @@ class MataPelajaranModel extends Model
     protected $validationRules      = [
         'kode' => 'required|min_length[2]|max_length[10]|is_unique[mata_pelajaran.kode,id,{id}]',
         'nama' => 'required|min_length[3]|max_length[100]',
-        'status' => 'required|in_list[0,1]'
+        'status' => 'required|in_list[aktif,nonaktif]'
     ];
     protected $validationMessages   = [
         'kode' => [
@@ -55,7 +55,7 @@ class MataPelajaranModel extends Model
 
     public function getAktifMataPelajaran()
     {
-        return $this->where('status', 1)
+        return $this->where('status', 'aktif')
                    ->orderBy('nama', 'ASC')
                    ->findAll();
     }
@@ -77,12 +77,12 @@ class MataPelajaranModel extends Model
 
     public function getTotalAktifMataPelajaran()
     {
-        return $this->where('status', 1)->countAllResults();
+        return $this->where('status', 'aktif')->countAllResults();
     }
 
     public function getTotalNonaktifMataPelajaran()
     {
-        return $this->where('status', 0)->countAllResults();
+        return $this->where('status', 'nonaktif')->countAllResults();
     }
 
     public function toggleStatus($id)
@@ -92,7 +92,7 @@ class MataPelajaranModel extends Model
             return false;
         }
 
-        $newStatus = $mataPelajaran['status'] == 1 ? 0 : 1;
+        $newStatus = $mataPelajaran['status'] == 'aktif' ? 'nonaktif' : 'aktif';
         return $this->update($id, ['status' => $newStatus]);
     }
 } 

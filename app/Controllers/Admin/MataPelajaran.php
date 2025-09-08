@@ -40,7 +40,7 @@ class MataPelajaran extends BaseController
             'kode' => 'required|min_length[2]|max_length[10]|is_unique[mata_pelajaran.kode]',
             'nama' => 'required|min_length[3]|max_length[100]',
             'deskripsi' => 'permit_empty|max_length[500]',
-            'status' => 'required|in_list[0,1]'
+            'status' => 'required|in_list[aktif,nonaktif]'
         ];
 
         $messages = [
@@ -113,7 +113,7 @@ class MataPelajaran extends BaseController
         $rules = [
             'nama' => 'required|min_length[3]|max_length[100]',
             'deskripsi' => 'permit_empty|max_length[500]',
-            'status' => 'required|in_list[0,1]'
+            'status' => 'required|in_list[aktif,nonaktif]'
         ];
 
         $messages = [
@@ -174,7 +174,7 @@ class MataPelajaran extends BaseController
         }
 
         if ($this->mataPelajaranModel->toggleStatus($id)) {
-            $newStatus = $mataPelajaran['status'] == 1 ? 'dinonaktifkan' : 'diaktifkan';
+            $newStatus = $mataPelajaran['status'] == 'aktif' ? 'dinonaktifkan' : 'diaktifkan';
             return redirect()->to('admin/mata-pelajaran')->with('success', "Mata pelajaran berhasil $newStatus");
         } else {
             return redirect()->to('admin/mata-pelajaran')->with('error', 'Gagal mengubah status mata pelajaran');

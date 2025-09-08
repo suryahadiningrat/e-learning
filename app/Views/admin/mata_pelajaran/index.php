@@ -34,10 +34,10 @@
                                 <td><?= $item['nama'] ?></td>
                                 <td><?= $item['deskripsi'] ?: '-' ?></td>
                                 <td>
-                                    <?php if ($item['status'] == 1): ?>
-                                        <span class="badge badge-success">Aktif</span>
+                                    <?php if ($item['status'] == 'aktif'): ?>
+                                        <span class="badge bg-success">Aktif</span>
                                     <?php else: ?>
-                                        <span class="badge badge-secondary">Nonaktif</span>
+                                        <span class="badge bg-secondary">Nonaktif</span>
                                     <?php endif; ?>
                                 </td>
                                 <td>
@@ -46,7 +46,7 @@
                                            class="btn btn-warning btn-sm" title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <?php if ($item['status'] == 1): ?>
+                                        <?php if ($item['status'] == 'aktif'): ?>
                                             <a href="<?= base_url('admin/mata-pelajaran/toggle-status/' . $item['id']) ?>" 
                                                class="btn btn-secondary btn-sm" title="Nonaktifkan"
                                                onclick="return confirm('Yakin ingin menonaktifkan mata pelajaran ini?')">

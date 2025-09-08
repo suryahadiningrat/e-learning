@@ -18,7 +18,7 @@ class AdminSeeder extends Seeder
             $userModel->insert([
                 'username' => 'admin',
                 'email' => 'admin@smk.edu',
-                'password' => 'admin123',
+                'password' => '$2a$12$DEYkzf/j.Ymq7q2DDE7aZulVfMzbt47p01GjJR1VCNvX46pY6EIwa',
                 'full_name' => 'Administrator',
                 'role' => 'admin',
                 'is_active' => 1,

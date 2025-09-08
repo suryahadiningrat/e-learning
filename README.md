@@ -142,7 +142,6 @@ Sistem E-Learning untuk Sekolah Menengah Kejuruan (SMK) yang dibangun menggunaka
 - `id` - Primary Key
 - `user_id` - Foreign Key ke tabel users
 - `nis` - Nomor Induk Siswa
-- `nisn` - Nomor Induk Siswa Nasional
 - `kelas_id` - Foreign Key ke tabel kelas
 - `jenis_kelamin` - Jenis kelamin (L/P)
 - `tempat_lahir` - Tempat lahir
