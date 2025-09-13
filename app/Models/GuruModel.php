@@ -104,6 +104,6 @@ class GuruModel extends Model
                        ->join('users u', 'u.id = g.user_id')
                        ->where('g.user_id', $user_id)
                        ->get()
-                       ->getRowArray();
+                       ->getRowArray()['id'] ?? null;
     }
 } 

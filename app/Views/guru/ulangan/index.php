@@ -113,11 +113,7 @@ function confirmDelete(url, name) {
     }
 }
 
-$(document).ready(function() {
-    $('#dataTable').DataTable({
-        "responsive": true,
-        "order": [[4, "desc"]]
-    });
-});
+// DataTable sudah diinisialisasi di layout.php, jadi hapus yang ini
+// untuk menghindari konflik
 </script>
 <?= $this->endSection() ?> 

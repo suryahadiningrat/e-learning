@@ -3,6 +3,7 @@
 namespace App\Controllers\Guru;
 
 use App\Controllers\BaseController;
+use App\Models\GuruModel;
 use App\Models\NilaiModel;
 use App\Models\JadwalModel;
 use App\Models\JurusanModel;
@@ -21,13 +22,13 @@ class Nilai extends BaseController
         $this->jadwalModel = new JadwalModel();
         $this->jurusanModel = new JurusanModel();
         $this->siswaModel = new SiswaModel();
+        $this->guruId = (new GuruModel)->getGuruByUserId(session('user_id'));
     }
 
     // Step 1: Tampilkan daftar jurusan yang memiliki mata pelajaran yang diajar guru
     public function index()
     {
-        $guruId = session('user_id');
-        
+        $guruId = $this->guruId;
         // Get jurusan yang memiliki mata pelajaran yang diajar guru
         $jurusan = $this->nilaiModel->getJurusanByGuru($guruId);
 
@@ -46,7 +47,7 @@ class Nilai extends BaseController
             return redirect()->to('guru/nilai')->with('error', 'Jurusan tidak ditemukan');
         }
 
-        $guruId = session('user_id');
+        $guruId = $this->guruId;
         $jurusan = $this->jurusanModel->find($jurusanId);
         
         if (!$jurusan) {
@@ -72,7 +73,7 @@ class Nilai extends BaseController
             return redirect()->to('guru/nilai')->with('error', 'Jadwal tidak ditemukan');
         }
 
-        $guruId = session('user_id');
+        $guruId = $this->guruId;
 
         // Get jadwal info dengan jurusan_id dan verifikasi guru
         $db = \Config\Database::connect();
@@ -121,7 +122,7 @@ class Nilai extends BaseController
     {
         $jadwalId = $this->request->getPost('jadwal_id');
         $jurusanId = $this->request->getPost('jurusan_id');
-        $guruId = session('user_id');
+        $guruId = $this->guruId;
         $nilaiData = $this->request->getPost('nilai');
 
         // Verifikasi bahwa guru berhak mengajar jadwal ini
@@ -207,7 +208,7 @@ class Nilai extends BaseController
             return redirect()->to('guru/nilai')->with('error', 'Jurusan tidak ditemukan');
         }
 
-        $guruId = session('user_id');
+        $guruId = $this->guruId;
         $jurusan = $this->jurusanModel->find($jurusanId);
         
         if (!$jurusan) {

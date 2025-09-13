@@ -94,9 +94,10 @@ class JadwalModel extends Model
     public function getJadwalByKelas($kelasId)
     {
         return $this->db->table('jadwal j')
-                       ->select('j.*, mp.nama as nama_mata_pelajaran, g.full_name as nama_guru')
+                       ->select('j.*, mp.nama as nama_mata_pelajaran, u.full_name as nama_guru')
                        ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
-                       ->join('users g', 'g.id = j.guru_id')
+                       ->join('guru g', 'g.id = j.guru_id')
+                       ->join('users u', 'u.id = g.user_id')
                        ->where('j.kelas_id', $kelasId)
                        ->orderBy('j.hari', 'ASC')
                        ->orderBy('j.jam_mulai', 'ASC')

@@ -83,7 +83,7 @@
                             </div>
                         </div>
                         
-                        <input type="hidden" name="soal_json" id="soal_json" value="">
+                        <input type="hidden" name="soal_json" id="soal_json" value='{"soal":[]}'>
                     </div>
                     
                     <div class="card-footer">
@@ -142,34 +142,34 @@ function tambahSoal() {
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
                         <div class="input-group-text">
-                            <input type="radio" name="jawaban_benar_${soalCount}" value="0" required>
+                            <input type="radio" name="jawaban_benar_${soalCount}" value="0">
                         </div>
                     </div>
-                    <input type="text" class="form-control pilihan-jawaban" placeholder="Pilihan A" required>
+                    <input type="text" class="form-control pilihan-jawaban" placeholder="Pilihan A">
                 </div>
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
                         <div class="input-group-text">
-                            <input type="radio" name="jawaban_benar_${soalCount}" value="1" required>
+                            <input type="radio" name="jawaban_benar_${soalCount}" value="1">
                         </div>
                     </div>
-                    <input type="text" class="form-control pilihan-jawaban" placeholder="Pilihan B" required>
+                    <input type="text" class="form-control pilihan-jawaban" placeholder="Pilihan B">
                 </div>
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
                         <div class="input-group-text">
-                            <input type="radio" name="jawaban_benar_${soalCount}" value="2" required>
+                            <input type="radio" name="jawaban_benar_${soalCount}" value="2">
                         </div>
                     </div>
-                    <input type="text" class="form-control pilihan-jawaban" placeholder="Pilihan C" required>
+                    <input type="text" class="form-control pilihan-jawaban" placeholder="Pilihan C">
                 </div>
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
                         <div class="input-group-text">
-                            <input type="radio" name="jawaban_benar_${soalCount}" value="3" required>
+                            <input type="radio" name="jawaban_benar_${soalCount}" value="3">
                         </div>
                     </div>
-                    <input type="text" class="form-control pilihan-jawaban" placeholder="Pilihan D" required>
+                    <input type="text" class="form-control pilihan-jawaban" placeholder="Pilihan D">
                 </div>
             </div>
         </div>
@@ -193,10 +193,19 @@ function updateSoalNumbers() {
 
 function togglePilihan(select, soalIndex) {
     const container = document.getElementById(`pilihan_container_${soalIndex}`);
+    const radioButtons = container.querySelectorAll('input[type="radio"]');
+    const pilihanInputs = container.querySelectorAll('.pilihan-jawaban');
+    
     if (select.value === 'pilihan_ganda') {
         container.style.display = 'block';
+        // Add required attribute for pilihan ganda
+        radioButtons.forEach(radio => radio.setAttribute('required', 'required'));
+        pilihanInputs.forEach(input => input.setAttribute('required', 'required'));
     } else {
         container.style.display = 'none';
+        // Remove required attribute for essay
+        radioButtons.forEach(radio => radio.removeAttribute('required'));
+        pilihanInputs.forEach(input => input.removeAttribute('required'));
     }
 }
 
@@ -240,6 +249,60 @@ document.addEventListener('change', updateSoalJson);
 
 // Update JSON sebelum submit
 document.getElementById('ulanganForm').addEventListener('submit', function(e) {
+    // Validate each question first
+    const soalItems = document.querySelectorAll('.soal-item');
+    let isValid = true;
+    let errorMessages = [];
+    
+    soalItems.forEach((item, index) => {
+        const pertanyaan = item.querySelector('.soal-pertanyaan').value.trim();
+        const tipe = item.querySelector('.soal-tipe').value;
+        const bobot = item.querySelector('.soal-bobot').value;
+        
+        if (!pertanyaan) {
+            isValid = false;
+            errorMessages.push(`Soal ${index + 1}: Pertanyaan tidak boleh kosong`);
+        }
+        
+        if (!tipe) {
+            isValid = false;
+            errorMessages.push(`Soal ${index + 1}: Tipe soal harus dipilih`);
+        }
+        
+        if (!bobot || bobot < 1) {
+            isValid = false;
+            errorMessages.push(`Soal ${index + 1}: Bobot nilai harus lebih dari 0`);
+        }
+        
+        if (tipe === 'pilihan_ganda') {
+            const pilihanInputs = item.querySelectorAll('.pilihan-jawaban');
+            const jawabanBenar = item.querySelector('input[type="radio"]:checked');
+            
+            let allPilihanFilled = true;
+            pilihanInputs.forEach((input, idx) => {
+                if (!input.value.trim()) {
+                    allPilihanFilled = false;
+                }
+            });
+            
+            if (!allPilihanFilled) {
+                isValid = false;
+                errorMessages.push(`Soal ${index + 1}: Semua pilihan jawaban harus diisi`);
+            }
+            
+            if (!jawabanBenar) {
+                isValid = false;
+                errorMessages.push(`Soal ${index + 1}: Pilih jawaban yang benar`);
+            }
+        }
+    });
+    
+    if (!isValid) {
+        e.preventDefault();
+        alert('Terdapat kesalahan:\n\n' + errorMessages.join('\n'));
+        return false;
+    }
+    
     updateSoalJson();
     const soalJson = document.getElementById('soal_json').value;
     console.log('Submitting with soal JSON:', soalJson);

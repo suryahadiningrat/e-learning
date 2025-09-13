@@ -38,8 +38,8 @@ class Ulangan extends BaseController
         
         $guruId = $guru['id'];
         
-        // Get ulangan yang dibuat oleh guru
-        $ulangan = $this->ulanganModel->getUlanganByGuru($guruId);
+        // Get ulangan yang dibuat oleh guru (menggunakan user_id karena created_by menyimpan user_id)
+        $ulangan = $this->ulanganModel->getUlanganByGuru($userId);
 
         $data = [
             'title' => 'Data Ulangan',
@@ -245,7 +245,7 @@ class Ulangan extends BaseController
         
         $guruId = $guru['id'];
         
-        $ulangan = $this->ulanganModel->getUlanganByGuruAndId($guruId, $id);
+        $ulangan = $this->ulanganModel->getUlanganByGuruAndId($userId, $id);
         
         if (!$ulangan) {
             return redirect()->to('guru/ulangan')->with('error', 'Ulangan tidak ditemukan');
@@ -300,7 +300,7 @@ class Ulangan extends BaseController
         
         $guruId = $guru['id'];
         
-        $ulangan = $this->ulanganModel->getUlanganByGuruAndId($guruId, $id);
+        $ulangan = $this->ulanganModel->getUlanganByGuruAndId($userId, $id);
         
         if (!$ulangan) {
             return redirect()->to('guru/ulangan')->with('error', 'Ulangan tidak ditemukan');
@@ -402,8 +402,8 @@ class Ulangan extends BaseController
 
     public function delete($id = null)
     {
-        $guruId = session('user_id');
-        $ulangan = $this->ulanganModel->getUlanganByGuruAndId($guruId, $id);
+        $userId = session('user_id');
+        $ulangan = $this->ulanganModel->getUlanganByGuruAndId($userId, $id);
         
         if (!$ulangan) {
             return redirect()->to('guru/ulangan')->with('error', 'Ulangan tidak ditemukan');
@@ -418,8 +418,8 @@ class Ulangan extends BaseController
 
     public function preview($id = null)
     {
-        $guruId = session('user_id');
-        $ulangan = $this->ulanganModel->getUlanganByGuruAndId($guruId, $id);
+        $userId = session('user_id');
+        $ulangan = $this->ulanganModel->getUlanganByGuruAndId($userId, $id);
         
         if (!$ulangan) {
             return redirect()->to('guru/ulangan')->with('error', 'Ulangan tidak ditemukan');
@@ -446,7 +446,7 @@ class Ulangan extends BaseController
         
         $guruId = $guru['id'];
         
-        $ulangan = $this->ulanganModel->getUlanganByGuruAndId($guruId, $id);
+        $ulangan = $this->ulanganModel->getUlanganByGuruAndId($userId, $id);
         
         if (!$ulangan) {
             return redirect()->to('guru/ulangan')->with('error', 'Ulangan tidak ditemukan');
@@ -543,8 +543,8 @@ class Ulangan extends BaseController
 
     public function publish($id = null)
     {
-        $guruId = session('user_id');
-        $ulangan = $this->ulanganModel->getUlanganByGuruAndId($guruId, $id);
+        $userId = session('user_id');
+        $ulangan = $this->ulanganModel->getUlanganByGuruAndId($userId, $id);
         
         if (!$ulangan) {
             return redirect()->to('guru/ulangan')->with('error', 'Ulangan tidak ditemukan');
