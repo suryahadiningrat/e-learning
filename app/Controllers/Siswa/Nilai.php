@@ -127,9 +127,6 @@ class Nilai extends BaseController
         for ($i = 1; $i <= $maxUlangan; $i++) {
             $headers[] = "Ulangan $i";
         }
-        
-        $headers[] = 'UTS';
-        $headers[] = 'UAS';
 
         $col = 'A';
         $row = 3;
@@ -163,16 +160,12 @@ class Nilai extends BaseController
                 $col++;
             }
             
-            $sheet->setCellValue($col . $row, $item['nilai_uts']);
-            $col++;
-            $sheet->setCellValue($col . $row, $item['nilai_uas']);
-            
             $row++;
             $no++;
         }
 
         // Auto size columns
-        $totalCols = 3 + $maxTugas + $maxUlangan + 2; // 3 basic + tugas + ulangan + UTS + UAS
+        $totalCols = 3 + $maxTugas + $maxUlangan; // 3 basic + tugas + ulangan
         for ($i = 0; $i < $totalCols; $i++) {
             $sheet->getColumnDimension(chr(65 + $i))->setAutoSize(true);
         }

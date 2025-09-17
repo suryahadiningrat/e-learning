@@ -87,8 +87,6 @@
                                 <th rowspan="2">Kelas</th>
                                 <th colspan="<?= $maxTugas ?>" class="text-center">Nilai Tugas</th>
                                 <th colspan="<?= $maxUlangan ?>" class="text-center">Nilai Ulangan</th>
-                                <th rowspan="2">UTS</th>
-                                <th rowspan="2">UAS</th>
                             </tr>
                             <tr>
                                 <?php for ($i = 1; $i <= $maxTugas; $i++): ?>
@@ -131,21 +129,6 @@
                                             <?php endif; ?>
                                         </td>
                                     <?php endfor; ?>
-                                    
-                                    <td class="text-center">
-                                        <?php if ($item['nilai_uts']): ?>
-                                            <span class="badge bg-info"><?= $item['nilai_uts'] ?></span>
-                                        <?php else: ?>
-                                            <span class="text-muted">-</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td class="text-center">
-                                        <?php if ($item['nilai_uas']): ?>
-                                            <span class="badge bg-warning"><?= $item['nilai_uas'] ?></span>
-                                        <?php else: ?>
-                                            <span class="text-muted">-</span>
-                                        <?php endif; ?>
-                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>

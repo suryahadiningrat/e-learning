@@ -101,9 +101,7 @@ class Nilai extends BaseController
         foreach ($nilaiExisting as $nilai) {
             $nilaiFormatted[$nilai['siswa_id']] = [
                 'tugas' => json_decode($nilai['nilai_tugas'], true) ?: [],
-                'ulangan' => json_decode($nilai['nilai_ulangan'], true) ?: [],
-                'uts' => $nilai['nilai_uts'],
-                'uas' => $nilai['nilai_uas']
+                'ulangan' => json_decode($nilai['nilai_ulangan'], true) ?: []
             ];
         }
 
@@ -174,8 +172,6 @@ class Nilai extends BaseController
                 'jadwal_id' => $jadwalId,
                 'nilai_tugas' => $nilaiTugas,
                 'nilai_ulangan' => $nilaiUlangan,
-                'nilai_uts' => !empty($nilai['uts']) ? floatval($nilai['uts']) : null,
-                'nilai_uas' => !empty($nilai['uas']) ? floatval($nilai['uas']) : null,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ];
@@ -249,9 +245,6 @@ class Nilai extends BaseController
         for ($i = 1; $i <= $maxUlangan; $i++) {
             $headers[] = "Ulangan $i";
         }
-        
-        $headers[] = 'UTS';
-        $headers[] = 'UAS';
 
         $col = 'A';
         $row = 3;
@@ -287,16 +280,12 @@ class Nilai extends BaseController
                 $col++;
             }
             
-            $sheet->setCellValue($col . $row, $item['nilai_uts']);
-            $col++;
-            $sheet->setCellValue($col . $row, $item['nilai_uas']);
-            
             $row++;
             $no++;
         }
 
         // Auto size columns
-        $totalCols = 5 + $maxTugas + $maxUlangan + 2; // 5 basic + tugas + ulangan + UTS + UAS
+        $totalCols = 5 + $maxTugas + $maxUlangan; // 5 basic + tugas + ulangan
         for ($i = 0; $i < $totalCols; $i++) {
             $sheet->getColumnDimension(chr(65 + $i))->setAutoSize(true);
         }

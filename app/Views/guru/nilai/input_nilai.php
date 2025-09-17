@@ -64,8 +64,6 @@
                                 <th rowspan="2" class="align-middle">Nama Siswa</th>
                                 <th colspan="2" class="text-center" id="tugasHeader">Nilai Tugas</th>
                                 <th colspan="2" class="text-center" id="ulanganHeader">Nilai Ulangan</th>
-                                <th rowspan="2" class="align-middle">UTS</th>
-                                <th rowspan="2" class="align-middle">UAS</th>
                             </tr>
                             <tr id="headerRow">
                                 <th class="text-center tugas-header">Tugas 1</th>
@@ -111,24 +109,6 @@
                                                min="0" max="100" step="0.01" 
                                                placeholder="0-100"
                                                value="<?= isset($nilai_existing[$s['id']]['ulangan'][1]) ? $nilai_existing[$s['id']]['ulangan'][1] : '' ?>">
-                                    </td>
-                                    
-                                    <!-- UTS -->
-                                    <td>
-                                        <input type="number" class="form-control form-control-sm" 
-                                               name="nilai[<?= $s['id'] ?>][uts]" 
-                                               min="0" max="100" step="0.01" 
-                                               placeholder="0-100"
-                                               value="<?= isset($nilai_existing[$s['id']]['uts']) ? $nilai_existing[$s['id']]['uts'] : '' ?>">
-                                    </td>
-                                    
-                                    <!-- UAS -->
-                                    <td>
-                                        <input type="number" class="form-control form-control-sm" 
-                                               name="nilai[<?= $s['id'] ?>][uas]" 
-                                               min="0" max="100" step="0.01" 
-                                               placeholder="0-100"
-                                               value="<?= isset($nilai_existing[$s['id']]['uas']) ? $nilai_existing[$s['id']]['uas'] : '' ?>">
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -207,12 +187,12 @@ function updateBody() {
         const no = row.cells[0].textContent;
         const nis = row.cells[1].textContent;
         const nama = row.cells[2].textContent;
-        const utsInput = row.querySelector('input[name*="[uts]"]');
-        const uasInput = row.querySelector('input[name*="[uas]"]');
         
         // Get existing nilai data
         const existingValue = <?= json_encode($nilai_existing) ?>;
-        const siswaId = utsInput.name.match(/\[(\d+)\]/)[1];
+        // Extract student ID from the row (we'll get it from the form inputs)
+        const existingInputs = row.querySelectorAll('input[name*="[tugas]"]');
+        const siswaId = existingInputs.length > 0 ? existingInputs[0].name.match(/\[(\d+)\]/)[1] : '';
         const existingTugas = existingValue[siswaId]?.tugas || [];
         const existingUlangan = existingValue[siswaId]?.ulangan || [];
         
@@ -253,28 +233,6 @@ function updateBody() {
             `;
             row.appendChild(td);
         }
-        
-        // Add UTS cell
-        const utsTd = document.createElement('td');
-        utsTd.innerHTML = `
-            <input type="number" class="form-control form-control-sm" 
-                   name="nilai[${siswaId}][uts]" 
-                   min="0" max="100" step="0.01" 
-                   placeholder="0-100"
-                   value="${existingValue[siswaId]?.uts || ''}">
-        `;
-        row.appendChild(utsTd);
-        
-        // Add UAS cell
-        const uasTd = document.createElement('td');
-        uasTd.innerHTML = `
-            <input type="number" class="form-control form-control-sm" 
-                   name="nilai[${siswaId}][uas]" 
-                   min="0" max="100" step="0.01" 
-                   placeholder="0-100"
-                   value="${existingValue[siswaId]?.uas || ''}">
-        `;
-        row.appendChild(uasTd);
     });
 }
 

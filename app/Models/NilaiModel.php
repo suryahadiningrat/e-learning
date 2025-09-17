@@ -14,7 +14,7 @@ class NilaiModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'siswa_id', 'jadwal_id', 'nilai_tugas', 'nilai_ulangan', 
-        'nilai_uts', 'nilai_uas', 'created_at', 'updated_at'
+        'created_at', 'updated_at'
     ];
 
     // Dates
@@ -26,9 +26,7 @@ class NilaiModel extends Model
     // Validation
     protected $validationRules      = [
         'siswa_id' => 'required|numeric',
-        'jadwal_id' => 'required|numeric',
-        'nilai_uts' => 'permit_empty|decimal',
-        'nilai_uas' => 'permit_empty|decimal'
+        'jadwal_id' => 'required|numeric'
     ];
     protected $validationMessages   = [];
     protected $skipValidation       = false;
