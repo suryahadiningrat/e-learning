@@ -89,11 +89,16 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->get('mata-pelajaran/toggle-status/(:num)', 'Admin\MataPelajaran::toggleStatus/$1');
     
     $routes->get('siswa', 'Admin\Siswa::index');
+    $routes->get('siswa/jurusan/(:num)', 'Admin\Siswa::jurusan/$1');
+    $routes->get('siswa/kelas/(:num)', 'Admin\Siswa::kelas/$1');
     $routes->get('siswa/create', 'Admin\Siswa::create');
+    $routes->get('siswa/create/(:num)', 'Admin\Siswa::create/$1');
     $routes->post('siswa/store', 'Admin\Siswa::store');
     $routes->get('siswa/edit/(:num)', 'Admin\Siswa::edit/$1');
     $routes->post('siswa/update/(:num)', 'Admin\Siswa::update/$1');
     $routes->get('siswa/delete/(:num)', 'Admin\Siswa::delete/$1');
+    $routes->get('siswa/export-jurusan/(:num)', 'Admin\Siswa::exportJurusan/$1');
+    $routes->get('siswa/export-kelas/(:num)', 'Admin\Siswa::exportKelas/$1');
     
     $routes->get('guru', 'Admin\Guru::index');
     $routes->get('guru/create', 'Admin\Guru::create');
@@ -178,6 +183,10 @@ $routes->group('guru', ['filter' => 'auth:role:guru'], function($routes) {
     $routes->get('user-pengguna', 'Guru\UserPengguna::index');
     // Data Siswa (Read Only)
     $routes->get('siswa', 'Guru\Siswa::index');
+    $routes->get('siswa/jurusan/(:num)', 'Guru\Siswa::jurusan/$1');
+    $routes->get('siswa/kelas/(:num)', 'Guru\Siswa::kelas/$1');
+    $routes->get('siswa/export-jurusan/(:num)', 'Guru\Siswa::exportJurusan/$1');
+    $routes->get('siswa/export-kelas/(:num)', 'Guru\Siswa::exportKelas/$1');
     // Data Jurusan/Kelas (Read Only)
     $routes->get('kelas', 'Guru\Kelas::index');
     $routes->get('jurusan', 'Guru\Jurusan::index');

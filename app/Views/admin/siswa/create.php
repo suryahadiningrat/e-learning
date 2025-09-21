@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Tambah Siswa</h1>
-        <a href="<?= base_url('admin/siswa') ?>" class="btn btn-secondary btn-sm">
+        <a href="<?= isset($kelas_id) ? base_url('admin/siswa/kelas/' . $kelas_id) : base_url('admin/siswa') ?>" class="btn btn-secondary btn-sm">
             <i class="fas fa-arrow-left fa-sm"></i> Kembali
         </a>
     </div>
@@ -128,7 +128,7 @@
                                     id="kelas_id" name="kelas_id" required>
                                 <option value="">Pilih Kelas</option>
                                 <?php foreach ($kelas ?? [] as $kelas_item): ?>
-                                    <option value="<?= $kelas_item['id'] ?>" <?= old('kelas_id') == $kelas_item['id'] ? 'selected' : '' ?>>
+                                    <option value="<?= $kelas_item['id'] ?>" <?= (old('kelas_id') == $kelas_item['id'] || (isset($kelas_id) && $kelas_id == $kelas_item['id'])) ? 'selected' : '' ?>>
                                         <?= $kelas_item['nama_kelas'] ?>
                                     </option>
                                 <?php endforeach; ?>
