@@ -55,9 +55,9 @@
 
     <?php if (empty($jurusan)): ?>
         <div class="text-center py-4">
-            <i class="fas fa-folder-open fa-3x text-gray-300 mb-3"></i>
-            <h5 class="text-gray-500">Belum ada data jurusan</h5>
-            <p class="text-gray-400">Silakan tambahkan data jurusan terlebih dahulu</p>
+            <i class="fas fa-chalkboard-teacher fa-3x text-gray-300 mb-3"></i>
+            <h5 class="text-gray-500">Belum ada jadwal mengajar</h5>
+            <p class="text-gray-400">Anda belum memiliki jadwal mengajar di jurusan manapun. Silakan hubungi admin untuk mengatur jadwal mengajar.</p>
         </div>
     <?php endif; ?>
 </div>

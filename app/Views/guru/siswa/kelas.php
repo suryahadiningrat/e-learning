@@ -67,8 +67,8 @@
     <?php if (empty($kelas)): ?>
         <div class="text-center py-4">
             <i class="fas fa-chalkboard-teacher fa-3x text-gray-300 mb-3"></i>
-            <h5 class="text-gray-500">Belum ada kelas</h5>
-            <p class="text-gray-400">Silakan tambahkan kelas untuk jurusan ini terlebih dahulu</p>
+            <h5 class="text-gray-500">Belum ada kelas yang diajar</h5>
+            <p class="text-gray-400">Anda belum memiliki jadwal mengajar di kelas manapun pada jurusan ini. Silakan hubungi admin untuk mengatur jadwal mengajar.</p>
         </div>
     <?php endif; ?>
 </div>
