@@ -1,0 +1,53 @@
+# Instruksi Konversi Manual ke PNG dan PDF
+
+## Metode 1: Menggunakan Browser (Recommended)
+
+### Untuk PNG:
+1. Buka file HTML yang sesuai di browser
+2. Klik kanan pada diagram
+3. Pilih "Save image as..." atau "Simpan gambar sebagai..."
+4. Simpan dengan nama yang diinginkan
+
+### Untuk PDF:
+1. Buka file HTML di browser
+2. Tekan Ctrl+P (Windows/Linux) atau Cmd+P (Mac)
+3. Pilih "Save as PDF" atau "Simpan sebagai PDF"
+4. Atur pengaturan sesuai kebutuhan
+5. Klik "Save" atau "Simpan"
+
+## Metode 2: Menggunakan Mermaid Live Editor
+
+1. Buka https://mermaid.live/
+2. Copy kode dari file .mmd
+3. Paste ke editor
+4. Klik "Actions" → "Download PNG" atau "Download SVG"
+5. Untuk PDF: Download SVG → Convert ke PDF menggunakan online converter
+
+## Metode 3: Menggunakan Mermaid CLI
+
+Jika Node.js sudah terinstall:
+
+```bash
+# Install Mermaid CLI
+npm install -g @mermaid-js/mermaid-cli
+
+# Konversi ke PNG
+mmdc -i diagram.mmd -o diagram.png
+
+# Konversi ke PDF
+mmdc -i diagram.mmd -o diagram.pdf
+```
+
+## File yang Tersedia
+
+- `all_diagrams.html` - Semua diagram dalam satu file
+- `diagram_*.html` - File HTML individual untuk setiap diagram
+- `diagram_*.mmd` - Source code Mermaid untuk setiap diagram
+
+## Tips
+
+- Gunakan browser Chrome/Edge untuk hasil terbaik
+- Pastikan diagram ter-render dengan baik sebelum save
+- Untuk diagram besar, gunakan zoom out browser
+- PNG cocok untuk presentasi dan web
+- PDF cocok untuk dokumentasi dan printing

@@ -1,0 +1,59 @@
+graph TD
+%% External Entities
+Admin[👨‍💼 Admin]
+Guru[👨‍🏫 Guru]
+Siswa[👨‍🎓 Siswa]
+
+%% Processes
+subgraph "E-Learning SMK System"
+P1[1.0<br/>Authentication<br/>Process]
+P2[2.0<br/>User Management<br/>Process]
+P3[3.0<br/>Learning Content<br/>Management]
+P4[4.0<br/>Assessment<br/>Management]
+P5[5.0<br/>Grade & Progress<br/>Management]
+P6[6.0<br/>System Administration<br/>Process]
+end
+
+%% Data Stores
+D1[(D1: User Database)]
+D2[(D2: Learning Content<br/>Database)]
+D3[(D3: Assessment<br/>Database)]
+D4[(D4: Grade Database)]
+D5[(D5: System Configuration<br/>Database)]
+D6[(D6: File Storage)]
+
+%% Admin Flows
+Admin -->|"Login Request"| P1
+P1 -->|"Authentication Response"| Admin
+Admin -->|"User Management Request"| P2
+P2 -->|"User Management Response"| Admin
+
+%% Guru Flows
+Guru -->|"Login Request"| P1
+P1 -->|"Authentication Response"| Guru
+Guru -->|"Content Management Request"| P3
+P3 -->|"Content Management Response"| Guru
+
+%% Siswa Flows
+Siswa -->|"Login Request"| P1
+P1 -->|"Authentication Response"| Siswa
+Siswa -->|"Content Access Request"| P3
+P3 -->|"Content Access Response"| Siswa
+
+%% Process to Data Store Flows
+P1 <-->|"User Data"| D1
+P2 <-->|"User Data"| D1
+P3 <-->|"Content Data"| D2
+P3 <-->|"File Data"| D6
+P4 <-->|"Assessment Data"| D3
+P5 <-->|"Grade Data"| D4
+P6 <-->|"Config Data"| D5
+
+%% Styling
+classDef external fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+classDef process fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+classDef datastore fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+
+class Admin,Guru,Siswa external
+class P1,P2,P3,P4,P5,P6 process
+class D1,D2,D3,D4,D5,D6 datastore

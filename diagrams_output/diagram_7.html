@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: white;
+        }
+        .mermaid {
+            text-align: center;
+        }
+        .title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">diagram_7</h1>
+    <div class="mermaid">
+erDiagram
+%% Core Entities
+USERS {
+int id PK
+varchar username UK
+varchar email UK
+varchar password
+varchar full_name
+enum role
+tinyint is_active
+datetime created_at
+datetime updated_at
+}
+
+JURUSAN {
+int id PK
+varchar nama_jurusan
+varchar kode_jurusan UK
+text deskripsi
+datetime created_at
+datetime updated_at
+}
+
+KELAS {
+int id PK
+varchar nama_kelas
+int jurusan_id FK
+int tingkat
+int kapasitas
+datetime created_at
+datetime updated_at
+}
+
+SISWA {
+int id PK
+int user_id FK
+varchar nis UK
+int kelas_id FK
+enum jenis_kelamin
+varchar tempat_lahir
+date tanggal_lahir
+text alamat
+varchar no_telp
+datetime created_at
+datetime updated_at
+}
+
+GURU {
+int id PK
+int user_id FK
+varchar nip UK
+varchar bidang_studi
+enum jenis_kelamin
+varchar tempat_lahir
+date tanggal_lahir
+text alamat
+varchar no_telp
+datetime created_at
+datetime updated_at
+}
+
+MATA_PELAJARAN {
+int id PK
+varchar nama_mata_pelajaran
+varchar kode_mata_pelajaran UK
+text deskripsi
+tinyint is_active
+datetime created_at
+datetime updated_at
+}
+
+JADWAL {
+int id PK
+int guru_id FK
+int mata_pelajaran_id FK
+int kelas_id FK
+varchar hari
+time jam_mulai
+time jam_selesai
+varchar semester
+varchar tahun_ajaran
+datetime created_at
+datetime updated_at
+}
+
+NILAI {
+int id PK
+int siswa_id FK
+int mata_pelajaran_id FK
+int guru_id FK
+decimal nilai_tugas
+decimal nilai_ulangan
+decimal nilai_uts
+decimal nilai_uas
+decimal nilai_akhir
+varchar grade
+text catatan
+datetime created_at
+datetime updated_at
+}
+
+ULANGAN {
+int id PK
+int guru_id FK
+int mata_pelajaran_id FK
+int kelas_id FK
+varchar judul_ulangan
+text deskripsi
+int durasi_menit
+datetime tanggal_mulai
+datetime tanggal_selesai
+enum status
+text soal_data
+datetime created_at
+datetime updated_at
+}
+
+MATERI {
+int id PK
+int guru_id FK
+int mata_pelajaran_id FK
+int kelas_id FK
+varchar judul_materi
+text deskripsi
+varchar file_path
+varchar file_name
+int file_size
+enum status
+datetime created_at
+datetime updated_at
+}
+
+TUGAS {
+int id PK
+int guru_id FK
+int mata_pelajaran_id FK
+int kelas_id FK
+varchar judul_tugas
+text deskripsi
+varchar file_path
+varchar file_name
+datetime deadline
+int max_file_size
+enum status
+datetime created_at
+datetime updated_at
+}
+
+%% Relationships
+USERS ||--o{ SISWA : "has"
+USERS ||--o{ GURU : "has"
+
+JURUSAN ||--o{ KELAS : "contains"
+KELAS ||--o{ SISWA : "enrolls"
+
+GURU ||--o{ JADWAL : "teaches"
+MATA_PELAJARAN ||--o{ JADWAL : "scheduled_in"
+KELAS ||--o{ JADWAL : "has_schedule"
+
+SISWA ||--o{ NILAI : "receives"
+MATA_PELAJARAN ||--o{ NILAI : "graded_in"
+GURU ||--o{ NILAI : "gives"
+
+GURU ||--o{ ULANGAN : "creates"
+MATA_PELAJARAN ||--o{ ULANGAN : "tested_in"
+KELAS ||--o{ ULANGAN : "takes"
+
+GURU ||--o{ MATERI : "creates"
+MATA_PELAJARAN ||--o{ MATERI : "covers"
+KELAS ||--o{ MATERI : "studies"
+
+GURU ||--o{ TUGAS : "assigns"
+MATA_PELAJARAN ||--o{ TUGAS : "assigned_in"
+KELAS ||--o{ TUGAS : "receives"
+    </div>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>
