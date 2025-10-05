@@ -335,4 +335,38 @@ class Guru extends BaseController
             return redirect()->to('admin/guru')->with('error', 'Gagal menghapus guru: ' . $e->getMessage());
         }
     }
-} 
+
+    public function getJadwalGuru($guruId = null)
+    {
+        if (!$guruId) {
+            return $this->response->setJSON(['error' => 'Guru ID tidak ditemukan']);
+        }
+
+        // Get guru info
+        $guru = $this->guruModel->getGuruWithRelations($guruId);
+        if (!$guru) {
+            return $this->response->setJSON(['error' => 'Guru tidak ditemukan']);
+        }
+
+        // Get jadwal by guru using JadwalModel method
+        $db = \Config\Database::connect();
+        $jadwal = $db->table('jadwal j')
+                    ->select('j.*, mp.nama as nama_mata_pelajaran, 
+                             CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, 
+                             jr.nama_jurusan, j.hari, j.jam_mulai, j.jam_selesai, j.semester, j.tahun_ajaran')
+                    ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
+                    ->join('kelas k', 'k.id = j.kelas_id')
+                    ->join('jurusan jr', 'jr.id = k.jurusan_id')
+                    ->where('j.guru_id', $guruId)
+                    ->orderBy('j.hari', 'ASC')
+                    ->orderBy('j.jam_mulai', 'ASC')
+                    ->get()
+                    ->getResultArray();
+
+        return $this->response->setJSON([
+            'success' => true,
+            'guru' => $guru,
+            'jadwal' => $jadwal
+        ]);
+    }
+}

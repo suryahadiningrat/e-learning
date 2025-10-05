@@ -119,21 +119,6 @@
                             </h6>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'guru/siswa') !== false) ? 'active' : '' ?>" href="<?= base_url('guru/siswa') ?>">
-                                <i class="fas fa-user-graduate"></i> Data Siswa
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'guru/jurusan') !== false) ? 'active' : '' ?>" href="<?= base_url('guru/jurusan') ?>">
-                                <i class="fas fa-building"></i> Data Jurusan
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'guru/kelas') !== false) ? 'active' : '' ?>" href="<?= base_url('guru/kelas') ?>">
-                                <i class="fas fa-building"></i> Data Kelas
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link <?= (strpos(current_url(), 'guru/absensi') !== false) ? 'active' : '' ?>" href="<?= base_url('guru/absensi') ?>">
                                 <i class="fas fa-clipboard-check"></i> Data Absensi
                             </a>

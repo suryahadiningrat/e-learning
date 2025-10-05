@@ -106,6 +106,7 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->get('guru/edit/(:num)', 'Admin\Guru::edit/$1');
     $routes->post('guru/update/(:num)', 'Admin\Guru::update/$1');
     $routes->get('guru/delete/(:num)', 'Admin\Guru::delete/$1');
+    $routes->get('guru/jadwal/(:num)', 'Admin\Guru::getJadwalGuru/$1');
     
     $routes->get('kelas', 'Admin\Kelas::index');
     $routes->get('kelas/create', 'Admin\Kelas::create');

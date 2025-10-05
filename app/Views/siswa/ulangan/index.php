@@ -52,7 +52,7 @@
                                 $waktuSelesai = strtotime($item['waktu_selesai']);
                                 $sudahMengerjakan = $item['sudah_mengerjakan'] ?? false;
                                 ?>
-                                
+
                                 <?php if ($sudahMengerjakan): ?>
                                     <a href="<?= base_url('siswa/ulangan/hasil/' . $item['id']) ?>" 
                                        class="btn btn-success btn-sm">
@@ -60,9 +60,9 @@
                                         Lihat Hasil
                                     </a>
                                 <?php elseif ($now < $waktuMulai): ?>
-                                    <span class="badge badge-warning">Belum Dimulai</span>
+                                    <span class="badge bg-warning">Belum Dimulai</span>
                                 <?php elseif ($now > $waktuSelesai): ?>
-                                    <span class="badge badge-danger">Sudah Berakhir</span>
+                                    <span class="badge bg-danger">Sudah Berakhir</span>
                                 <?php else: ?>
                                     <a href="<?= base_url('siswa/ulangan/kerjakan/' . $item['id']) ?>" 
                                        class="btn btn-primary btn-sm">
