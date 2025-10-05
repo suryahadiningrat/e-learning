@@ -23,27 +23,41 @@ class Absensi extends BaseController
 
     public function __construct()
     {
+
+        $this->db = \Config\Database::connect();
         $this->absensiModel = new AbsensiModel();
         $this->siswaModel = new SiswaModel();
         $this->kelasModel = new KelasModel();
         $this->jadwalModel = new JadwalModel();
         $this->jurusanModel = new JurusanModel();
         $this->hariAbsensiModel = new HariAbsensiModel();
+        
+        // Validate admin session
+        if (session('role') !== 'admin') {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Akses tidak diizinkan');
+        }
     }
 
-    // Structured navigation flow for admin (with full access)
+    // Step 1: Tampilkan daftar jurusan (admin memiliki akses ke semua jurusan)
     public function index()
     {
+        $jurusan = $this->jurusanModel->findAll();
+        
         $data = [
-            'title' => 'Data Absensi - Pilih Jurusan',
-            'jurusan' => $this->jurusanModel->findAll()
+            'title' => 'Data Absensi',
+            'jurusan' => $jurusan
         ];
 
         return view('admin/absensi/index', $data);
     }
 
-    public function kelas($jurusanId)
+    // Step 2: Tampilkan kelas berdasarkan jurusan
+    public function kelas($jurusanId = null)
     {
+        if (!$jurusanId) {
+            return redirect()->to('admin/absensi')->with('error', 'Jurusan tidak ditemukan');
+        }
+
         $jurusan = $this->jurusanModel->find($jurusanId);
         if (!$jurusan) {
             return redirect()->to('admin/absensi')->with('error', 'Jurusan tidak ditemukan');
@@ -52,7 +66,7 @@ class Absensi extends BaseController
         $kelas = $this->kelasModel->where('jurusan_id', $jurusanId)->findAll();
 
         $data = [
-            'title' => 'Data Absensi - Pilih Kelas',
+            'title' => 'Data Absensi - Kelas ' . $jurusan['nama_jurusan'],
             'jurusan' => $jurusan,
             'kelas' => $kelas
         ];
@@ -60,17 +74,40 @@ class Absensi extends BaseController
         return view('admin/absensi/kelas', $data);
     }
 
-    public function jadwal($kelasId)
+    // Step 3: Tampilkan jadwal berdasarkan kelas
+    public function jadwal($kelasId = null)
     {
-        $kelas = $this->kelasModel->getKelasWithRelations($kelasId);
+        if (!$kelasId) {
+            return redirect()->back()->with('error', 'Kelas tidak ditemukan');
+        }
+
+        // Get kelas with relations using query builder
+        $kelas = $this->db->table('kelas k')
+            ->select('k.*, j.nama_jurusan, j.kode_jurusan, CONCAT(k.kode_jurusan, k.tingkat) AS nama_kelas')
+            ->join('jurusan j', 'j.id = k.jurusan_id')
+            ->where('k.id', $kelasId)
+            ->get()
+            ->getRowArray();
+
         if (!$kelas) {
             return redirect()->back()->with('error', 'Kelas tidak ditemukan');
         }
 
-        $jadwal = $this->jadwalModel->getJadwalByKelas($kelasId);
-
+        // Get jadwal for this kelas
+        $jadwal = $this->db->table('jadwal jd')
+            ->select('jd.*, mp.nama, u.full_name as nama_guru, CONCAT(k.kode_jurusan, k.tingkat) AS nama_kelas, j.nama_jurusan')
+            ->join('mata_pelajaran mp', 'mp.id = jd.mata_pelajaran_id')
+            ->join('guru g', 'g.id = jd.guru_id')
+            ->join('users u', 'u.id = g.user_id')
+            ->join('kelas k', 'k.id = jd.kelas_id')
+            ->join('jurusan j', 'j.id = k.jurusan_id')
+            ->where('jd.kelas_id', $kelasId)
+            ->orderBy('jd.hari, jd.jam_mulai')
+            ->get()
+            ->getResultArray();
+            
         $data = [
-            'title' => 'Data Absensi - Pilih Jadwal',
+            'title' => 'Data Absensi - Jadwal ' . $kelas['nama_kelas'],
             'kelas' => $kelas,
             'jadwal' => $jadwal
         ];
@@ -78,17 +115,34 @@ class Absensi extends BaseController
         return view('admin/absensi/jadwal', $data);
     }
 
-    public function hari($jadwalId)
+    // Step 4: Tampilkan hari absensi berdasarkan jadwal
+    public function hari($jadwalId = null)
     {
-        $jadwal = $this->jadwalModel->getJadwalWithRelations($jadwalId);
+        if (!$jadwalId) {
+            return redirect()->back()->with('error', 'Jadwal tidak ditemukan');
+        }
+
+        // Get jadwal with relations using query builder
+        $jadwal = $this->db->table('jadwal jd')
+            ->select('jd.*, mp.nama, u.full_name as nama_guru, CONCAT(k.kode_jurusan, k.tingkat) AS nama_kelas, j.nama_jurusan, j.kode_jurusan')
+            ->join('mata_pelajaran mp', 'mp.id = jd.mata_pelajaran_id')
+            ->join('guru g', 'g.id = jd.guru_id')
+            ->join('users u', 'u.id = g.user_id')
+            ->join('kelas k', 'k.id = jd.kelas_id')
+            ->join('jurusan j', 'j.id = k.jurusan_id')
+            ->where('jd.id', $jadwalId)
+            ->get()
+            ->getRowArray();
+
         if (!$jadwal) {
             return redirect()->back()->with('error', 'Jadwal tidak ditemukan');
         }
 
-        $hariAbsensi = $this->hariAbsensiModel->getHariAbsensiByJadwal($jadwalId);
+        // Get hari absensi for this jadwal
+        $hariAbsensi = $this->getHariAbsensiByJadwal($jadwalId);
 
         $data = [
-            'title' => 'Data Absensi - Pilih Hari',
+            'title' => 'Data Absensi - ' . $jadwal['nama'] . ' (' . $jadwal['nama_kelas'] . ')',
             'jadwal' => $jadwal,
             'hari_absensi' => $hariAbsensi
         ];
@@ -96,19 +150,40 @@ class Absensi extends BaseController
         return view('admin/absensi/hari', $data);
     }
 
-    public function input($hariAbsensiId)
+    // Step 5: Input absensi untuk hari tertentu (sama dengan inputAbsensi di guru)
+    public function input($hariAbsensiId = null)
     {
-        $hariAbsensi = $this->hariAbsensiModel->getHariAbsensiWithRelations($hariAbsensiId);
+        if (!$hariAbsensiId) {
+            return redirect()->back()->with('error', 'Hari absensi tidak ditemukan');
+        }
+
+        // Get hari absensi with relations using query builder
+        $hariAbsensi = $this->db->table('hari_absensi ha')
+            ->select('ha.*, jd.*, mp.nama, u.full_name as nama_guru, CONCAT(k.kode_jurusan, k.tingkat) AS nama_kelas, j.nama_jurusan, j.kode_jurusan')
+            ->join('jadwal jd', 'jd.id = ha.jadwal_id')
+            ->join('mata_pelajaran mp', 'mp.id = jd.mata_pelajaran_id')
+            ->join('guru g', 'g.id = jd.guru_id')
+            ->join('users u', 'u.id = g.user_id')
+            ->join('kelas k', 'k.id = jd.kelas_id')
+            ->join('jurusan j', 'j.id = k.jurusan_id')
+            ->where('ha.id', $hariAbsensiId)
+            ->get()
+            ->getRowArray();
+
         if (!$hariAbsensi) {
             return redirect()->back()->with('error', 'Hari absensi tidak ditemukan');
         }
 
-        $siswa = $this->siswaModel->getSiswaByJadwal($hariAbsensi['jadwal_id']);
-        $absensi = $this->absensiModel->getAbsensiByHariAbsensi($hariAbsensiId);
+        // Get siswa by jadwal
+        $siswa = $this->getSiswaByJadwal($hariAbsensi['jadwal_id']);
+        
+        // Get existing absensi
+        $absensi = $this->getAbsensiByHariAbsensi($hariAbsensiId);
 
         $data = [
-            'title' => 'Input Absensi',
+            'title' => 'Input Absensi - ' . $hariAbsensi['nama'] . ' (' . date('d/m/Y', strtotime($hariAbsensi['tanggal'])) . ')',
             'hari_absensi' => $hariAbsensi,
+            'hari_absensi_id' => $hariAbsensiId,
             'jadwal' => $hariAbsensi,
             'siswa' => $siswa,
             'absensi' => $absensi
@@ -117,15 +192,30 @@ class Absensi extends BaseController
         return view('admin/absensi/input', $data);
     }
 
-    public function createHari($jadwalId)
+    public function createHari($jadwalId = null)
     {
-        $jadwal = $this->jadwalModel->getJadwalWithRelations($jadwalId);
+        if (!$jadwalId) {
+            return redirect()->back()->with('error', 'Jadwal tidak ditemukan');
+        }
+
+        // Get jadwal with relations using query builder
+        $jadwal = $this->db->table('jadwal jd')
+            ->select('jd.*, mp.nama, u.full_name as nama_guru, CONCAT(k.kode_jurusan, k.tingkat) AS nama_kelas, j.nama_jurusan, j.kode_jurusan')
+            ->join('mata_pelajaran mp', 'mp.id = jd.mata_pelajaran_id')
+            ->join('guru g', 'g.id = jd.guru_id')
+            ->join('users u', 'u.id = g.user_id')
+            ->join('kelas k', 'k.id = jd.kelas_id')
+            ->join('jurusan j', 'j.id = k.jurusan_id')
+            ->where('jd.id', $jadwalId)
+            ->get()
+            ->getRowArray();
+
         if (!$jadwal) {
             return redirect()->back()->with('error', 'Jadwal tidak ditemukan');
         }
 
         $data = [
-            'title' => 'Buat Hari Absensi Baru',
+            'title' => 'Buat Hari Absensi Baru - ' . $jadwal['nama'],
             'jadwal' => $jadwal
         ];
 
@@ -136,20 +226,24 @@ class Absensi extends BaseController
     {
         $jadwalId = $this->request->getPost('jadwal_id');
         $tanggal = $this->request->getPost('tanggal');
+        $status = $this->request->getPost('status') ?? 'aktif';
 
         // Validasi
         if (!$jadwalId || !$tanggal) {
-            return redirect()->back()->with('error', 'Data tidak lengkap');
+            return redirect()->back()->with('error', 'Data tidak lengkap')->withInput();
         }
 
         // Cek apakah hari absensi sudah ada
-        $existing = $this->hariAbsensiModel->where([
-            'jadwal_id' => $jadwalId,
-            'tanggal' => $tanggal
-        ])->first();
+        $existing = $this->db->table('hari_absensi')
+            ->where([
+                'jadwal_id' => $jadwalId,
+                'tanggal' => $tanggal
+            ])
+            ->get()
+            ->getRowArray();
 
         if ($existing) {
-            return redirect()->back()->with('error', 'Hari absensi untuk tanggal ini sudah ada');
+            return redirect()->back()->with('error', 'Hari absensi untuk tanggal ini sudah ada')->withInput();
         }
 
         // Simpan hari absensi baru
@@ -160,31 +254,45 @@ class Absensi extends BaseController
             'updated_at' => date('Y-m-d H:i:s')
         ];
 
-        if ($this->hariAbsensiModel->save($data)) {
-            $hariAbsensiId = $this->hariAbsensiModel->getInsertID();
+        $inserted = $this->db->table('hari_absensi')->insert($data);
+        
+        if ($inserted) {
+            $hariAbsensiId = $this->db->insertID();
             return redirect()->to("admin/absensi/input/{$hariAbsensiId}")->with('success', 'Hari absensi berhasil dibuat');
         } else {
-            return redirect()->back()->with('error', 'Gagal membuat hari absensi');
+            return redirect()->back()->with('error', 'Gagal membuat hari absensi')->withInput();
         }
     }
 
     // Export functions with full admin access
     public function exportHari($hariAbsensiId)
     {
-        $hariAbsensi = $this->hariAbsensiModel->getHariAbsensiWithRelations($hariAbsensiId);
+        // Get hari absensi with relations using query builder
+        $hariAbsensi = $this->db->table('hari_absensi ha')
+            ->select('ha.*, jd.*, mp.nama, u.full_name as nama_guru, CONCAT(k.kode_jurusan, k.tingkat) AS nama_kelas, j.nama_jurusan, j.kode_jurusan')
+            ->join('jadwal jd', 'jd.id = ha.jadwal_id')
+            ->join('mata_pelajaran mp', 'mp.id = jd.mata_pelajaran_id')
+            ->join('guru g', 'g.id = jd.guru_id')
+            ->join('users u', 'u.id = g.user_id')
+            ->join('kelas k', 'k.id = jd.kelas_id')
+            ->join('jurusan j', 'j.id = k.jurusan_id')
+            ->where('ha.id', $hariAbsensiId)
+            ->get()
+            ->getRowArray();
+
         if (!$hariAbsensi) {
             return redirect()->back()->with('error', 'Data tidak ditemukan');
         }
 
         // Get data absensi untuk hari ini
-        $db = \Config\Database::connect();
-        $absensi = $db->table('absensi a')
-                     ->select('a.*, s.nama as nama_siswa, s.nis')
-                     ->join('siswa s', 's.id = a.siswa_id')
-                     ->where('a.hari_absensi_id', $hariAbsensiId)
-                     ->orderBy('s.nama')
-                     ->get()
-                     ->getResultArray();
+        $absensi = $this->db->table('absensi a')
+            ->select('a.*, u.full_name as nama_siswa, s.nis')
+            ->join('siswa s', 's.id = a.siswa_id')
+            ->join('users u', 'u.id = s.user_id')
+            ->where('a.hari_absensi_id', $hariAbsensiId)
+            ->orderBy('u.full_name')
+            ->get()
+            ->getResultArray();
 
         return $this->generateExcel($absensi, 'Absensi Hari - ' . date('d/m/Y', strtotime($hariAbsensi['tanggal'])));
     }
@@ -199,12 +307,13 @@ class Absensi extends BaseController
         // Get data absensi untuk jadwal ini
         $db = \Config\Database::connect();
         $absensi = $db->table('absensi a')
-                     ->select('a.*, s.nama as nama_siswa, s.nis, ha.tanggal')
+                     ->select('a.*, u.full_name as nama_siswa, s.nis, ha.tanggal')
                      ->join('siswa s', 's.id = a.siswa_id')
                      ->join('hari_absensi ha', 'ha.id = a.hari_absensi_id')
+                     ->join('users u', 'u.id = s.user_id')
                      ->where('ha.jadwal_id', $jadwalId)
                      ->orderBy('ha.tanggal', 'DESC')
-                     ->orderBy('s.nama')
+                     ->orderBy('u.full_name')
                      ->get()
                      ->getResultArray();
 
@@ -221,14 +330,15 @@ class Absensi extends BaseController
         // Get data absensi untuk semua jadwal di kelas ini
         $db = \Config\Database::connect();
         $absensi = $db->table('absensi a')
-                     ->select('a.*, s.nama as nama_siswa, s.nis, ha.tanggal, mp.nama as nama_mata_pelajaran')
+                     ->select('a.*, u.full_name as nama_siswa, s.nis, ha.tanggal, mp.nama as nama_mata_pelajaran')
                      ->join('siswa s', 's.id = a.siswa_id')
                      ->join('hari_absensi ha', 'ha.id = a.hari_absensi_id')
                      ->join('jadwal j', 'j.id = ha.jadwal_id')
                      ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
+                     ->join('users u', 'u.id = s.user_id')
                      ->where('j.kelas_id', $kelasId)
                      ->orderBy('ha.tanggal', 'DESC')
-                     ->orderBy('s.nama')
+                     ->orderBy('u.full_name')
                      ->get()
                      ->getResultArray();
 
@@ -245,15 +355,16 @@ class Absensi extends BaseController
         // Get data absensi untuk semua kelas di jurusan ini
         $db = \Config\Database::connect();
         $absensi = $db->table('absensi a')
-                     ->select('a.*, s.nama as nama_siswa, s.nis, ha.tanggal, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas')
+                     ->select('a.*, u.full_name as nama_siswa, s.nis, ha.tanggal, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas')
                      ->join('siswa s', 's.id = a.siswa_id')
                      ->join('hari_absensi ha', 'ha.id = a.hari_absensi_id')
                      ->join('jadwal j', 'j.id = ha.jadwal_id')
                      ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
                      ->join('kelas k', 'k.id = j.kelas_id')
+                     ->join('users u', 'u.id = s.user_id')
                      ->where('k.jurusan_id', $jurusanId)
                      ->orderBy('ha.tanggal', 'DESC')
-                     ->orderBy('s.nama')
+                     ->orderBy('u.full_name')
                      ->get()
                      ->getResultArray();
 
@@ -546,14 +657,68 @@ class Absensi extends BaseController
 
     public function getJadwalByKelas($kelasId)
     {
-        $jadwal = $this->jadwalModel->getJadwalByKelas($kelasId);
+        $jadwal = $this->db->table('jadwal jd')
+            ->select('jd.*, mp.nama, u.full_name as nama_guru')
+            ->join('mata_pelajaran mp', 'mp.id = jd.mata_pelajaran_id')
+            ->join('guru g', 'g.id = jd.guru_id')
+            ->join('users u', 'u.id = g.user_id')
+            ->where('jd.kelas_id', $kelasId)
+            ->get()
+            ->getResultArray();
+            
         return $this->response->setJSON($jadwal);
     }
 
     public function getSiswaByKelas($kelasId)
     {
-        $siswa = $this->siswaModel->getSiswaByKelas($kelasId);
+        $siswa = $this->db->table('siswa s')
+            ->select('s.*, u.full_name')
+            ->join('users u', 'u.id = s.user_id')
+            ->where('s.kelas_id', $kelasId)
+            ->orderBy('u.full_name')
+            ->get()
+            ->getResultArray();
+            
         return $this->response->setJSON($siswa);
+    }
+
+    // Helper methods untuk mendukung struktur navigasi baru
+    private function getHariAbsensiByJadwal($jadwalId)
+    {
+        return $this->db->table('hari_absensi ha')
+            ->select('ha.*, jd.*, mp.nama, u.full_name as nama_guru, ha.id AS id, CONCAT(k.kode_jurusan, k.tingkat) AS nama_kelas')
+            ->join('jadwal jd', 'jd.id = ha.jadwal_id')
+            ->join('mata_pelajaran mp', 'mp.id = jd.mata_pelajaran_id')
+            ->join('guru g', 'g.id = jd.guru_id')
+            ->join('users u', 'u.id = g.user_id')
+            ->join('kelas k', 'k.id = jd.kelas_id')
+            ->where('ha.jadwal_id', $jadwalId)
+            ->orderBy('ha.tanggal', 'DESC')
+            ->get()
+            ->getResultArray();
+    }
+
+    private function getSiswaByJadwal($jadwalId)
+    {
+        return $this->db->table('siswa s')
+            ->select('s.*, u.full_name')
+            ->join('users u', 'u.id = s.user_id')
+            ->join('jadwal jd', 'jd.kelas_id = s.kelas_id')
+            ->where('jd.id', $jadwalId)
+            ->orderBy('u.full_name')
+            ->get()
+            ->getResultArray();
+    }
+
+    private function getAbsensiByHariAbsensi($hariAbsensiId)
+    {
+        return $this->db->table('absensi a')
+            ->select('a.*, s.id as siswa_id, u.full_name as nama_siswa, s.nis')
+            ->join('siswa s', 's.id = a.siswa_id')
+            ->join('users u', 'u.id = s.user_id')
+            ->where('a.hari_absensi_id', $hariAbsensiId)
+            ->get()
+            ->getResultArray();
     }
 
     public function export()
@@ -665,5 +830,57 @@ class Absensi extends BaseController
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $writer->save('php://output');
         exit;
+    }
+
+    public function storeAbsensi()
+    {
+        $hariAbsensiId = $this->request->getPost('hari_absensi_id');
+        $jadwalId = $this->request->getPost('jadwal_id');
+        $siswaIds = $this->request->getPost('siswa_id');
+        $statuses = $this->request->getPost('status');
+        $keterangans = $this->request->getPost('keterangan');
+
+        if (!$hariAbsensiId || !$jadwalId || !$siswaIds || !$statuses) {
+            return redirect()->back()->with('error', 'Data tidak lengkap');
+        }
+
+        $db = \Config\Database::connect();
+        $db->transStart();
+
+        try {
+            // Hapus absensi yang sudah ada untuk hari ini
+            $db->table('absensi')
+               ->where('hari_absensi_id', $hariAbsensiId)
+               ->delete();
+
+            // Simpan absensi baru
+            for ($i = 0; $i < count($siswaIds); $i++) {
+                $data = [
+                    'siswa_id' => $siswaIds[$i],
+                    'jadwal_id' => $jadwalId,
+                    'hari_absensi_id' => $hariAbsensiId,
+                    'status' => $statuses[$i],
+                    'keterangan' => $keterangans[$i] ?? null,
+                    'tanggal'    => date('Y-m-d H:i:s'),
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ];
+
+                $db->table('absensi')->insert($data);
+            }
+
+            $db->transComplete();
+
+            if ($db->transStatus() === false) {
+                return redirect()->back()->with('error', 'Gagal menyimpan absensi');
+            }
+
+            return redirect()->to('admin/absensi/input/' . $hariAbsensiId)
+                           ->with('success', 'Absensi berhasil disimpan');
+
+        } catch (\Exception $e) {
+            $db->transRollback();
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 }

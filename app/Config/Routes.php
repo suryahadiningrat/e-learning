@@ -125,17 +125,14 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->get('absensi/kelas/(:num)', 'Admin\Absensi::kelas/$1');
     $routes->get('absensi/jadwal/(:num)', 'Admin\Absensi::jadwal/$1');
     $routes->get('absensi/hari/(:num)', 'Admin\Absensi::hari/$1');
-    $routes->get('absensi/input/(:num)', 'Admin\Absensi::inputAbsensi/$1');
-    $routes->get('absensi/create-hari/(:num)', 'Admin\Absensi::createHari/$1');
-    $routes->post('absensi/store-hari', 'Admin\Absensi::storeHari');
-    $routes->post('absensi/store', 'Admin\Absensi::store');
-    $routes->get('absensi/edit/(:num)', 'Admin\Absensi::edit/$1');
-    $routes->post('absensi/update/(:num)', 'Admin\Absensi::update/$1');
-    $routes->get('absensi/delete/(:num)', 'Admin\Absensi::delete/$1');
-    $routes->get('absensi/export-hari/(:num)', 'Admin\Absensi::exportHari/$1');
-    $routes->get('absensi/export-jadwal/(:num)', 'Admin\Absensi::exportJadwal/$1');
-    $routes->get('absensi/export-kelas/(:num)', 'Admin\Absensi::exportKelas/$1');
-    $routes->get('absensi/export-jurusan/(:num)', 'Admin\Absensi::exportJurusan/$1');
+    $routes->get('absensi/input/(:num)', 'Admin\Absensi::input/$1');
+    $routes->get('absensi/createHari/(:num)', 'Admin\Absensi::createHari/$1');
+    $routes->post('absensi/storeHari', 'Admin\Absensi::storeHari');
+    $routes->post('absensi/store-absensi', 'Admin\Absensi::storeAbsensi');
+    $routes->get('absensi/exportHari/(:num)', 'Admin\Absensi::exportHari/$1');
+    $routes->get('absensi/exportJadwal/(:num)', 'Admin\Absensi::exportJadwal/$1');
+    $routes->get('absensi/exportKelas/(:num)', 'Admin\Absensi::exportKelas/$1');
+    $routes->get('absensi/exportJurusan/(:num)', 'Admin\Absensi::exportJurusan/$1');
     
     // Legacy routes for backward compatibility
     $routes->get('absensi/create', 'Admin\Absensi::create');
