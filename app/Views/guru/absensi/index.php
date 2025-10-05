@@ -1,83 +1,66 @@
-<?php
-// Copy of admin/absensi/index.php, but all URLs and actions use 'guru/absensi' instead of 'admin/absensi'.
-?>
 <?= $this->extend('guru/layout') ?>
+
+<?= $this->section('title') ?>
+<?= $title ?>
+<?= $this->endSection() ?>
+
 <?= $this->section('content') ?>
 <div class="container-fluid">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Data Absensi</h1>
-        <div>
-            <button type="button" class="btn btn-success btn-sm me-2" data-bs-toggle="modal" data-bs-target="#exportModal">
-                <i class="fas fa-file-excel fa-sm"></i> Export Excel
-            </button>
-            <a href="<?= base_url('guru/absensi/create') ?>" class="btn btn-primary btn-sm">
-                <i class="fas fa-plus fa-sm"></i> Tambah Absensi
-            </a>
-        </div>
-    </div>
-    
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Daftar Absensi</h6>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Tanggal</th>
-                            <th>Siswa</th>
-                            <th>Kelas</th>
-                            <th>Mata Pelajaran</th>
-                            <th>Guru</th>
-                            <th>Hari</th>
-                            <th>Jam</th>
-                            <th>Status</th>
-                            <th>Keterangan</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php $no = 1; ?>
-                        <?php foreach ($absensi ?? [] as $item): ?>
-                            <tr>
-                                <td><?= $no++ ?></td>
-                                <td><span class="badge bg-info"><?= date('d/m/Y', strtotime($item['tanggal'])) ?></span></td>
-                                <td><strong><?= $item['nama_siswa'] ?></strong><br><small class="text-muted">NIS: <?= $item['nis'] ?></small></td>
-                                <td><?= $item['nama_kelas'] ?><br><small class="text-muted"><?= $item['nama_jurusan'] ?></small></td>
-                                <td><strong><?= $item['nama_mata_pelajaran'] ?></strong></td>
-                                <td><?= $item['nama_guru'] ?></td>
-                                <td><?= $item['hari'] ?></td>
-                                <td><?= $item['jam_mulai'] ?> - <?= $item['jam_selesai'] ?></td>
-                                <td>
-                                    <?php 
-                                    $statusClass = '';
-                                    switch($item['status']) {
-                                        case 'Hadir': $statusClass = 'bg-success'; break;
-                                        case 'Sakit': $statusClass = 'bg-warning'; break;
-                                        case 'Izin': $statusClass = 'bg-info'; break;
-                                        case 'Alpha': $statusClass = 'bg-danger'; break;
-                                        default: $statusClass = 'bg-secondary';
-                                    }
-                                    ?>
-                                    <span class="badge <?= $statusClass ?>"><?= $item['status'] ?></span>
-                                </td>
-                                <td><?= $item['keterangan'] ?? '-' ?></td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <a href="<?= base_url('guru/absensi/edit/' . $item['id']) ?>" class="btn btn-warning btn-sm" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <a href="javascript:void(0)" onclick="confirmDelete('<?= base_url('guru/absensi/delete/' . $item['id']) ?>', '<?= $item['nama_siswa'] ?>')" class="btn btn-danger btn-sm" title="Hapus">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><?= $title ?></h3>
+                </div>
+                <div class="card-body">
+                    <?php if (session()->getFlashdata('success')): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <?= session()->getFlashdata('success') ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (session()->getFlashdata('error')): ?>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <?= session()->getFlashdata('error') ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="row">
+                        <?php if (!empty($jurusan)): ?>
+                            <?php foreach ($jurusan as $item): ?>
+                                <div class="col-md-6 col-lg-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body d-flex flex-column">
+                                            <h5 class="card-title"><?= esc($item['nama_jurusan']) ?></h5>
+                                            <p class="card-text text-muted">
+                                                Kode: <?= esc($item['kode_jurusan']) ?>
+                                            </p>
+                                            <div class="mt-auto">
+                                                <a href="<?= base_url('guru/absensi/kelas/' . $item['id']) ?>" 
+                                                   class="btn btn-primary">
+                                                    <i class="fas fa-arrow-right"></i> Lihat Kelas
+                                                </a>
+                                                <a href="<?= base_url('guru/absensi/export-jurusan/' . $item['id']) ?>" 
+                                                   class="btn btn-success btn-sm">
+                                                    <i class="fas fa-download"></i> Export
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    Tidak ada jurusan yang memiliki jadwal yang Anda ajar.
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -133,4 +116,4 @@
         </div>
     </div>
 </div>
-<?= $this->endSection() ?> 
+<?= $this->endSection() ?>

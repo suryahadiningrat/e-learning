@@ -7,6 +7,10 @@ use App\Models\AbsensiModel;
 use App\Models\SiswaModel;
 use App\Models\KelasModel;
 use App\Models\JadwalModel;
+use App\Models\JurusanModel;
+use App\Models\HariAbsensiModel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class Absensi extends BaseController
 {
@@ -14,6 +18,8 @@ class Absensi extends BaseController
     protected $siswaModel;
     protected $kelasModel;
     protected $jadwalModel;
+    protected $jurusanModel;
+    protected $hariAbsensiModel;
 
     public function __construct()
     {
@@ -21,28 +27,297 @@ class Absensi extends BaseController
         $this->siswaModel = new SiswaModel();
         $this->kelasModel = new KelasModel();
         $this->jadwalModel = new JadwalModel();
+        $this->jurusanModel = new JurusanModel();
+        $this->hariAbsensiModel = new HariAbsensiModel();
     }
 
+    // Structured navigation flow for admin (with full access)
     public function index()
     {
-        $startDate = $this->request->getGet('start_date');
-        $endDate = $this->request->getGet('end_date');
-        $kelasId = $this->request->getGet('kelas_id');
-
         $data = [
-            'title' => 'Data Absensi',
-            'absensi' => $this->absensiModel->getAbsensiWithRelations(),
-            'kelas' => $this->kelasModel->getKelasWithRelations(),
-            'filter' => [
-                'start_date' => $startDate,
-                'end_date' => $endDate,
-                'kelas_id' => $kelasId,
-            ]
+            'title' => 'Data Absensi - Pilih Jurusan',
+            'jurusan' => $this->jurusanModel->findAll()
         ];
 
         return view('admin/absensi/index', $data);
     }
 
+    public function kelas($jurusanId)
+    {
+        $jurusan = $this->jurusanModel->find($jurusanId);
+        if (!$jurusan) {
+            return redirect()->to('admin/absensi')->with('error', 'Jurusan tidak ditemukan');
+        }
+
+        $kelas = $this->kelasModel->where('jurusan_id', $jurusanId)->findAll();
+
+        $data = [
+            'title' => 'Data Absensi - Pilih Kelas',
+            'jurusan' => $jurusan,
+            'kelas' => $kelas
+        ];
+
+        return view('admin/absensi/kelas', $data);
+    }
+
+    public function jadwal($kelasId)
+    {
+        $kelas = $this->kelasModel->getKelasWithRelations($kelasId);
+        if (!$kelas) {
+            return redirect()->back()->with('error', 'Kelas tidak ditemukan');
+        }
+
+        $jadwal = $this->jadwalModel->getJadwalByKelas($kelasId);
+
+        $data = [
+            'title' => 'Data Absensi - Pilih Jadwal',
+            'kelas' => $kelas,
+            'jadwal' => $jadwal
+        ];
+
+        return view('admin/absensi/jadwal', $data);
+    }
+
+    public function hari($jadwalId)
+    {
+        $jadwal = $this->jadwalModel->getJadwalWithRelations($jadwalId);
+        if (!$jadwal) {
+            return redirect()->back()->with('error', 'Jadwal tidak ditemukan');
+        }
+
+        $hariAbsensi = $this->hariAbsensiModel->getHariAbsensiByJadwal($jadwalId);
+
+        $data = [
+            'title' => 'Data Absensi - Pilih Hari',
+            'jadwal' => $jadwal,
+            'hari_absensi' => $hariAbsensi
+        ];
+
+        return view('admin/absensi/hari', $data);
+    }
+
+    public function input($hariAbsensiId)
+    {
+        $hariAbsensi = $this->hariAbsensiModel->getHariAbsensiWithRelations($hariAbsensiId);
+        if (!$hariAbsensi) {
+            return redirect()->back()->with('error', 'Hari absensi tidak ditemukan');
+        }
+
+        $siswa = $this->siswaModel->getSiswaByJadwal($hariAbsensi['jadwal_id']);
+        $absensi = $this->absensiModel->getAbsensiByHariAbsensi($hariAbsensiId);
+
+        $data = [
+            'title' => 'Input Absensi',
+            'hari_absensi' => $hariAbsensi,
+            'jadwal' => $hariAbsensi,
+            'siswa' => $siswa,
+            'absensi' => $absensi
+        ];
+
+        return view('admin/absensi/input', $data);
+    }
+
+    public function createHari($jadwalId)
+    {
+        $jadwal = $this->jadwalModel->getJadwalWithRelations($jadwalId);
+        if (!$jadwal) {
+            return redirect()->back()->with('error', 'Jadwal tidak ditemukan');
+        }
+
+        $data = [
+            'title' => 'Buat Hari Absensi Baru',
+            'jadwal' => $jadwal
+        ];
+
+        return view('admin/absensi/create_hari', $data);
+    }
+
+    public function storeHari()
+    {
+        $jadwalId = $this->request->getPost('jadwal_id');
+        $tanggal = $this->request->getPost('tanggal');
+
+        // Validasi
+        if (!$jadwalId || !$tanggal) {
+            return redirect()->back()->with('error', 'Data tidak lengkap');
+        }
+
+        // Cek apakah hari absensi sudah ada
+        $existing = $this->hariAbsensiModel->where([
+            'jadwal_id' => $jadwalId,
+            'tanggal' => $tanggal
+        ])->first();
+
+        if ($existing) {
+            return redirect()->back()->with('error', 'Hari absensi untuk tanggal ini sudah ada');
+        }
+
+        // Simpan hari absensi baru
+        $data = [
+            'jadwal_id' => $jadwalId,
+            'tanggal' => $tanggal,
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s')
+        ];
+
+        if ($this->hariAbsensiModel->save($data)) {
+            $hariAbsensiId = $this->hariAbsensiModel->getInsertID();
+            return redirect()->to("admin/absensi/input/{$hariAbsensiId}")->with('success', 'Hari absensi berhasil dibuat');
+        } else {
+            return redirect()->back()->with('error', 'Gagal membuat hari absensi');
+        }
+    }
+
+    // Export functions with full admin access
+    public function exportHari($hariAbsensiId)
+    {
+        $hariAbsensi = $this->hariAbsensiModel->getHariAbsensiWithRelations($hariAbsensiId);
+        if (!$hariAbsensi) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan');
+        }
+
+        // Get data absensi untuk hari ini
+        $db = \Config\Database::connect();
+        $absensi = $db->table('absensi a')
+                     ->select('a.*, s.nama as nama_siswa, s.nis')
+                     ->join('siswa s', 's.id = a.siswa_id')
+                     ->where('a.hari_absensi_id', $hariAbsensiId)
+                     ->orderBy('s.nama')
+                     ->get()
+                     ->getResultArray();
+
+        return $this->generateExcel($absensi, 'Absensi Hari - ' . date('d/m/Y', strtotime($hariAbsensi['tanggal'])));
+    }
+
+    public function exportJadwal($jadwalId)
+    {
+        $jadwal = $this->jadwalModel->getJadwalWithRelations($jadwalId);
+        if (!$jadwal) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan');
+        }
+
+        // Get data absensi untuk jadwal ini
+        $db = \Config\Database::connect();
+        $absensi = $db->table('absensi a')
+                     ->select('a.*, s.nama as nama_siswa, s.nis, ha.tanggal')
+                     ->join('siswa s', 's.id = a.siswa_id')
+                     ->join('hari_absensi ha', 'ha.id = a.hari_absensi_id')
+                     ->where('ha.jadwal_id', $jadwalId)
+                     ->orderBy('ha.tanggal', 'DESC')
+                     ->orderBy('s.nama')
+                     ->get()
+                     ->getResultArray();
+
+        return $this->generateExcel($absensi, 'Absensi Jadwal - ' . $jadwal['nama_mata_pelajaran'] . ' (' . $jadwal['nama_kelas'] . ')');
+    }
+
+    public function exportKelas($kelasId)
+    {
+        $kelas = $this->kelasModel->getKelasWithRelations($kelasId);
+        if (!$kelas) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan');
+        }
+
+        // Get data absensi untuk semua jadwal di kelas ini
+        $db = \Config\Database::connect();
+        $absensi = $db->table('absensi a')
+                     ->select('a.*, s.nama as nama_siswa, s.nis, ha.tanggal, mp.nama as nama_mata_pelajaran')
+                     ->join('siswa s', 's.id = a.siswa_id')
+                     ->join('hari_absensi ha', 'ha.id = a.hari_absensi_id')
+                     ->join('jadwal j', 'j.id = ha.jadwal_id')
+                     ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
+                     ->where('j.kelas_id', $kelasId)
+                     ->orderBy('ha.tanggal', 'DESC')
+                     ->orderBy('s.nama')
+                     ->get()
+                     ->getResultArray();
+
+        return $this->generateExcel($absensi, 'Absensi Kelas - ' . $kelas['nama_kelas']);
+    }
+
+    public function exportJurusan($jurusanId)
+    {
+        $jurusan = $this->jurusanModel->find($jurusanId);
+        if (!$jurusan) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan');
+        }
+
+        // Get data absensi untuk semua kelas di jurusan ini
+        $db = \Config\Database::connect();
+        $absensi = $db->table('absensi a')
+                     ->select('a.*, s.nama as nama_siswa, s.nis, ha.tanggal, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas')
+                     ->join('siswa s', 's.id = a.siswa_id')
+                     ->join('hari_absensi ha', 'ha.id = a.hari_absensi_id')
+                     ->join('jadwal j', 'j.id = ha.jadwal_id')
+                     ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
+                     ->join('kelas k', 'k.id = j.kelas_id')
+                     ->where('k.jurusan_id', $jurusanId)
+                     ->orderBy('ha.tanggal', 'DESC')
+                     ->orderBy('s.nama')
+                     ->get()
+                     ->getResultArray();
+
+        return $this->generateExcel($absensi, 'Absensi Jurusan - ' . $jurusan['nama_jurusan']);
+    }
+
+    private function generateExcel($data, $title)
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Set headers
+        $headers = ['No', 'NIS', 'Nama Siswa', 'Tanggal', 'Status', 'Keterangan'];
+        if (isset($data[0]['nama_mata_pelajaran'])) {
+            array_splice($headers, 3, 0, 'Mata Pelajaran');
+        }
+        if (isset($data[0]['nama_kelas'])) {
+            array_splice($headers, 3, 0, 'Kelas');
+        }
+
+        $col = 'A';
+        foreach ($headers as $header) {
+            $sheet->setCellValue($col . '1', $header);
+            $col++;
+        }
+
+        // Set data
+        $row = 2;
+        foreach ($data as $index => $item) {
+            $col = 'A';
+            $sheet->setCellValue($col++ . $row, $index + 1);
+            $sheet->setCellValue($col++ . $row, $item['nis']);
+            $sheet->setCellValue($col++ . $row, $item['nama_siswa']);
+            
+            if (isset($item['nama_kelas'])) {
+                $sheet->setCellValue($col++ . $row, $item['nama_kelas']);
+            }
+            if (isset($item['nama_mata_pelajaran'])) {
+                $sheet->setCellValue($col++ . $row, $item['nama_mata_pelajaran']);
+            }
+            
+            $sheet->setCellValue($col++ . $row, date('d/m/Y', strtotime($item['tanggal'])));
+            $sheet->setCellValue($col++ . $row, $item['status']);
+            $sheet->setCellValue($col++ . $row, $item['keterangan']);
+            $row++;
+        }
+
+        // Auto size columns
+        foreach (range('A', $col) as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = $title . '_' . date('Y-m-d') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+        exit;
+    }
+
+    // Legacy methods for backward compatibility
     public function create()
     {
         $data = [
@@ -391,4 +666,4 @@ class Absensi extends BaseController
         $writer->save('php://output');
         exit;
     }
-} 
+}

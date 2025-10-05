@@ -122,11 +122,23 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->get('jadwal/delete/(:num)', 'Admin\Jadwal::delete/$1');
     
     $routes->get('absensi', 'Admin\Absensi::index');
-    $routes->get('absensi/create', 'Admin\Absensi::create');
+    $routes->get('absensi/kelas/(:num)', 'Admin\Absensi::kelas/$1');
+    $routes->get('absensi/jadwal/(:num)', 'Admin\Absensi::jadwal/$1');
+    $routes->get('absensi/hari/(:num)', 'Admin\Absensi::hari/$1');
+    $routes->get('absensi/input/(:num)', 'Admin\Absensi::inputAbsensi/$1');
+    $routes->get('absensi/create-hari/(:num)', 'Admin\Absensi::createHari/$1');
+    $routes->post('absensi/store-hari', 'Admin\Absensi::storeHari');
     $routes->post('absensi/store', 'Admin\Absensi::store');
     $routes->get('absensi/edit/(:num)', 'Admin\Absensi::edit/$1');
     $routes->post('absensi/update/(:num)', 'Admin\Absensi::update/$1');
     $routes->get('absensi/delete/(:num)', 'Admin\Absensi::delete/$1');
+    $routes->get('absensi/export-hari/(:num)', 'Admin\Absensi::exportHari/$1');
+    $routes->get('absensi/export-jadwal/(:num)', 'Admin\Absensi::exportJadwal/$1');
+    $routes->get('absensi/export-kelas/(:num)', 'Admin\Absensi::exportKelas/$1');
+    $routes->get('absensi/export-jurusan/(:num)', 'Admin\Absensi::exportJurusan/$1');
+    
+    // Legacy routes for backward compatibility
+    $routes->get('absensi/create', 'Admin\Absensi::create');
     $routes->get('absensi/get-jadwal-by-kelas/(:num)', 'Admin\Absensi::getJadwalByKelas/$1');
     $routes->get('absensi/get-siswa-by-kelas/(:num)', 'Admin\Absensi::getSiswaByKelas/$1');
     $routes->get('absensi/export', 'Admin\Absensi::export');
@@ -193,13 +205,26 @@ $routes->group('guru', ['filter' => 'auth:role:guru'], function($routes) {
     // Data Jurusan/Kelas (Read Only)
     $routes->get('kelas', 'Guru\Kelas::index');
     $routes->get('jurusan', 'Guru\Jurusan::index');
-    // Data Absensi (CRUD)
+    // Data Absensi (CRUD) - New Structured Flow
     $routes->get('absensi', 'Guru\Absensi::index');
-    $routes->get('absensi/create', 'Guru\Absensi::create');
+    $routes->get('absensi/kelas/(:num)', 'Guru\Absensi::kelas/$1');
+    $routes->get('absensi/jadwal/(:num)', 'Guru\Absensi::jadwal/$1');
+    $routes->get('absensi/hari/(:num)', 'Guru\Absensi::hari/$1');
+    $routes->get('absensi/input/(:num)', 'Guru\Absensi::inputAbsensi/$1');
+    $routes->get('absensi/create-hari/(:num)', 'Guru\Absensi::createHari/$1');
+    $routes->post('absensi/store-hari', 'Guru\Absensi::storeHari');
     $routes->post('absensi/store', 'Guru\Absensi::store');
     $routes->get('absensi/edit/(:num)', 'Guru\Absensi::edit/$1');
     $routes->post('absensi/update/(:num)', 'Guru\Absensi::update/$1');
     $routes->get('absensi/delete/(:num)', 'Guru\Absensi::delete/$1');
+    $routes->get('absensi/export-hari/(:num)', 'Guru\Absensi::exportHari/$1');
+    $routes->get('absensi/export-jadwal/(:num)', 'Guru\Absensi::exportJadwal/$1');
+    $routes->get('absensi/export-kelas/(:num)', 'Guru\Absensi::exportKelas/$1');
+    $routes->get('absensi/export-jurusan/(:num)', 'Guru\Absensi::exportJurusan/$1');
+    
+    // Legacy routes for backward compatibility
+    $routes->get('absensi/create', 'Guru\Absensi::create');
+    $routes->post('absensi/store-absensi', 'Guru\Absensi::storeAbsensi');
     $routes->get('absensi/get-jadwal-by-kelas/(:num)', 'Guru\Absensi::getJadwalByKelas/$1');
     $routes->get('absensi/get-siswa-by-kelas/(:num)', 'Guru\Absensi::getSiswaByKelas/$1');
     $routes->get('absensi/export', 'Guru\Absensi::export');
