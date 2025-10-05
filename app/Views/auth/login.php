@@ -6,14 +6,53 @@
     <title>Login - E-Learning SMK</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <?php
+    // Get login background settings
+    $db = \Config\Database::connect();
+    $settings = $db->table('settings')
+        ->whereIn('key', ['login_background_color', 'login_background_image'])
+        ->get()
+        ->getResultArray();
+    
+    $backgroundSettings = [];
+    foreach ($settings as $setting) {
+        $backgroundSettings[$setting['key']] = $setting['value'];
+    }
+    
+    // Default background if no settings found
+    $backgroundColor = $backgroundSettings['login_background_color'] ?? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+    $backgroundImage = $backgroundSettings['login_background_image'] ?? null;
+    ?>
     <style>
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: <?= $backgroundColor ?>;
+            <?php if ($backgroundImage): ?>
+            background-image: url('<?= base_url('uploads/background/' . $backgroundImage) ?>');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            <?php endif; ?>
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
+        
+        <?php if ($backgroundImage): ?>
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: <?= $backgroundColor ?>;
+            opacity: 0.8;
+            z-index: 1;
+        }
+        <?php endif; ?>
+        
         .login-container {
             background: white;
             border-radius: 20px;
@@ -21,6 +60,8 @@
             overflow: hidden;
             width: 100%;
             max-width: 400px;
+            position: relative;
+            z-index: 2;
         }
         .login-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -127,4 +168,4 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html> 
+</html>

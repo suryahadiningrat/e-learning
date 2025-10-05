@@ -174,6 +174,9 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->post('setting-system/update-background', 'Admin\SettingSystem::updateBackground');
     $routes->post('setting-system/update-tahun-ajaran', 'Admin\SettingSystem::updateTahunAjaran');
     $routes->post('setting-system/update-sidebar-color', 'Admin\SettingSystem::updateSidebarColor');
+    $routes->post('setting-system/update-login-background-color', 'Admin\SettingSystem::updateLoginBackgroundColor');
+    $routes->post('setting-system/update-login-background-image', 'Admin\SettingSystem::updateLoginBackgroundImage');
+    $routes->post('setting-system/remove-login-background-image', 'Admin\SettingSystem::removeLoginBackgroundImage');
 });
 
 // Guru Routes

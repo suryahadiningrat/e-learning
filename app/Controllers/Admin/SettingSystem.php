@@ -147,6 +147,108 @@ class SettingSystem extends BaseController
         return redirect()->to('admin/setting-system')->with('success', 'Tahun ajaran berhasil diperbarui');
     }
 
+    public function updateLoginBackgroundColor()
+    {
+        // Validasi input
+        $rules = [
+            'color' => 'required'
+        ];
+
+        $messages = [
+            'color' => [
+                'required' => 'Warna harus diisi'
+            ]
+        ];
+
+        if (!$this->validate($rules, $messages)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $this->validator->getErrors()
+            ]);
+        }
+
+        $color = $this->request->getPost('color');
+        
+        // Update setting di database
+        $this->updateSetting('login_background_color', $color);
+        
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => 'Warna background login berhasil diperbarui'
+        ]);
+    }
+
+    public function updateLoginBackgroundImage()
+    {
+        // Validasi file
+        $rules = [
+            'background_image' => [
+                'uploaded[background_image]',
+                'mime_in[background_image,image/jpg,image/jpeg,image/png,image/gif]',
+                'max_size[background_image,5120]'
+            ]
+        ];
+
+        $messages = [
+            'background_image' => [
+                'uploaded' => 'Pilih file gambar terlebih dahulu',
+                'mime_in' => 'File harus berupa gambar (JPG, JPEG, PNG, GIF)',
+                'max_size' => 'Ukuran file maksimal 5MB'
+            ]
+        ];
+
+        if (!$this->validate($rules, $messages)) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        $file = $this->request->getFile('background_image');
+        
+        if ($file->isValid() && !$file->hasMoved()) {
+            // Hapus background lama jika ada
+            $oldBackground = $this->getSetting('login_background_image');
+            if ($oldBackground && file_exists(FCPATH . 'uploads/background/' . $oldBackground)) {
+                unlink(FCPATH . 'uploads/background/' . $oldBackground);
+            }
+
+            // Buat direktori jika belum ada
+            if (!is_dir(FCPATH . 'uploads/background')) {
+                mkdir(FCPATH . 'uploads/background', 0777, true);
+            }
+
+            // Generate nama file unik
+            $newName = 'login_bg_' . time() . '.' . $file->getExtension();
+            
+            // Pindahkan file
+            if ($file->move(FCPATH . 'uploads/background', $newName)) {
+                // Update setting di database
+                $this->updateSetting('login_background_image', $newName);
+                
+                return redirect()->to('admin/setting-system')->with('success', 'Gambar background login berhasil diperbarui');
+            }
+        }
+
+        return redirect()->back()->with('error', 'Gagal mengupload gambar background');
+    }
+
+    public function removeLoginBackgroundImage()
+    {
+        // Hapus gambar background login
+        $oldBackground = $this->getSetting('login_background_image');
+        if ($oldBackground && file_exists(FCPATH . 'uploads/background/' . $oldBackground)) {
+            unlink(FCPATH . 'uploads/background/' . $oldBackground);
+        }
+
+        // Hapus setting dari database
+        $db = \Config\Database::connect();
+        $db->table('settings')->where('key', 'login_background_image')->delete();
+        
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => 'Gambar background login berhasil dihapus'
+        ]);
+    }
+
     public function updateSidebarColor()
     {
         // Validasi input
@@ -254,4 +356,4 @@ class SettingSystem extends BaseController
             ]);
         }
     }
-} 
+}

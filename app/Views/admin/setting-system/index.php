@@ -119,6 +119,74 @@ $siswaColor = extractColorFromGradient($settings['sidebar_color_siswa'] ?? '', '
         </div>
     </div>
 
+    <!-- Background Login -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">
+                <i class="fas fa-desktop me-2"></i>Background Halaman Login
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label font-weight-bold">Background Saat Ini</label>
+                        <div class="border rounded p-3" style="height: 150px; background: <?= $settings['login_background_color'] ?? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' ?>; position: relative;">
+                            <?php if (isset($settings['login_background_image']) && $settings['login_background_image']): ?>
+                                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('<?= base_url('uploads/background/' . $settings['login_background_image']) ?>'); background-size: cover; background-position: center; border-radius: 0.375rem;"></div>
+                            <?php endif; ?>
+                            <div style="position: absolute; bottom: 10px; right: 10px; background: rgba(255,255,255,0.8); padding: 5px 10px; border-radius: 5px; font-size: 12px;">
+                                Preview Login
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <!-- Background Color -->
+                    <div class="mb-3">
+                        <label for="loginBackgroundColor" class="form-label font-weight-bold">Warna Background</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control color-picker-login" id="loginBackgroundColor" 
+                                   value="<?= extractColorFromGradient($settings['login_background_color'] ?? '', '#667eea') ?>">
+                            <button class="btn btn-outline-secondary" type="button" id="resetLoginColor">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                        </div>
+                        <div class="form-text">Pilih warna untuk background login</div>
+                    </div>
+                    
+                    <!-- Background Image -->
+                    <div class="mb-3">
+                        <label for="loginBackgroundImage" class="form-label font-weight-bold">Gambar Background (Opsional)</label>
+                        <form action="<?= base_url('admin/setting-system/update-login-background-image') ?>" method="post" enctype="multipart/form-data" id="backgroundImageForm">
+                            <?= csrf_field() ?>
+                            <input type="file" class="form-control <?= session('errors.background_image') ? 'is-invalid' : '' ?>" 
+                                   id="loginBackgroundImage" name="background_image" accept="image/*">
+                            <div class="form-text">
+                                Format: JPG, JPEG, PNG, GIF | Maksimal: 5MB | Kosongkan jika ingin menggunakan warna saja
+                            </div>
+                            <?php if (session('errors.background_image')): ?>
+                                <div class="invalid-feedback">
+                                    <?= session('errors.background_image') ?>
+                                </div>
+                            <?php endif; ?>
+                            <div class="mt-2">
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-upload me-1"></i>Upload Gambar
+                                </button>
+                                <?php if (isset($settings['login_background_image']) && $settings['login_background_image']): ?>
+                                    <button type="button" class="btn btn-danger btn-sm ms-2" id="removeBackgroundImage">
+                                        <i class="fas fa-trash me-1"></i>Hapus Gambar
+                                    </button>
+                                <?php endif; ?>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Warna Sidebar -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -222,6 +290,8 @@ $siswaColor = extractColorFromGradient($settings['sidebar_color_siswa'] ?? '', '
     </div>
 </div>
 
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
 // Preview image sebelum upload
 document.getElementById('logo').addEventListener('change', function(e) {
@@ -270,6 +340,7 @@ tinyColorScript.onload = checkScriptsLoaded;
 spectrumJs.onload = checkScriptsLoaded;
 
 function initializeColorPickers() {
+    // Initialize sidebar color pickers
     $('.color-picker').spectrum({
         showInput: true,
         showInitial: true,
@@ -291,10 +362,8 @@ function initializeColorPickers() {
             // Update the input field value immediately
             $(this).val(startColor);
             
-            // Create slightly darker color for gradient - ensure tinycolor is available
-            const endColor = typeof tinycolor !== 'undefined' ? 
-                tinycolor(startColor).darken(15).toHexString() : 
-                startColor;
+            // Create slightly darker color for gradient
+            const endColor = tinycolor(startColor).darken(15).toHexString();
             const gradientValue = `linear-gradient(to bottom, ${startColor}, ${endColor})`;
             
             // Update preview immediately
@@ -341,28 +410,185 @@ function initializeColorPickers() {
         },
         move: function(color) {
             // Update preview during color selection (real-time preview)
-            const role = $(this).data('role');
             const startColor = color.toHexString();
             
             // Update the input field value during move
             $(this).val(startColor);
             
-            const endColor = typeof tinycolor !== 'undefined' ? 
-                tinycolor(startColor).darken(15).toHexString() : 
-                startColor;
+            const endColor = tinycolor(startColor).darken(15).toHexString();
             const gradientValue = `linear-gradient(to bottom, ${startColor}, ${endColor})`;
             
             // Update preview in real-time
             $(this).closest('.form-group').find('.sidebar-preview').css('background', gradientValue);
+        }
+    });
+    
+    // Initialize login background color picker
+    $('.color-picker-login').spectrum({
+        showInput: true,
+        showInitial: true,
+        preferredFormat: "hex",
+        showPalette: true,
+        showSelectionPalette: true,
+        showAlpha: false,
+        allowEmpty: false,
+        clickoutFiresChange: true,
+        palette: [
+            ['#667eea', '#764ba2'], // Default login colors
+            ['#4e73df', '#224abe'], // Admin colors
+            ['#1cc88a', '#169b6b'], // Guru colors
+            ['#f6c23e', '#dda20a']  // Siswa colors
+        ],
+        change: function(color) {
+            const startColor = color.toHexString();
+            const endColor = tinycolor(startColor).darken(15).toHexString();
+            const gradientValue = `linear-gradient(135deg, ${startColor} 0%, ${endColor} 100%)`;
+            
+            // Update preview immediately
+            updateLoginPreview(gradientValue);
+            
+            // Save to database via AJAX
+            $.ajax({
+                url: '<?= base_url('admin/setting-system/update-login-background-color') ?>',
+                type: 'POST',
+                data: {
+                    color: gradientValue,
+                    <?= csrf_token() ?>: '<?= csrf_hash() ?>'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: response.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Terjadi kesalahan saat menyimpan pengaturan'
+                    });
+                }
+            });
         },
-        show: function(color) {
-            // Ensure the input shows the correct color when opened
-            $(this).val(color.toHexString());
+        move: function(color) {
+            const startColor = color.toHexString();
+            const endColor = tinycolor(startColor).darken(15).toHexString();
+            const gradientValue = `linear-gradient(135deg, ${startColor} 0%, ${endColor} 100%)`;
+            
+            // Update preview in real-time
+            updateLoginPreview(gradientValue);
         }
     });
 }
+
+// Function to update login preview
+function updateLoginPreview(backgroundColor, backgroundImage = null) {
+    const previewDiv = $('.border.rounded.p-3').first();
+    if (previewDiv.length) {
+        previewDiv.css('background', backgroundColor);
+        
+        if (backgroundImage) {
+            // Remove existing background image div if any
+            previewDiv.find('div[style*="background-image"]').remove();
+            
+            // Add new background image div
+            previewDiv.prepend(`<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('${backgroundImage}'); background-size: cover; background-position: center; border-radius: 0.375rem;"></div>`);
+        }
+    }
+}
+
+// Reset login background color
+$('#resetLoginColor').click(function() {
+    const defaultColor = '#667eea';
+    const defaultGradient = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+    
+    $('.color-picker-login').spectrum('set', defaultColor);
+    updateLoginPreview(defaultGradient);
+    
+    // Save to database
+    $.ajax({
+        url: '<?= base_url('admin/setting-system/update-login-background-color') ?>',
+        type: 'POST',
+        data: {
+            color: defaultGradient,
+            <?= csrf_token() ?>: '<?= csrf_hash() ?>'
+        },
+        success: function(response) {
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Warna background direset ke default',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            }
+        }
+    });
+});
+
+// Remove background image
+$('#removeBackgroundImage').click(function() {
+    Swal.fire({
+        title: 'Hapus Gambar Background?',
+        text: 'Gambar background login akan dihapus',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '<?= base_url('admin/setting-system/remove-login-background-image') ?>',
+                type: 'POST',
+                data: {
+                    <?= csrf_token() ?>: '<?= csrf_hash() ?>'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: response.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(function() {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Terjadi kesalahan saat menghapus gambar'
+                    });
+                }
+            });
+        }
+    });
+});
 </script>
 
 <!-- SweetAlert2 is already included in the main layout -->
 
-<?= $this->endSection() ?> 
+<?= $this->endSection() ?>
