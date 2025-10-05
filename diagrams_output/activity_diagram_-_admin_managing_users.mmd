@@ -1,0 +1,20 @@
+flowchart TD
+Start([Start]) --> Login[Admin login ke sistem]
+Login --> UserMenu[Pilih menu user management]
+UserMenu --> ViewUsers[Lihat daftar user]
+ViewUsers --> Action{Pilih aksi}
+Action -->|Aktivasi| Activate[Aktivasi user]
+Action -->|Deaktivasi| Deactivate[Deaktivasi user]
+Action -->|Edit| EditUser[Edit data user]
+Action -->|Hapus| DeleteUser[Hapus user]
+Activate --> UpdateStatus[Update status user]
+Deactivate --> UpdateStatus
+EditUser --> SaveChanges[Simpan perubahan]
+DeleteUser --> ConfirmDel{Konfirmasi hapus}
+ConfirmDel -->|Ya| RemoveUser[Hapus user dari sistem]
+ConfirmDel -->|Tidak| ViewUsers
+UpdateStatus --> NotifyUser[Notifikasi ke user]
+SaveChanges --> NotifyUser
+RemoveUser --> LogActivity[Log aktivitas]
+NotifyUser --> LogActivity
+LogActivity --> End([End])

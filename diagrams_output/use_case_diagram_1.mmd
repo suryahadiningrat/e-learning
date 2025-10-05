@@ -1,0 +1,97 @@
+graph TB
+%% Actors (Stickman format)
+Admin[👤 Admin]
+Guru[👤 Guru]
+Siswa[👤 Siswa]
+
+%% System boundary
+subgraph "E-Learning SMK System"
+%% Admin Use Cases - Panel Admin (Oval/Circle format)
+UC1((Dashboard Admin))
+UC2((User Activation))
+UC3((Kelola User Pengguna))
+UC4((Setting System))
+
+%% Admin Use Cases - Data Master
+UC5((Kelola Data Siswa))
+UC6((Kelola Data Guru))
+UC7((Kelola Data Jurusan))
+UC8((Kelola Data Kelas))
+UC9((Kelola Data Mata Pelajaran))
+UC10((Kelola Data Jadwal))
+UC11((Kelola Data Absensi))
+UC12((Kelola Data Nilai))
+UC13((Kelola Data Ulangan))
+UC14((Kelola Data Materi/Modul))
+UC15((Kelola Data Link Pengumpulan Tugas))
+
+%% Guru Use Cases - Panel Guru
+UC16((Dashboard Guru))
+UC17((Kelola User Pengguna Guru))
+
+%% Guru Use Cases - Data
+UC18((Kelola Data Siswa Guru))
+UC19((Kelola Data Jurusan/Kelas Guru))
+UC20((Input Data Absensi))
+UC21((Input Data Nilai))
+UC22((Kelola Materi/Modul))
+UC23((Membuat Soal Ulangan Online))
+UC24((Kelola Link Pengumpulan Tugas))
+
+%% Siswa Use Cases
+UC25((Dashboard Siswa))
+UC26((Kelola User Pengguna Siswa))
+UC27((Melihat Jadwal))
+UC28((Melihat Nilai))
+UC29((Melihat Materi))
+UC30((Mengerjakan Ulangan))
+UC31((Mengakses Link Pengumpulan Tugas))
+end
+
+%% Admin connections
+Admin --> UC1
+Admin --> UC2
+Admin --> UC3
+Admin --> UC4
+Admin --> UC5
+Admin --> UC6
+Admin --> UC7
+Admin --> UC8
+Admin --> UC9
+Admin --> UC10
+Admin --> UC11
+Admin --> UC12
+Admin --> UC13
+Admin --> UC14
+Admin --> UC15
+
+%% Guru connections
+Guru --> UC16
+Guru --> UC17
+Guru --> UC18
+Guru --> UC19
+Guru --> UC20
+Guru --> UC21
+Guru --> UC22
+Guru --> UC23
+Guru --> UC24
+
+%% Siswa connections
+Siswa --> UC25
+Siswa --> UC26
+Siswa --> UC27
+Siswa --> UC28
+Siswa --> UC29
+Siswa --> UC30
+Siswa --> UC31
+
+%% Styling
+classDef adminUC fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+classDef guruUC fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+classDef siswaUC fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
+classDef actor fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px
+
+class UC1,UC2,UC3,UC4,UC5,UC6,UC7,UC8,UC9,UC10,UC11,UC12,UC13,UC14,UC15 adminUC
+class UC16,UC17,UC18,UC19,UC20,UC21,UC22,UC23,UC24 guruUC
+class UC25,UC26,UC27,UC28,UC29,UC30,UC31 siswaUC
+class Admin,Guru,Siswa actor

@@ -1,0 +1,111 @@
+@startuml
+!theme plain
+skinparam backgroundColor white
+skinparam actor {
+    BackgroundColor white
+    BorderColor black
+    FontSize 12
+}
+skinparam usecase {
+    BackgroundColor white
+    BorderColor black
+    FontSize 10
+}
+skinparam rectangle {
+    BackgroundColor white
+    BorderColor black
+    FontStyle bold
+}
+
+title Use Case Diagram - E-Learning SMK System
+
+' Positioning actors
+actor Admin as admin
+actor Guru as guru  
+actor Siswa as siswa
+
+rectangle "E-Learning SMK System" {
+    
+    ' Shared Login
+    usecase "Login" as UCLogin
+    
+    ' Admin Use Cases - arranged in groups
+    usecase "Dashboard\nAdmin" as UC1
+    usecase "User\nActivation" as UC2
+    usecase "Kelola User\nPengguna" as UC3
+    usecase "Setting\nSystem" as UC4
+    
+    usecase "Kelola Data\nSiswa" as UC5
+    usecase "Kelola Data\nGuru" as UC6
+    usecase "Kelola Data\nJurusan" as UC7
+    usecase "Kelola Data\nKelas" as UC8
+    usecase "Kelola Data\nMata Pelajaran" as UC9
+    usecase "Kelola Data\nJadwal" as UC10
+    usecase "Kelola Data\nAbsensi" as UC11
+    usecase "Kelola Data\nNilai" as UC12
+    usecase "Kelola Data\nUlangan" as UC13
+    usecase "Kelola Data\nMateri/Modul" as UC14
+    usecase "Kelola Data Link\nPengumpulan Tugas" as UC15
+    
+    ' Guru Use Cases
+    usecase "Dashboard\nGuru" as UC16
+    usecase "Kelola User\nPengguna Guru" as UC17
+    usecase "Kelola Data\nSiswa Guru" as UC18
+    usecase "Kelola Data\nJurusan/Kelas Guru" as UC19
+    usecase "Input Data\nAbsensi" as UC20
+    usecase "Input Data\nNilai" as UC21
+    usecase "Kelola\nMateri/Modul" as UC22
+    usecase "Membuat Soal\nUlangan Online" as UC23
+    usecase "Kelola Link\nPengumpulan Tugas" as UC24
+    
+    ' Siswa Use Cases
+    usecase "Dashboard\nSiswa" as UC25
+    usecase "Kelola User\nPengguna Siswa" as UC26
+    usecase "Melihat\nJadwal" as UC27
+    usecase "Melihat\nNilai" as UC28
+    usecase "Melihat\nMateri" as UC29
+    usecase "Mengerjakan\nUlangan" as UC30
+    usecase "Mengakses Link\nPengumpulan Tugas" as UC31
+}
+
+' Admin connections
+admin --> UCLogin
+admin --> UC1
+admin --> UC2
+admin --> UC3
+admin --> UC4
+admin --> UC5
+admin --> UC6
+admin --> UC7
+admin --> UC8
+admin --> UC9
+admin --> UC10
+admin --> UC11
+admin --> UC12
+admin --> UC13
+admin --> UC14
+admin --> UC15
+
+' Guru connections
+guru --> UCLogin
+guru --> UC16
+guru --> UC17
+guru --> UC18
+guru --> UC19
+guru --> UC20
+guru --> UC21
+guru --> UC22
+guru --> UC23
+guru --> UC24
+
+' Siswa connections
+siswa --> UCLogin
+siswa --> UC25
+siswa --> UC26
+siswa --> UC27
+siswa --> UC28
+siswa --> UC29
+siswa --> UC30
+siswa --> UC31
+
+@enduml

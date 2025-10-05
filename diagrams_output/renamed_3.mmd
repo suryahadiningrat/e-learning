@@ -1,0 +1,35 @@
+flowchart LR
+Admin[Admin]
+Guru[Guru]
+Siswa[Siswa]
+
+subgraph Sistem
+Core((Sistem Informasi SMK))
+end
+
+%% Siswa flows
+Siswa -- Input Data Diri --> Core
+Siswa -- Akses Materi --> Core
+Siswa -- Kerjakan Ulangan --> Core
+Siswa -- Kumpulkan Tugas --> Core
+Siswa -- Lihat Jadwal/Nilai --> Core
+
+%% Guru flows
+Guru -- Input Materi --> Core
+Guru -- Input Soal Ulangan --> Core
+Guru -- Input Nilai --> Core
+Guru -- Input Absensi --> Core
+Guru -- Kelola Link Tugas --> Core
+
+%% Admin flows
+Admin -- Aktivasi User --> Core
+Admin -- Kelola User --> Core
+Admin -- Setting System --> Core
+Admin -- Input Master Siswa/Guru --> Core
+Admin -- Input Jurusan/Kelas/Mapel --> Core
+Admin -- Input Jadwal/Tahun Akademik --> Core
+Admin -- Rekap Nilai/Absensi --> Core
+
+Core -- L Materi/Ulangan/Tugas --> Siswa
+Core -- L Penilaian/Absensi --> Guru
+Core -- Laporan & Rekap --> Admin

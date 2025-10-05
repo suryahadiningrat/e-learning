@@ -1,0 +1,406 @@
+
+digraph ERD {
+    // Graph settings for better layout
+    graph [
+        rankdir=TB,
+        splines=ortho,
+        nodesep=2.5,
+        ranksep=3.0,
+        bgcolor="white",
+        fontname="Arial",
+        fontsize=16,
+        labelloc="t",
+        label="Entity Relationship Diagram - E-Learning SMK System"
+    ];
+    
+    // Node default settings
+    node [
+        fontname="Arial",
+        fontsize=11,
+        margin=0.3
+    ];
+    
+    // Edge default settings
+    edge [
+        fontname="Arial",
+        fontsize=9,
+        color="#546E7A",
+        penwidth=2
+    ];
+    
+    // Define entity nodes with better styling
+    USERS [
+        shape=ellipse,
+        style=filled,
+        fillcolor="#E3F2FD",
+        color="#1976D2",
+        penwidth=3,
+        fontsize=12,
+        fontcolor="#263238"
+    ];
+    
+    JURUSAN [
+        shape=ellipse,
+        style=filled,
+        fillcolor="#E3F2FD",
+        color="#1976D2",
+        penwidth=3,
+        fontsize=12,
+        fontcolor="#263238"
+    ];
+    
+    MATA_PELAJARAN [
+        shape=ellipse,
+        style=filled,
+        fillcolor="#E3F2FD",
+        color="#1976D2",
+        penwidth=3,
+        fontsize=12,
+        fontcolor="#263238"
+    ];
+    
+    GURU [
+        shape=ellipse,
+        style=filled,
+        fillcolor="#E3F2FD",
+        color="#1976D2",
+        penwidth=3,
+        fontsize=12,
+        fontcolor="#263238"
+    ];
+    
+    SISWA [
+        shape=ellipse,
+        style=filled,
+        fillcolor="#E3F2FD",
+        color="#1976D2",
+        penwidth=3,
+        fontsize=12,
+        fontcolor="#263238"
+    ];
+    
+    KELAS [
+        shape=ellipse,
+        style=filled,
+        fillcolor="#E3F2FD",
+        color="#1976D2",
+        penwidth=3,
+        fontsize=12,
+        fontcolor="#263238"
+    ];
+    
+    JADWAL [
+        shape=ellipse,
+        style=filled,
+        fillcolor="#E3F2FD",
+        color="#1976D2",
+        penwidth=3,
+        fontsize=12,
+        fontcolor="#263238"
+    ];
+    
+    TAHUN_AKADEMIK [
+        shape=ellipse,
+        style=filled,
+        fillcolor="#E3F2FD",
+        color="#1976D2",
+        penwidth=3,
+        fontsize=12,
+        fontcolor="#263238"
+    ];
+    
+    SETTINGS [
+        shape=ellipse,
+        style=filled,
+        fillcolor="#E3F2FD",
+        color="#1976D2",
+        penwidth=3,
+        fontsize=12,
+        fontcolor="#263238"
+    ];
+    
+    ABSENSI [
+        shape=ellipse,
+        style=filled,
+        fillcolor="#E3F2FD",
+        color="#1976D2",
+        penwidth=3,
+        fontsize=12,
+        fontcolor="#263238"
+    ];
+    
+    NILAI [
+        shape=ellipse,
+        style=filled,
+        fillcolor="#E3F2FD",
+        color="#1976D2",
+        penwidth=3,
+        fontsize=12,
+        fontcolor="#263238"
+    ];
+    
+    MATERI [
+        shape=ellipse,
+        style=filled,
+        fillcolor="#E3F2FD",
+        color="#1976D2",
+        penwidth=3,
+        fontsize=12,
+        fontcolor="#263238"
+    ];
+    
+    TUGAS [
+        shape=ellipse,
+        style=filled,
+        fillcolor="#E3F2FD",
+        color="#1976D2",
+        penwidth=3,
+        fontsize=12,
+        fontcolor="#263238"
+    ];
+    
+    PENGUMPULAN_TUGAS [
+        shape=ellipse,
+        style=filled,
+        fillcolor="#E3F2FD",
+        color="#1976D2",
+        penwidth=3,
+        fontsize=12,
+        fontcolor="#263238"
+    ];
+    
+    // Define attribute nodes
+    // USERS attributes
+    users_id [label="id (PK)", shape=box, style=filled, fillcolor="#FFF3E0", color="#FF9800", penwidth=2];
+    users_username [label="username", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    users_email [label="email", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    users_password [label="password", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    users_full_name [label="full_name", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    users_role [label="role", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    
+    // JURUSAN attributes
+    jurusan_id [label="id (PK)", shape=box, style=filled, fillcolor="#FFF3E0", color="#FF9800", penwidth=2];
+    jurusan_nama [label="nama_jurusan", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    jurusan_kode [label="kode_jurusan", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    
+    // MATA_PELAJARAN attributes
+    mapel_id [label="id (PK)", shape=box, style=filled, fillcolor="#FFF3E0", color="#FF9800", penwidth=2];
+    mapel_kode [label="kode", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    mapel_nama [label="nama", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    mapel_deskripsi [label="deskripsi", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    mapel_status [label="status", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    
+    // GURU attributes
+    guru_id [label="id (PK)", shape=box, style=filled, fillcolor="#FFF3E0", color="#FF9800", penwidth=2];
+    guru_user_id [label="user_id (FK)", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    guru_nip [label="nip", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    guru_bidang [label="bidang_studi", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    guru_jk [label="jenis_kelamin", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    
+    // SISWA attributes
+    siswa_id [label="id (PK)", shape=box, style=filled, fillcolor="#FFF3E0", color="#FF9800", penwidth=2];
+    siswa_user_id [label="user_id (FK)", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    siswa_nis [label="nis", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    siswa_nisn [label="nisn", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    siswa_kelas_id [label="kelas_id (FK)", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    siswa_jk [label="jenis_kelamin", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    
+    // KELAS attributes
+    kelas_id [label="id (PK)", shape=box, style=filled, fillcolor="#FFF3E0", color="#FF9800", penwidth=2];
+    kelas_nama [label="nama_kelas", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    kelas_jurusan_id [label="jurusan_id (FK)", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    kelas_tingkat [label="tingkat", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    kelas_kapasitas [label="kapasitas", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    
+    // JADWAL attributes
+    jadwal_id [label="id (PK)", shape=box, style=filled, fillcolor="#FFF3E0", color="#FF9800", penwidth=2];
+    jadwal_kelas_id [label="kelas_id (FK)", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    jadwal_guru_id [label="guru_id (FK)", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    jadwal_mapel [label="mata_pelajaran", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    jadwal_hari [label="hari", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    jadwal_jam_mulai [label="jam_mulai", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    jadwal_jam_selesai [label="jam_selesai", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    
+    // Other entity attributes (simplified for space)
+    tahun_id [label="id (PK)", shape=box, style=filled, fillcolor="#FFF3E0", color="#FF9800", penwidth=2];
+    tahun_akademik [label="tahun_akademik", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    tahun_semester [label="semester", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    
+    settings_id [label="id (PK)", shape=box, style=filled, fillcolor="#FFF3E0", color="#FF9800", penwidth=2];
+    settings_key [label="key", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    settings_value [label="value", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    
+    absensi_id [label="id (PK)", shape=box, style=filled, fillcolor="#FFF3E0", color="#FF9800", penwidth=2];
+    absensi_siswa_id [label="siswa_id (FK)", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    absensi_jadwal_id [label="jadwal_id (FK)", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    absensi_status [label="status", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    
+    nilai_id [label="id (PK)", shape=box, style=filled, fillcolor="#FFF3E0", color="#FF9800", penwidth=2];
+    nilai_siswa_id [label="siswa_id (FK)", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    nilai_jadwal_id [label="jadwal_id (FK)", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    nilai_tugas [label="nilai_tugas", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    nilai_uas [label="nilai_uas", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    
+    materi_id [label="id (PK)", shape=box, style=filled, fillcolor="#FFF3E0", color="#FF9800", penwidth=2];
+    materi_jadwal_id [label="jadwal_id (FK)", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    materi_judul [label="judul", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    materi_konten [label="konten", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    
+    tugas_id [label="id (PK)", shape=box, style=filled, fillcolor="#FFF3E0", color="#FF9800", penwidth=2];
+    tugas_jadwal_id [label="jadwal_id (FK)", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    tugas_nama [label="nama_tugas", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    tugas_deadline [label="deadline", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    
+    pengumpulan_id [label="id (PK)", shape=box, style=filled, fillcolor="#FFF3E0", color="#FF9800", penwidth=2];
+    pengumpulan_tugas_id [label="tugas_id (FK)", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    pengumpulan_siswa_id [label="siswa_id (FK)", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    pengumpulan_status [label="status", shape=box, style=filled, fillcolor="#FAFAFA", color="#757575"];
+    
+    // Define relationship nodes
+    rel_user_guru [label="MEMILIKI\nPROFIL", shape=diamond, style=filled, fillcolor="#FCE4EC", color="#E91E63", penwidth=2];
+    rel_user_siswa [label="MEMILIKI\nPROFIL", shape=diamond, style=filled, fillcolor="#FCE4EC", color="#E91E63", penwidth=2];
+    rel_siswa_kelas [label="BELAJAR\nDI", shape=diamond, style=filled, fillcolor="#FCE4EC", color="#E91E63", penwidth=2];
+    rel_kelas_jurusan [label="MEMILIKI\nJURUSAN", shape=diamond, style=filled, fillcolor="#FCE4EC", color="#E91E63", penwidth=2];
+    rel_guru_jadwal [label="MENGAJAR", shape=diamond, style=filled, fillcolor="#FCE4EC", color="#E91E63", penwidth=2];
+    rel_kelas_jadwal [label="DIJADWALKAN", shape=diamond, style=filled, fillcolor="#FCE4EC", color="#E91E63", penwidth=2];
+    rel_mapel_jadwal [label="MATA_PELAJARAN\nJADWAL", shape=diamond, style=filled, fillcolor="#FCE4EC", color="#E91E63", penwidth=2];
+    rel_siswa_absensi [label="ABSEN", shape=diamond, style=filled, fillcolor="#FCE4EC", color="#E91E63", penwidth=2];
+    rel_siswa_nilai [label="NILAI", shape=diamond, style=filled, fillcolor="#FCE4EC", color="#E91E63", penwidth=2];
+    rel_jadwal_materi [label="MATERI", shape=diamond, style=filled, fillcolor="#FCE4EC", color="#E91E63", penwidth=2];
+    rel_jadwal_tugas [label="TUGAS", shape=diamond, style=filled, fillcolor="#FCE4EC", color="#E91E63", penwidth=2];
+    rel_tugas_pengumpulan [label="PENGUMPULAN", shape=diamond, style=filled, fillcolor="#FCE4EC", color="#E91E63", penwidth=2];
+    
+    // Entity to attribute connections (these will be drawn behind entities)
+    USERS -> users_id [style=invis];
+    USERS -> users_username [style=invis];
+    USERS -> users_email [style=invis];
+    USERS -> users_password [style=invis];
+    USERS -> users_full_name [style=invis];
+    USERS -> users_role [style=invis];
+    
+    JURUSAN -> jurusan_id [style=invis];
+    JURUSAN -> jurusan_nama [style=invis];
+    JURUSAN -> jurusan_kode [style=invis];
+    
+    MATA_PELAJARAN -> mapel_id [style=invis];
+    MATA_PELAJARAN -> mapel_kode [style=invis];
+    MATA_PELAJARAN -> mapel_nama [style=invis];
+    MATA_PELAJARAN -> mapel_deskripsi [style=invis];
+    MATA_PELAJARAN -> mapel_status [style=invis];
+    
+    GURU -> guru_id [style=invis];
+    GURU -> guru_user_id [style=invis];
+    GURU -> guru_nip [style=invis];
+    GURU -> guru_bidang [style=invis];
+    GURU -> guru_jk [style=invis];
+    
+    SISWA -> siswa_id [style=invis];
+    SISWA -> siswa_user_id [style=invis];
+    SISWA -> siswa_nis [style=invis];
+    SISWA -> siswa_nisn [style=invis];
+    SISWA -> siswa_kelas_id [style=invis];
+    SISWA -> siswa_jk [style=invis];
+    
+    KELAS -> kelas_id [style=invis];
+    KELAS -> kelas_nama [style=invis];
+    KELAS -> kelas_jurusan_id [style=invis];
+    KELAS -> kelas_tingkat [style=invis];
+    KELAS -> kelas_kapasitas [style=invis];
+    
+    JADWAL -> jadwal_id [style=invis];
+    JADWAL -> jadwal_kelas_id [style=invis];
+    JADWAL -> jadwal_guru_id [style=invis];
+    JADWAL -> jadwal_mapel [style=invis];
+    JADWAL -> jadwal_hari [style=invis];
+    JADWAL -> jadwal_jam_mulai [style=invis];
+    JADWAL -> jadwal_jam_selesai [style=invis];
+    
+    TAHUN_AKADEMIK -> tahun_id [style=invis];
+    TAHUN_AKADEMIK -> tahun_akademik [style=invis];
+    TAHUN_AKADEMIK -> tahun_semester [style=invis];
+    
+    SETTINGS -> settings_id [style=invis];
+    SETTINGS -> settings_key [style=invis];
+    SETTINGS -> settings_value [style=invis];
+    
+    ABSENSI -> absensi_id [style=invis];
+    ABSENSI -> absensi_siswa_id [style=invis];
+    ABSENSI -> absensi_jadwal_id [style=invis];
+    ABSENSI -> absensi_status [style=invis];
+    
+    NILAI -> nilai_id [style=invis];
+    NILAI -> nilai_siswa_id [style=invis];
+    NILAI -> nilai_jadwal_id [style=invis];
+    NILAI -> nilai_tugas [style=invis];
+    NILAI -> nilai_uas [style=invis];
+    
+    MATERI -> materi_id [style=invis];
+    MATERI -> materi_jadwal_id [style=invis];
+    MATERI -> materi_judul [style=invis];
+    MATERI -> materi_konten [style=invis];
+    
+    TUGAS -> tugas_id [style=invis];
+    TUGAS -> tugas_jadwal_id [style=invis];
+    TUGAS -> tugas_nama [style=invis];
+    TUGAS -> tugas_deadline [style=invis];
+    
+    PENGUMPULAN_TUGAS -> pengumpulan_id [style=invis];
+    PENGUMPULAN_TUGAS -> pengumpulan_tugas_id [style=invis];
+    PENGUMPULAN_TUGAS -> pengumpulan_siswa_id [style=invis];
+    PENGUMPULAN_TUGAS -> pengumpulan_status [style=invis];
+    
+    // Main entity relationships (these will be visible)
+    USERS -> rel_user_guru -> GURU;
+    USERS -> rel_user_siswa -> SISWA;
+    SISWA -> rel_siswa_kelas -> KELAS;
+    KELAS -> rel_kelas_jurusan -> JURUSAN;
+    GURU -> rel_guru_jadwal -> JADWAL;
+    KELAS -> rel_kelas_jadwal -> JADWAL;
+    MATA_PELAJARAN -> rel_mapel_jadwal -> JADWAL;
+    SISWA -> rel_siswa_absensi -> ABSENSI;
+    SISWA -> rel_siswa_nilai -> NILAI;
+    JADWAL -> rel_jadwal_materi -> MATERI;
+    JADWAL -> rel_jadwal_tugas -> TUGAS;
+    TUGAS -> rel_tugas_pengumpulan -> PENGUMPULAN_TUGAS;
+    
+    // Subgraph for better organization
+    subgraph cluster_core {
+        label="Core System";
+        style=filled;
+        fillcolor="#F5F5F5";
+        color="#BDBDBD";
+        USERS; JURUSAN; MATA_PELAJARAN;
+    }
+    
+    subgraph cluster_users {
+        label="User Profiles";
+        style=filled;
+        fillcolor="#F5F5F5";
+        color="#BDBDBD";
+        GURU; SISWA; KELAS;
+    }
+    
+    subgraph cluster_academic {
+        label="Academic Activities";
+        style=filled;
+        fillcolor="#F5F5F5";
+        color="#BDBDBD";
+        JADWAL; ABSENSI; NILAI; MATERI;
+    }
+    
+    subgraph cluster_assignments {
+        label="Assignment System";
+        style=filled;
+        fillcolor="#F5F5F5";
+        color="#BDBDBD";
+        TUGAS; PENGUMPULAN_TUGAS;
+    }
+    
+    subgraph cluster_settings {
+        label="System Settings";
+        style=filled;
+        fillcolor="#F5F5F5";
+        color="#BDBDBD";
+        TAHUN_AKADEMIK; SETTINGS;
+    }
+}

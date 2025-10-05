@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: white;
+        }
+        .mermaid {
+            text-align: center;
+        }
+        .title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">diagram_2</h1>
+    <div class="mermaid">
+flowchart TD
+subgraph Admin["Admin"]
+A1([Validasi akun])
+A2([Kelola user dan aktivasi])
+A3([Kelola master data])
+A9([Mengelola laporan nilai])
+end
+subgraph Siswa["Siswa"]
+S0(((Start)))
+S1([Membuat akun])
+S2([Masuk sebagai siswa])
+S3([Melihat materi])
+S4([Mengerjakan ujian])
+S5([Mengumpulkan tugas])
+S6([Melihat jadwal])
+S7([Melihat nilai])
+S9(((End)))
+end
+subgraph Guru["Guru"]
+G1([Masuk sebagai guru])
+G2([Memasukan materi])
+G3([Membuat soal ulangan])
+G4([Memasukan nilai])
+G5([Memasukan absensi])
+G6([Mengelola tugas])
+end
+
+S0 --> S1 --> A1
+A1 --> A2
+A2 --> S2
+A2 --> G1
+
+G1 --> G2 --> S3
+G1 --> G3 --> S4
+G1 --> G6 --> S5
+G1 --> G4 --> S7
+G1 --> G5
+
+S2 --> S6
+S6 --> S3
+S3 --> S4
+S4 --> S7
+
+S7 --> A9 --> S9
+A3 -. meliputi .-> A2
+
+%% Styling
+classDef adminNode fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+classDef siswaNode fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+classDef guruNode fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+classDef startEnd fill:#fff3e0,stroke:#f57c00,stroke-width:3px
+
+class A1,A2,A3,A9 adminNode
+class S1,S2,S3,S4,S5,S6,S7 siswaNode
+class G1,G2,G3,G4,G5,G6 guruNode
+class S0,S9 startEnd
+    </div>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>

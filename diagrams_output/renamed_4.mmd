@@ -1,0 +1,37 @@
+flowchart TB
+System((Sistem Informasi Akademik))
+
+System --> Master
+System --> Transaksi
+System --> Laporan
+System --> Konfigurasi
+System --> Pengguna
+
+%% Master
+Master --> M1((1.1 Data guru))
+Master --> M2((1.2 Data siswa))
+Master --> M3((1.3 Data jurusan))
+Master --> M4((1.4 Data kelas))
+Master --> M5((1.5 Data mata pelajaran))
+Master --> M6((1.6 Data tahun akademik))
+
+%% Transaksi
+Transaksi --> T1((2.1 Jadwal pelajaran))
+Transaksi --> T2((2.2 Nilai siswa))
+Transaksi --> T3((2.3 Absensi))
+Transaksi --> T4((2.4 Ulangan))
+Transaksi --> T5((2.5 Materi))
+Transaksi --> T6((2.6 Link pengumpulan tugas))
+
+%% Laporan
+Laporan --> L1((3.1 Laporan akademik))
+Laporan --> L2((3.2 Laporan jadwal))
+Laporan --> L3((3.3 Laporan nilai siswa))
+Laporan --> L4((3.4 Laporan absensi))
+
+%% Konfigurasi
+Konfigurasi --> K1((4.1 Setting system))
+
+%% Pengguna
+Pengguna --> Pn1((5.1 User aktivasi))
+Pengguna --> Pn2((5.2 User pengguna))

@@ -1,0 +1,177 @@
+@startuml
+!theme plain
+skinparam backgroundColor white
+skinparam entity {
+    BackgroundColor lightblue
+    BorderColor black
+    FontSize 10
+    FontName Arial
+}
+skinparam rectangle {
+    BackgroundColor lightblue
+    BorderColor black
+    FontSize 12
+    FontName Arial
+}
+
+title E-Learning SMK System - Entity Relationship Diagram
+
+entity "GURU" as guru {
+    * id_guru : int <<PK>>
+    --
+    nama_lengkap : string
+    email : string
+    password : string
+    nip : string
+    tempat_lahir : string
+    tanggal_lahir : date
+    jenis_kelamin : string
+    alamat : string
+    no_telp : string
+    foto : string
+    status : boolean
+    created_at : datetime
+    updated_at : datetime
+}
+
+entity "SISWA" as siswa {
+    * id_siswa : int <<PK>>
+    --
+    nama_lengkap : string
+    email : string
+    password : string
+    nis : string
+    nisn : string
+    tempat_lahir : string
+    tanggal_lahir : date
+    jenis_kelamin : string
+    alamat : string
+    no_telp : string
+    foto : string
+    + id_kelas : int <<FK>>
+    status : boolean
+    created_at : datetime
+    updated_at : datetime
+}
+
+entity "KELAS" as kelas {
+    * id_kelas : int <<PK>>
+    --
+    nama_kelas : string
+    + id_jurusan : int <<FK>>
+    + id_tahun_akademik : int <<FK>>
+    kapasitas : int
+    created_at : datetime
+    updated_at : datetime
+}
+
+entity "JURUSAN" as jurusan {
+    * id_jurusan : int <<PK>>
+    --
+    nama_jurusan : string
+    kode_jurusan : string
+    deskripsi : string
+    created_at : datetime
+    updated_at : datetime
+}
+
+entity "MATA_PELAJARAN" as mata_pelajaran {
+    * id_mapel : int <<PK>>
+    --
+    nama_mapel : string
+    kode_mapel : string
+    sks : int
+    deskripsi : string
+    created_at : datetime
+    updated_at : datetime
+}
+
+entity "TAHUN_AKADEMIK" as tahun_akademik {
+    * id_tahun_akademik : int <<PK>>
+    --
+    tahun_akademik : string
+    tanggal_mulai : date
+    tanggal_selesai : date
+    status_aktif : boolean
+    created_at : datetime
+    updated_at : datetime
+}
+
+entity "JADWAL" as jadwal {
+    * id_jadwal : int <<PK>>
+    --
+    + id_guru : int <<FK>>
+    + id_kelas : int <<FK>>
+    + id_mapel : int <<FK>>
+    hari : string
+    jam_mulai : time
+    jam_selesai : time
+    ruangan : string
+    created_at : datetime
+    updated_at : datetime
+}
+
+entity "MATERI" as materi {
+    * id_materi : int <<PK>>
+    --
+    + id_guru : int <<FK>>
+    + id_mapel : int <<FK>>
+    + id_kelas : int <<FK>>
+    judul_materi : string
+    deskripsi : text
+    file_path : string
+    tipe_file : string
+    created_at : datetime
+    updated_at : datetime
+}
+
+entity "NILAI" as nilai {
+    * id_nilai : int <<PK>>
+    --
+    + id_siswa : int <<FK>>
+    + id_mapel : int <<FK>>
+    + id_guru : int <<FK>>
+    + id_tahun_akademik : int <<FK>>
+    nilai_tugas : float
+    nilai_uts : float
+    nilai_uas : float
+    nilai_akhir : float
+    semester : string
+    created_at : datetime
+    updated_at : datetime
+}
+
+entity "ABSENSI" as absensi {
+    * id_absensi : int <<PK>>
+    --
+    + id_siswa : int <<FK>>
+    + id_jadwal : int <<FK>>
+    tanggal : date
+    status : string
+    keterangan : string
+    created_at : datetime
+    updated_at : datetime
+}
+
+' Relationships
+guru ||--o{ jadwal : "mengajar"
+kelas ||--o{ jadwal : "dijadwalkan"
+mata_pelajaran ||--o{ jadwal : "diajarkan"
+
+guru ||--o{ materi : "membuat"
+mata_pelajaran ||--o{ materi : "berisi"
+kelas ||--o{ materi : "untuk"
+
+siswa ||--o{ nilai : "memiliki"
+mata_pelajaran ||--o{ nilai : "dinilai"
+guru ||--o{ nilai : "menilai"
+tahun_akademik ||--o{ nilai : "periode"
+
+siswa ||--o{ absensi : "hadir"
+jadwal ||--o{ absensi : "dicatat"
+
+jurusan ||--o{ kelas : "memiliki"
+tahun_akademik ||--o{ kelas : "periode"
+kelas ||--o{ siswa : "berisi"
+
+@enduml

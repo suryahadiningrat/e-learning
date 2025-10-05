@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: white;
+        }
+        .mermaid {
+            text-align: center;
+        }
+        .title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">diagram_2</h1>
+    <div class="mermaid">
+flowchart LR
+subgraph Admin
+A1([Validasi akun])
+A2([Kelola user aktivasi])
+A3([Kelola user pengguna])
+A4([Kelola setting system])
+A9([Kelola laporan nilai])
+end
+subgraph Siswa
+S0(((Start)))
+S1([Membuat akun])
+S2([Masuk sebagai siswa])
+S3([Melihat materi])
+S4([Mengerjakan ulangan])
+S5([Mengumpulkan tugas])
+S6([Melihat jadwal])
+S7([Melihat nilai])
+S9(((End)))
+end
+subgraph Guru
+G1([Masuk sebagai guru])
+G2([Memasukan materi])
+G3([Membuat soal ulangan])
+G4([Input nilai siswa])
+G5([Input absensi])
+G6([Kelola link tugas])
+end
+
+S0 --> S1 --> A1
+A1 --> A2 --> A3 --> A4
+A1 --> G1 --> G2 --> S3
+G1 --> G3 --> S4
+G1 --> G4 --> S7
+G1 --> G5
+G1 --> G6 --> S5
+A1 --> S2 --> S6 --> S7 --> S9
+    </div>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+graph TB
+%% External Entities
+Admin[👨‍💼 Admin<br/>Sekolah]
+Guru[👨‍🏫 Guru<br/>Pengajar]
+Siswa[👨‍🎓 Siswa<br/>Peserta Didik]
+KepalaSekolah[👨‍💼 Kepala<br/>Sekolah]
+OrangTua[👨‍👩‍👧‍👦 Orang Tua<br/>Wali]
+SistemAkademik[📊 Sistem<br/>Akademik<br/>Eksternal]
+
+%% Central System
+subgraph "E-Learning SMK System"
+ELearning[🎓 E-Learning<br/>SMK System]
+end
+
+%% Data Flows - Admin
+Admin -->|"1. Login Request"| ELearning
+ELearning -->|"2. Dashboard Data"| Admin
+Admin -->|"3. User Management"| ELearning
+ELearning -->|"4. User Status Update"| Admin
+Admin -->|"5. System Configuration"| ELearning
+ELearning -->|"6. Configuration Response"| Admin
+Admin -->|"7. Master Data Input"| ELearning
+ELearning -->|"8. Data Validation"| Admin
+
+%% Data Flows - Guru
+Guru -->|"9. Login Request"| ELearning
+ELearning -->|"10. Teaching Dashboard"| Guru
+Guru -->|"11. Material Upload"| ELearning
+ELearning -->|"12. Upload Confirmation"| Guru
+Guru -->|"13. Exam Creation"| ELearning
+ELearning -->|"14. Exam Published"| Guru
+Guru -->|"15. Grade Input"| ELearning
+ELearning -->|"16. Grade Saved"| Guru
+Guru -->|"17. Attendance Record"| ELearning
+ELearning -->|"18. Attendance Report"| Guru
+
+%% Data Flows - Siswa
+Siswa -->|"19. Login Request"| ELearning
+ELearning -->|"20. Student Dashboard"| Siswa
+Siswa -->|"21. View Materials"| ELearning
+ELearning -->|"22. Material Files"| Siswa
+Siswa -->|"23. Take Exam"| ELearning
+ELearning -->|"24. Exam Questions"| Siswa
+Siswa -->|"25. Submit Answers"| ELearning
+ELearning -->|"26. Exam Results"| Siswa
+Siswa -->|"27. Submit Assignment"| ELearning
+ELearning -->|"28. Submission Confirmation"| Siswa
+Siswa -->|"29. View Grades"| ELearning
+ELearning -->|"30. Grade Report"| Siswa
+
+%% Data Flows - Kepala Sekolah
+KepalaSekolah -->|"31. Request Reports"| ELearning
+ELearning -->|"32. Academic Reports"| KepalaSekolah
+KepalaSekolah -->|"33. Policy Updates"| ELearning
+ELearning -->|"34. Policy Implementation"| KepalaSekolah
+
+%% Data Flows - Orang Tua
+OrangTua -->|"35. View Child Progress"| ELearning
+ELearning -->|"36. Student Progress Report"| OrangTua
+OrangTua -->|"37. Communication Request"| ELearning
+ELearning -->|"38. Communication Response"| OrangTua
+
+%% Data Flows - Sistem Akademik Eksternal
+SistemAkademik -->|"39. Student Data Sync"| ELearning
+ELearning -->|"40. Academic Data Export"| SistemAkademik
+SistemAkademik -->|"41. Curriculum Updates"| ELearning
+ELearning -->|"42. Update Confirmation"| SistemAkademik
+
+%% Styling
+classDef external fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+classDef system fill:#f3e5f5,stroke:#4a148c,stroke-width:3px
+
+class Admin,Guru,Siswa,KepalaSekolah,OrangTua,SistemAkademik external
+class ELearning system

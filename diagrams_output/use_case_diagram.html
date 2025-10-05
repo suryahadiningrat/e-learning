@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: white;
+        }
+        .mermaid {
+            text-align: center;
+        }
+        .title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">diagram_1</h1>
+    <div class="mermaid">
+flowchart LR
+%% Actors
+Admin((Admin))
+Guru((Guru))
+Siswa((Siswa))
+
+%% Use cases - Admin
+UC_Admin_UserAktivasi((User aktivasi))
+UC_Admin_UserPengguna((User pengguna))
+UC_Admin_Setting((Setting system))
+UC_Admin_Siswa((Kelola data siswa))
+UC_Admin_Guru((Kelola data guru))
+UC_Admin_JurusanKelas((Kelola data jurusan/kelas))
+UC_Admin_Jadwal((Kelola data jadwal))
+UC_Admin_Absensi((Kelola data absensi))
+UC_Admin_Nilai((Kelola data nilai))
+UC_Admin_Ulangan((Kelola data ulangan))
+UC_Admin_Materi((Kelola data materi/modul))
+UC_Admin_Tugas((Kelola data link pengumpulan tugas))
+UC_Admin_Tahun((Kelola data tahun akademik))
+
+%% Use cases - Guru
+UC_Guru_User((User pengguna))
+UC_Guru_Siswa((Data siswa))
+UC_Guru_JurusanKelas((Data jurusan/kelas))
+UC_Guru_Absensi((Memasukan absensi))
+UC_Guru_Nilai((Memasukan nilai))
+UC_Guru_Ulangan((Membuat soal ulangan online))
+UC_Guru_Materi((Memasukan materi/modul))
+UC_Guru_Tugas((Kelola link pengumpulan tugas))
+
+%% Use cases - Siswa
+UC_Siswa_Jadwal((Melihat jadwal))
+UC_Siswa_Nilai((Melihat nilai))
+UC_Siswa_Ulangan((Mengerjakan ulangan))
+UC_Siswa_Materi((Melihat materi))
+UC_Siswa_Tugas((Mengumpulkan tugas))
+
+%% Common
+UC_Login((Login))
+
+%% Relations Admin
+Admin --- UC_Admin_UserAktivasi
+Admin --- UC_Admin_UserPengguna
+Admin --- UC_Admin_Setting
+Admin --- UC_Admin_Siswa
+Admin --- UC_Admin_Guru
+Admin --- UC_Admin_JurusanKelas
+Admin --- UC_Admin_Jadwal
+Admin --- UC_Admin_Absensi
+Admin --- UC_Admin_Nilai
+Admin --- UC_Admin_Ulangan
+Admin --- UC_Admin_Materi
+Admin --- UC_Admin_Tugas
+Admin --- UC_Admin_Tahun
+Admin --> UC_Login
+
+%% Relations Guru
+Guru --- UC_Guru_User
+Guru --- UC_Guru_Siswa
+Guru --- UC_Guru_JurusanKelas
+Guru --- UC_Guru_Absensi
+Guru --- UC_Guru_Nilai
+Guru --- UC_Guru_Ulangan
+Guru --- UC_Guru_Materi
+Guru --- UC_Guru_Tugas
+Guru --> UC_Login
+
+%% Relations Siswa
+Siswa --- UC_Siswa_Jadwal
+Siswa --- UC_Siswa_Nilai
+Siswa --- UC_Siswa_Ulangan
+Siswa --- UC_Siswa_Materi
+Siswa --- UC_Siswa_Tugas
+Siswa --> UC_Login
+
+%% Styling
+classDef actor fill:#f9f9f9,stroke:#333,stroke-width:2px
+classDef usecase fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+classDef login fill:#fff3e0,stroke:#e65100,stroke-width:2px
+
+class Admin,Guru,Siswa actor
+class UC_Admin_UserAktivasi,UC_Admin_UserPengguna,UC_Admin_Setting,UC_Admin_Siswa,UC_Admin_Guru,UC_Admin_JurusanKelas,UC_Admin_Jadwal,UC_Admin_Absensi,UC_Admin_Nilai,UC_Admin_Ulangan,UC_Admin_Materi,UC_Admin_Tugas,UC_Admin_Tahun,UC_Guru_User,UC_Guru_Siswa,UC_Guru_JurusanKelas,UC_Guru_Absensi,UC_Guru_Nilai,UC_Guru_Ulangan,UC_Guru_Materi,UC_Guru_Tugas,UC_Siswa_Jadwal,UC_Siswa_Nilai,UC_Siswa_Ulangan,UC_Siswa_Materi,UC_Siswa_Tugas usecase
+class UC_Login login
+    </div>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>

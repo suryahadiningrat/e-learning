@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: white;
+        }
+        .mermaid {
+            text-align: center;
+        }
+        .title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">diagram_7</h1>
+    <div class="mermaid">
+flowchart LR
+Admin[Admin]
+Siswa[Siswa]
+Guru[Guru]
+
+P21((2.1 Jadwal pelajaran))
+P22((2.2 Nilai siswa))
+P23((2.3 Absensi))
+P24((2.4 Ulangan))
+P25((2.5 Materi))
+P26((2.6 Link pengumpulan tugas))
+
+P31((3.1 Laporan akademik))
+P32((3.2 Laporan jadwal))
+P33((3.3 Laporan nilai siswa))
+P34((3.4 Laporan absensi))
+
+DS_Jadwal[(Tb. Jadwal)]
+DS_Nilai[(Tb. Nilai)]
+DS_Absensi[(Tb. Absensi)]
+DS_Ulangan[(Tb. Ulangan)]
+DS_Materi[(Tb. Materi)]
+DS_Tugas[(Tb. Tugas)]
+DS_Pengumpulan[(Tb. Pengumpulan Tugas)]
+DS_Tahun[(Tb. Tahun Akademik)]
+
+%% Jadwal
+Admin -- Input master terkait --> P21 --> DS_Jadwal
+Siswa -- Lihat jadwal --> P21
+
+%% Nilai
+Guru -- Input nilai --> P22 --> DS_Nilai
+Siswa -- Lihat nilai --> P22
+
+%% Absensi
+Guru -- Input absensi --> P23 --> DS_Absensi
+Admin -- Rekap absensi --> P23
+
+%% Ulangan
+Guru -- Buat/publish ulangan --> P24 --> DS_Ulangan
+Siswa -- Kerjakan ulangan --> P24
+
+%% Materi & Tugas
+Guru -- Upload materi --> P25 --> DS_Materi
+Guru -- Buat tugas --> P26 --> DS_Tugas
+Siswa -- Kumpul tugas --> P26 --> DS_Pengumpulan
+
+%% Laporan
+Admin -- Data tahun akademik --> P31 --> DS_Tahun
+Siswa -- Permintaan laporan jadwal --> P32 --> DS_Jadwal
+Siswa -- Permintaan laporan nilai --> P33 --> DS_Nilai
+Admin -- Permintaan rekap absensi --> P34 --> DS_Absensi
+    </div>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>

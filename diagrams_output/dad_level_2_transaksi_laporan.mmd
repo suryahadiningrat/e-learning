@@ -1,0 +1,57 @@
+flowchart LR
+Admin[Admin]
+Siswa[Siswa]
+Guru[Guru]
+
+P21((2.1 Pembuatan akun))
+P22((2.2 Validasi data))
+P23((2.3 Jadwal pelajaran))
+P24((2.4 Nilai siswa))
+P25((2.5 Absensi))
+P26((2.6 Materi))
+P27((2.7 Ulangan))
+P28((2.8 Tugas))
+
+P31((3.1 Laporan akademik))
+P32((3.2 Laporan jadwal))
+P33((3.3 Laporan nilai siswa))
+P34((3.4 Laporan absensi))
+P35((3.5 Laporan tugas))
+
+DS_Akun[(Tb. Akun pengguna)]
+DS_Jadwal[(Tb. Data Jadwal)]
+DS_Nilai[(Tb. Data Nilai siswa)]
+DS_Absensi[(Tb. Data Absensi)]
+DS_Materi[(Tb. Data Materi)]
+DS_Ulangan[(Tb. Data Ulangan)]
+DS_Tugas[(Tb. Data Tugas)]
+DS_Tahun[(Tb. Data tahun akademik)]
+
+Admin -- Data guru --> P21 --> DS_Akun
+Admin -- Data siswa --> P21
+Admin --> P22 --> DS_Akun
+
+Admin -- Data jurusan --> P23 --> DS_Jadwal
+Admin -- Data kelas --> P23
+Admin -- Data mata pelajaran --> P23
+
+Guru -- Data nilai --> P24 --> DS_Nilai
+Guru -- Data absensi --> P25 --> DS_Absensi
+Guru -- Data materi --> P26 --> DS_Materi
+Guru -- Data ulangan --> P27 --> DS_Ulangan
+Guru -- Data tugas --> P28 --> DS_Tugas
+
+Siswa -- Data tahun akademik --> P31 --> DS_Tahun
+Siswa -- Data jadwal --> P32 --> DS_Jadwal
+Siswa -- Data nilai siswa --> P33 --> DS_Nilai
+Siswa -- Data absensi --> P34 --> DS_Absensi
+Siswa -- Data tugas --> P35 --> DS_Tugas
+
+%% Styling
+classDef entity fill:#f5f5f5,stroke:#333,stroke-width:2px
+classDef process fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+classDef datastore fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+
+class Admin,Siswa,Guru entity
+class P21,P22,P23,P24,P25,P26,P27,P28,P31,P32,P33,P34,P35 process
+class DS_Akun,DS_Jadwal,DS_Nilai,DS_Absensi,DS_Materi,DS_Ulangan,DS_Tugas,DS_Tahun datastore

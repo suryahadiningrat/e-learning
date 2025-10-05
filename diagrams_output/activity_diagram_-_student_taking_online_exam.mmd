@@ -1,0 +1,20 @@
+flowchart TD
+Start([Start]) --> Login[Student login ke sistem]
+Login --> ViewExam[Lihat daftar ulangan tersedia]
+ViewExam --> SelectExam[Pilih ulangan yang akan dikerjakan]
+SelectExam --> CheckStatus{Periksa status ulangan}
+CheckStatus -->|Belum dibuka| WaitMsg[Menampilkan pesan menunggu]
+CheckStatus -->|Sudah ditutup| ClosedMsg[Menampilkan pesan sudah ditutup]
+CheckStatus -->|Aktif| StartExam[Mulai mengerjakan ulangan]
+StartExam --> AnswerQ[Menjawab soal]
+AnswerQ --> SaveAnswer[Simpan jawaban sementara]
+SaveAnswer --> MoreQ{Ada soal lain?}
+MoreQ -->|Ya| AnswerQ
+MoreQ -->|Tidak| Review[Review jawaban]
+Review --> Submit{Submit jawaban?}
+Submit -->|Tidak| AnswerQ
+Submit -->|Ya| FinalSubmit[Submit jawaban final]
+FinalSubmit --> ShowResult[Menampilkan hasil]
+ShowResult --> End([End])
+WaitMsg --> End
+ClosedMsg --> End

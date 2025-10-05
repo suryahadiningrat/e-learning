@@ -1,0 +1,56 @@
+graph TB
+%% Actors (stick figures style)
+Admin((Admin))
+Guru((Guru))
+Siswa((Siswa))
+
+%% System boundary
+subgraph "Sistem Informasi Akademik"
+%% Admin Use Cases
+UC1(Kelola data guru)
+UC2(Kelola data siswa)
+UC3(Kelola data jurusan)
+UC4(Kelola data jadwal)
+UC5(Kelola data tahun akademik)
+
+%% Common Use Case
+UC6(Login)
+
+%% Guru Use Cases
+UC7(Memasukan nilai siswa)
+UC8(Memasukan absen)
+UC9(Memasukan materi)
+
+%% Siswa Use Cases
+UC10(Melihat nilai)
+UC11(Melihat materi)
+UC12(Melihat jadwal)
+end
+
+%% Admin relationships
+Admin --> UC1
+Admin --> UC2
+Admin --> UC3
+Admin --> UC4
+Admin --> UC5
+Admin --> UC6
+
+%% Guru relationships
+Guru --> UC6
+Guru --> UC7
+Guru --> UC8
+Guru --> UC9
+
+%% Siswa relationships
+Siswa --> UC6
+Siswa --> UC10
+Siswa --> UC11
+Siswa --> UC12
+
+%% Styling to match the example
+classDef actor fill:#ffffff,stroke:#000000,stroke-width:2px
+classDef usecase fill:#ffffff,stroke:#000000,stroke-width:1px
+classDef system fill:#f9f9f9,stroke:#000000,stroke-width:2px
+
+class Admin,Guru,Siswa actor
+class UC1,UC2,UC3,UC4,UC5,UC6,UC7,UC8,UC9,UC10,UC11,UC12 usecase

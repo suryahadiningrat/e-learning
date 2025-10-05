@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: white;
+        }
+        .mermaid {
+            text-align: center;
+        }
+        .title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">diagram_3</h1>
+    <div class="mermaid">
+flowchart LR
+Admin[Admin]
+Guru[Guru]
+Siswa[Siswa]
+
+subgraph Sistem
+Core((Sistem Informasi SMK))
+end
+
+%% Siswa
+Siswa -- Input Data Diri --> Core
+Core -- L Materi --> Siswa
+Core -- L Penilaian --> Siswa
+Core -- L Jadwal --> Siswa
+Core -- L Tugas --> Siswa
+
+%% Guru
+Guru -- Input Data Materi --> Core
+Guru -- Input Data Ulangan --> Core
+Guru -- Input Data Penilaian Siswa --> Core
+Guru -- Input Data Absensi --> Core
+Guru -- Input Data Tugas --> Core
+Core -- L Penilaian Siswa --> Guru
+Core -- L Jadwal --> Guru
+
+%% Admin
+Admin -- Input Data Guru --> Core
+Admin -- Input Data Siswa --> Core
+Admin -- Input Data Jurusan/Kelas --> Core
+Admin -- Input Data Jadwal --> Core
+Admin -- Input Data Absensi --> Core
+Admin -- Input Data Nilai --> Core
+Admin -- Input Data Ulangan --> Core
+Admin -- Input Data Materi --> Core
+Admin -- Input Data Tugas --> Core
+Admin -- Input Data Tahun Akademik --> Core
+Admin -- Setting System & Aktivasi User --> Core
+Core -- L Penjadwalan Akademik --> Admin
+Core -- L Pelaporan --> Admin
+
+%% Styling
+classDef entity fill:#f5f5f5,stroke:#333,stroke-width:2px
+classDef system fill:#e8f5e8,stroke:#2e7d32,stroke-width:3px
+
+class Admin,Guru,Siswa entity
+class Core system
+    </div>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>

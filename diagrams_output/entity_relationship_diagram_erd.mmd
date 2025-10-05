@@ -1,0 +1,149 @@
+erDiagram
+%% Entities with attributes
+GURU {
+int id_guru PK
+string nama_lengkap
+string email
+string password
+string nip
+string tempat_lahir
+date tanggal_lahir
+string jenis_kelamin
+string alamat
+string no_telp
+string foto
+boolean status
+datetime created_at
+datetime updated_at
+}
+
+SISWA {
+int id_siswa PK
+string nama_lengkap
+string email
+string password
+string nis
+string nisn
+string tempat_lahir
+date tanggal_lahir
+string jenis_kelamin
+string alamat
+string no_telp
+string foto
+int id_kelas FK
+boolean status
+datetime created_at
+datetime updated_at
+}
+
+KELAS {
+int id_kelas PK
+string nama_kelas
+int id_jurusan FK
+int id_tahun_akademik FK
+int kapasitas
+datetime created_at
+datetime updated_at
+}
+
+JURUSAN {
+int id_jurusan PK
+string nama_jurusan
+string kode_jurusan
+string deskripsi
+datetime created_at
+datetime updated_at
+}
+
+MATA_PELAJARAN {
+int id_mapel PK
+string nama_mapel
+string kode_mapel
+int sks
+string deskripsi
+datetime created_at
+datetime updated_at
+}
+
+TAHUN_AKADEMIK {
+int id_tahun_akademik PK
+string tahun_akademik
+date tanggal_mulai
+date tanggal_selesai
+boolean status_aktif
+datetime created_at
+datetime updated_at
+}
+
+JADWAL {
+int id_jadwal PK
+int id_guru FK
+int id_kelas FK
+int id_mapel FK
+string hari
+time jam_mulai
+time jam_selesai
+string ruangan
+datetime created_at
+datetime updated_at
+}
+
+MATERI {
+int id_materi PK
+int id_guru FK
+int id_mapel FK
+int id_kelas FK
+string judul_materi
+text deskripsi
+string file_path
+string tipe_file
+datetime created_at
+datetime updated_at
+}
+
+NILAI {
+int id_nilai PK
+int id_siswa FK
+int id_mapel FK
+int id_guru FK
+float nilai_tugas
+float nilai_uts
+float nilai_uas
+float nilai_akhir
+string semester
+int id_tahun_akademik FK
+datetime created_at
+datetime updated_at
+}
+
+ABSENSI {
+int id_absensi PK
+int id_siswa FK
+int id_jadwal FK
+date tanggal
+string status
+string keterangan
+datetime created_at
+datetime updated_at
+}
+
+%% Relationships
+GURU ||--o{ JADWAL : mengajar
+KELAS ||--o{ JADWAL : dijadwalkan
+MATA_PELAJARAN ||--o{ JADWAL : diajarkan
+
+GURU ||--o{ MATERI : membuat
+MATA_PELAJARAN ||--o{ MATERI : berisi
+KELAS ||--o{ MATERI : untuk
+
+SISWA ||--o{ NILAI : memiliki
+MATA_PELAJARAN ||--o{ NILAI : dinilai
+GURU ||--o{ NILAI : menilai
+TAHUN_AKADEMIK ||--o{ NILAI : periode
+
+SISWA ||--o{ ABSENSI : hadir
+JADWAL ||--o{ ABSENSI : dicatat
+
+JURUSAN ||--o{ KELAS : memiliki
+TAHUN_AKADEMIK ||--o{ KELAS : periode
+KELAS ||--o{ SISWA : berisi

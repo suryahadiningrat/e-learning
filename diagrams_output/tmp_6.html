@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: white;
+        }
+        .mermaid {
+            text-align: center;
+        }
+        .title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">diagram_6</h1>
+    <div class="mermaid">
+flowchart LR
+Admin[Admin]
+
+P11((1.1 Data guru))
+P12((1.2 Data siswa))
+P13((1.3 Data jurusan))
+P14((1.4 Data kelas))
+P15((1.5 Data mata pelajaran))
+P16((1.6 Data tahun akademik))
+
+DS_Guru[(Tb. Data guru)]
+DS_Siswa[(Tb. Data siswa)]
+DS_Jurusan[(Tb. Data jurusan)]
+DS_Kelas[(Tb. Data kelas)]
+DS_Mapel[(Tb. Data mata pelajaran)]
+DS_Tahun[(Tb. Data tahun akademik)]
+
+Admin -- Data guru --> P11 --> DS_Guru
+Admin -- Data siswa --> P12 --> DS_Siswa
+Admin -- Data jurusan --> P13 --> DS_Jurusan
+Admin -- Data kelas --> P14 --> DS_Kelas
+Admin -- Data mata pelajaran --> P15 --> DS_Mapel
+Admin -- Data tahun akademik --> P16 --> DS_Tahun
+    </div>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>

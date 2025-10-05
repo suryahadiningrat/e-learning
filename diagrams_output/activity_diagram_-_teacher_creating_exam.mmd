@@ -1,0 +1,22 @@
+flowchart TD
+Start([Start]) --> Login[Guru login ke sistem]
+Login --> ExamMenu[Pilih menu ulangan]
+ExamMenu --> CreateNew[Klik buat ulangan baru]
+CreateNew --> FillInfo[Isi informasi ulangan]
+FillInfo --> AddQuestions[Tambah soal]
+AddQuestions --> QuestionType{Pilih jenis soal}
+QuestionType -->|Pilihan Ganda| MCQ[Input soal pilihan ganda]
+QuestionType -->|Essay| Essay[Input soal essay]
+MCQ --> SetAnswer[Set jawaban benar]
+Essay --> SetAnswer
+SetAnswer --> MoreQ{Ada soal lain?}
+MoreQ -->|Ya| AddQuestions
+MoreQ -->|Tidak| Preview[Preview ulangan]
+Preview --> SaveDraft[Simpan sebagai draft]
+SaveDraft --> Publish{Publish ulangan?}
+Publish -->|Tidak| Edit[Edit ulangan]
+Publish -->|Ya| SetSchedule[Set jadwal ulangan]
+SetSchedule --> PublishExam[Publish ulangan]
+PublishExam --> Notify[Notifikasi ke siswa]
+Notify --> End([End])
+Edit --> Preview

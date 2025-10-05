@@ -1,0 +1,19 @@
+flowchart TD
+Start([Start]) --> Login[Student login ke sistem]
+Login --> ViewAssign[Lihat daftar tugas]
+ViewAssign --> SelectAssign[Pilih tugas]
+SelectAssign --> CheckDeadline{Periksa deadline}
+CheckDeadline -->|Lewat deadline| LateMsg[Menampilkan pesan terlambat]
+CheckDeadline -->|Masih dalam waktu| ViewDetail[Lihat detail tugas]
+ViewDetail --> DownloadFile[Download file tugas jika ada]
+DownloadFile --> PrepareWork[Menyiapkan pekerjaan]
+PrepareWork --> UploadFile[Upload file jawaban]
+UploadFile --> AddComment[Tambah komentar/deskripsi]
+AddComment --> Submit[Submit tugas]
+Submit --> Confirm{Konfirmasi submit?}
+Confirm -->|Tidak| Edit[Edit submission]
+Confirm -->|Ya| Success[Tugas berhasil dikumpulkan]
+Success --> NotifyGuru[Notifikasi ke guru]
+NotifyGuru --> End([End])
+LateMsg --> End
+Edit --> UploadFile

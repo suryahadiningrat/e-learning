@@ -1,0 +1,20 @@
+flowchart TD
+Start([Start]) --> Login[Guru/Admin login]
+Login --> GradeMenu[Pilih menu nilai]
+GradeMenu --> SelectClass[Pilih kelas]
+SelectClass --> SelectSubject[Pilih mata pelajaran]
+SelectSubject --> ViewStudents[Lihat daftar siswa]
+ViewStudents --> InputGrade[Input nilai siswa]
+InputGrade --> ValidateGrade{Validasi nilai}
+ValidateGrade -->|Invalid| ErrorGrade[Tampilkan error]
+ValidateGrade -->|Valid| SaveGrade[Simpan nilai]
+ErrorGrade --> InputGrade
+SaveGrade --> MoreStudent{Ada siswa lain?}
+MoreStudent -->|Ya| InputGrade
+MoreStudent -->|Tidak| CalculateFinal[Hitung nilai akhir]
+CalculateFinal --> GenerateReport[Generate laporan nilai]
+GenerateReport --> ExportOption{Export laporan?}
+ExportOption -->|Ya| ExportPDF[Export ke PDF/Excel]
+ExportOption -->|Tidak| ViewReport[Lihat laporan]
+ExportPDF --> End([End])
+ViewReport --> End

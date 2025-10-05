@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: white;
+        }
+        .mermaid {
+            text-align: center;
+        }
+        .title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">diagram_5</h1>
+    <div class="mermaid">
+flowchart LR
+Admin[Admin]
+Guru[Guru]
+Siswa[Siswa]
+
+P1((1 Master))
+P2((2 Transaksi))
+P3((3 Laporan))
+P4((4 Konfigurasi))
+P5((5 Pengguna))
+
+%% Data stores (utama)
+DS_Users[(Tb. Users)]
+DS_Settings[(Tb. Settings)]
+
+DS_Guru[(Tb. Data Guru)]
+DS_Siswa[(Tb. Data Siswa)]
+DS_Jurusan[(Tb. Data Jurusan)]
+DS_Kelas[(Tb. Data Kelas)]
+DS_Tahun[(Tb. Data Tahun Akademik)]
+DS_Mapel[(Tb. Data Mata Pelajaran)]
+
+DS_Jadwal[(Tb. Jadwal)]
+DS_Nilai[(Tb. Nilai)]
+DS_Absensi[(Tb. Absensi)]
+DS_Ulangan[(Tb. Ulangan)]
+DS_Materi[(Tb. Materi)]
+DS_Tugas[(Tb. Tugas)]
+DS_Pengumpulan[(Tb. Pengumpulan Tugas)]
+
+Admin --> P1
+Admin --> P4
+Admin --> P5
+Guru --> P2
+Siswa --> P2
+Admin --> P3
+Guru --> P3
+Siswa --> P3
+
+%% Master writes
+P1 --> DS_Guru
+P1 --> DS_Siswa
+P1 --> DS_Jurusan
+P1 --> DS_Kelas
+P1 --> DS_Tahun
+P1 --> DS_Mapel
+
+%% Transaksi reads/writes
+P2 --> DS_Jadwal
+P2 --> DS_Nilai
+P2 --> DS_Absensi
+P2 --> DS_Ulangan
+P2 --> DS_Materi
+P2 --> DS_Tugas
+P2 --> DS_Pengumpulan
+
+%% Konfigurasi
+P4 --> DS_Settings
+
+%% Pengguna
+P5 --> DS_Users
+    </div>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>
