@@ -23,21 +23,19 @@ $routes->group('guru', ['filter' => 'auth:role:guru'], function($routes) {
 $routes->group('siswa', ['filter' => 'auth:role:siswa'], function($routes) {
     $routes->get('/', 'Siswa\Dashboard::index');
     $routes->get('dashboard', 'Siswa\Dashboard::index');
+    
+    // User
     $routes->get('user-pengguna', 'Siswa\UserPengguna::index');
     $routes->post('user-pengguna/update', 'Siswa\UserPengguna::update');
     
-    // Data Jadwal untuk Siswa
+    // Jadwal Pelajaran
     $routes->get('jadwal', 'Siswa\Jadwal::index');
     
-    // Data Nilai untuk Siswa
-    $routes->get('nilai', 'Siswa\Nilai::index');
-    $routes->get('nilai/export', 'Siswa\Nilai::export');
-    
-    // Data Materi untuk Siswa
+    // Materi/Modul
     $routes->get('materi', 'Siswa\Materi::index');
     $routes->get('materi/download/(:num)', 'Siswa\Materi::download/$1');
     
-    // Data Tugas untuk Siswa
+    // Link Pengumpulan Tugas
     $routes->get('tugas', 'Siswa\Tugas::index');
     $routes->get('tugas/detail/(:num)', 'Siswa\Tugas::detail/$1');
     $routes->post('tugas/submit/(:num)', 'Siswa\Tugas::submit/$1');
@@ -46,23 +44,30 @@ $routes->group('siswa', ['filter' => 'auth:role:siswa'], function($routes) {
     $routes->post('tugas/edit-submission/(:num)', 'Siswa\Tugas::editSubmission/$1');
     $routes->post('tugas/delete-submission/(:num)', 'Siswa\Tugas::deleteSubmission/$1');
     
-    // Data Ulangan untuk Siswa
+    // Tugas/Soal Online
     $routes->get('ulangan', 'Siswa\Ulangan::index');
     $routes->get('ulangan/kerjakan/(:num)', 'Siswa\Ulangan::kerjakan/$1');
     $routes->post('ulangan/save-jawaban', 'Siswa\Ulangan::saveJawaban');
     $routes->post('ulangan/submit-jawaban', 'Siswa\Ulangan::submitJawaban');
     $routes->get('ulangan/hasil/(:num)', 'Siswa\Ulangan::hasil/$1');
     $routes->get('ulangan/riwayat', 'Siswa\Ulangan::riwayat');
+    
+    // Nilai
+    $routes->get('nilai', 'Siswa\Nilai::index');
+    $routes->get('nilai/export', 'Siswa\Nilai::export');
 });
 
 // Admin Routes
 $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
+    // Dashboard
     $routes->get('dashboard', 'Admin\Dashboard::index');
+    
+    // User Management
     $routes->get('users', 'Admin\User::index');
     $routes->get('users/activate/(:num)', 'Admin\User::activate/$1');
     $routes->get('users/deactivate/(:num)', 'Admin\User::deactivate/$1');
     
-    // User Pengguna routes
+    // User Activation
     $routes->get('user-pengguna', 'Admin\UserPengguna::index');
     $routes->get('user-pengguna/create', 'Admin\UserPengguna::create');
     $routes->post('user-pengguna/store', 'Admin\UserPengguna::store');
@@ -71,23 +76,26 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->get('user-pengguna/delete/(:num)', 'Admin\UserPengguna::delete/$1');
     $routes->get('user-pengguna/toggle-status/(:num)', 'Admin\UserPengguna::toggleStatus/$1');
     
-    // Data Master routes
-    $routes->get('jurusan', 'Admin\Jurusan::index');
-    $routes->get('jurusan/create', 'Admin\Jurusan::create');
-    $routes->post('jurusan/store', 'Admin\Jurusan::store');
-    $routes->get('jurusan/edit/(:num)', 'Admin\Jurusan::edit/$1');
-    $routes->post('jurusan/update/(:num)', 'Admin\Jurusan::update/$1');
-    $routes->get('jurusan/delete/(:num)', 'Admin\Jurusan::delete/$1');
+    // Setting System
+    $routes->get('setting-system', 'Admin\SettingSystem::index');
+    $routes->post('setting-system/update-logo', 'Admin\SettingSystem::updateLogo');
+    $routes->post('setting-system/update-background', 'Admin\SettingSystem::updateBackground');
+    $routes->post('setting-system/update-tahun-ajaran', 'Admin\SettingSystem::updateTahunAjaran');
+    $routes->post('setting-system/update-sidebar-color', 'Admin\SettingSystem::updateSidebarColor');
+    $routes->post('setting-system/update-login-background-color', 'Admin\SettingSystem::updateLoginBackgroundColor');
+    $routes->post('setting-system/update-login-background-image', 'Admin\SettingSystem::updateLoginBackgroundImage');
+    $routes->post('setting-system/remove-login-background-image', 'Admin\SettingSystem::removeLoginBackgroundImage');
     
-    // Mata Pelajaran routes
-    $routes->get('mata-pelajaran', 'Admin\MataPelajaran::index');
-    $routes->get('mata-pelajaran/create', 'Admin\MataPelajaran::create');
-    $routes->post('mata-pelajaran/store', 'Admin\MataPelajaran::store');
-    $routes->get('mata-pelajaran/edit/(:num)', 'Admin\MataPelajaran::edit/$1');
-    $routes->post('mata-pelajaran/update/(:num)', 'Admin\MataPelajaran::update/$1');
-    $routes->get('mata-pelajaran/delete/(:num)', 'Admin\MataPelajaran::delete/$1');
-    $routes->get('mata-pelajaran/toggle-status/(:num)', 'Admin\MataPelajaran::toggleStatus/$1');
+    // Data Guru
+    $routes->get('guru', 'Admin\Guru::index');
+    $routes->get('guru/create', 'Admin\Guru::create');
+    $routes->post('guru/store', 'Admin\Guru::store');
+    $routes->get('guru/edit/(:num)', 'Admin\Guru::edit/$1');
+    $routes->post('guru/update/(:num)', 'Admin\Guru::update/$1');
+    $routes->get('guru/delete/(:num)', 'Admin\Guru::delete/$1');
+    $routes->get('guru/jadwal/(:num)', 'Admin\Guru::getJadwalGuru/$1');
     
+    // Data Siswa
     $routes->get('siswa', 'Admin\Siswa::index');
     $routes->get('siswa/jurusan/(:num)', 'Admin\Siswa::jurusan/$1');
     $routes->get('siswa/kelas/(:num)', 'Admin\Siswa::kelas/$1');
@@ -100,14 +108,15 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->get('siswa/export-jurusan/(:num)', 'Admin\Siswa::exportJurusan/$1');
     $routes->get('siswa/export-kelas/(:num)', 'Admin\Siswa::exportKelas/$1');
     
-    $routes->get('guru', 'Admin\Guru::index');
-    $routes->get('guru/create', 'Admin\Guru::create');
-    $routes->post('guru/store', 'Admin\Guru::store');
-    $routes->get('guru/edit/(:num)', 'Admin\Guru::edit/$1');
-    $routes->post('guru/update/(:num)', 'Admin\Guru::update/$1');
-    $routes->get('guru/delete/(:num)', 'Admin\Guru::delete/$1');
-    $routes->get('guru/jadwal/(:num)', 'Admin\Guru::getJadwalGuru/$1');
+    // Data Jurusan
+    $routes->get('jurusan', 'Admin\Jurusan::index');
+    $routes->get('jurusan/create', 'Admin\Jurusan::create');
+    $routes->post('jurusan/store', 'Admin\Jurusan::store');
+    $routes->get('jurusan/edit/(:num)', 'Admin\Jurusan::edit/$1');
+    $routes->post('jurusan/update/(:num)', 'Admin\Jurusan::update/$1');
+    $routes->get('jurusan/delete/(:num)', 'Admin\Jurusan::delete/$1');
     
+    // Data Kelas
     $routes->get('kelas', 'Admin\Kelas::index');
     $routes->get('kelas/create', 'Admin\Kelas::create');
     $routes->post('kelas/store', 'Admin\Kelas::store');
@@ -115,6 +124,16 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->post('kelas/update/(:num)', 'Admin\Kelas::update/$1');
     $routes->get('kelas/delete/(:num)', 'Admin\Kelas::delete/$1');
     
+    // Data Mata Pelajaran
+    $routes->get('mata-pelajaran', 'Admin\MataPelajaran::index');
+    $routes->get('mata-pelajaran/create', 'Admin\MataPelajaran::create');
+    $routes->post('mata-pelajaran/store', 'Admin\MataPelajaran::store');
+    $routes->get('mata-pelajaran/edit/(:num)', 'Admin\MataPelajaran::edit/$1');
+    $routes->post('mata-pelajaran/update/(:num)', 'Admin\MataPelajaran::update/$1');
+    $routes->get('mata-pelajaran/delete/(:num)', 'Admin\MataPelajaran::delete/$1');
+    $routes->get('mata-pelajaran/toggle-status/(:num)', 'Admin\MataPelajaran::toggleStatus/$1');
+    
+    // Data Jadwal
     $routes->get('jadwal', 'Admin\Jadwal::index');
     $routes->get('jadwal/create', 'Admin\Jadwal::create');
     $routes->post('jadwal/store', 'Admin\Jadwal::store');
@@ -122,6 +141,7 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->post('jadwal/update/(:num)', 'Admin\Jadwal::update/$1');
     $routes->get('jadwal/delete/(:num)', 'Admin\Jadwal::delete/$1');
     
+    // Absensi
     $routes->get('absensi', 'Admin\Absensi::index');
     $routes->get('absensi/kelas/(:num)', 'Admin\Absensi::kelas/$1');
     $routes->get('absensi/jadwal/(:num)', 'Admin\Absensi::jadwal/$1');
@@ -141,13 +161,7 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->get('absensi/get-siswa-by-kelas/(:num)', 'Admin\Absensi::getSiswaByKelas/$1');
     $routes->get('absensi/export', 'Admin\Absensi::export');
     
-    $routes->get('nilai', 'Admin\Nilai::index');
-    $routes->get('nilai/mata-pelajaran/(:num)', 'Admin\Nilai::mataPelajaran/$1');
-    $routes->get('nilai/input/(:num)', 'Admin\Nilai::inputNilai/$1');
-    $routes->post('nilai/store', 'Admin\Nilai::store');
-    $routes->get('nilai/view/(:num)', 'Admin\Nilai::viewNilai/$1');
-    $routes->get('nilai/export/(:num)', 'Admin\Nilai::export/$1');
-    
+    // Materi/Modul
     $routes->get('materi', 'Admin\Materi::index');
     $routes->get('materi/create', 'Admin\Materi::create');
     $routes->post('materi/store', 'Admin\Materi::store');
@@ -156,6 +170,7 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->get('materi/delete/(:num)', 'Admin\Materi::delete/$1');
     $routes->get('materi/download/(:num)', 'Admin\Materi::download/$1');
     
+    // Link Pengumpulan Tugas
     $routes->get('tugas', 'Admin\Tugas::index');
     $routes->get('tugas/create', 'Admin\Tugas::create');
     $routes->post('tugas/store', 'Admin\Tugas::store');
@@ -165,7 +180,7 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->post('tugas/delete/(:num)', 'Admin\Tugas::delete/$1');
     $routes->get('tugas/detail/(:num)', 'Admin\Tugas::detail/$1');
     
-    // Ulangan routes
+    // Tugas/Soal Online
     $routes->get('ulangan', 'Admin\Ulangan::index');
     $routes->get('ulangan/create', 'Admin\Ulangan::create');
     $routes->post('ulangan/store', 'Admin\Ulangan::store');
@@ -178,31 +193,30 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->get('ulangan/hasil/(:num)', 'Admin\Ulangan::hasil/$1');
     $routes->get('ulangan/detail-hasil/(:num)/(:num)', 'Admin\Ulangan::detailHasil/$1/$2');
     
-    // Setting System routes
-    $routes->get('setting-system', 'Admin\SettingSystem::index');
-    $routes->post('setting-system/update-logo', 'Admin\SettingSystem::updateLogo');
-    $routes->post('setting-system/update-background', 'Admin\SettingSystem::updateBackground');
-    $routes->post('setting-system/update-tahun-ajaran', 'Admin\SettingSystem::updateTahunAjaran');
-    $routes->post('setting-system/update-sidebar-color', 'Admin\SettingSystem::updateSidebarColor');
-    $routes->post('setting-system/update-login-background-color', 'Admin\SettingSystem::updateLoginBackgroundColor');
-    $routes->post('setting-system/update-login-background-image', 'Admin\SettingSystem::updateLoginBackgroundImage');
-    $routes->post('setting-system/remove-login-background-image', 'Admin\SettingSystem::removeLoginBackgroundImage');
+    // Nilai
+    $routes->get('nilai', 'Admin\Nilai::index');
+    $routes->get('nilai/mata-pelajaran/(:num)', 'Admin\Nilai::mataPelajaran/$1');
+    $routes->get('nilai/input/(:num)', 'Admin\Nilai::inputNilai/$1');
+    $routes->post('nilai/store', 'Admin\Nilai::store');
+    $routes->get('nilai/view/(:num)', 'Admin\Nilai::viewNilai/$1');
+    $routes->get('nilai/export/(:num)', 'Admin\Nilai::export/$1');
 });
 
 // Guru Routes
 $routes->group('guru', ['filter' => 'auth:role:guru'], function($routes) {
+    $routes->get('/', 'Guru\Dashboard::index');
     $routes->get('dashboard', 'Guru\Dashboard::index');
-    // User Pengguna (Read Only)
+    
+    // User Pengguna
     $routes->get('user-pengguna', 'Guru\UserPengguna::index');
-    // Data Siswa (Read Only)
-    $routes->get('siswa', 'Guru\Siswa::index');
-    $routes->get('siswa/jurusan/(:num)', 'Guru\Siswa::jurusan/$1');
-    $routes->get('siswa/kelas/(:num)', 'Guru\Siswa::kelas/$1');
-    $routes->get('siswa/export-jurusan/(:num)', 'Guru\Siswa::exportJurusan/$1');
-    $routes->get('siswa/export-kelas/(:num)', 'Guru\Siswa::exportKelas/$1');
-    // Data Jurusan/Kelas (Read Only)
-    $routes->get('kelas', 'Guru\Kelas::index');
-    $routes->get('jurusan', 'Guru\Jurusan::index');
+    $routes->post('user-pengguna/update', 'Guru\UserPengguna::update');
+    
+    // Jadwal Mengajar
+    $routes->get('jadwal', 'Guru\Jadwal::index');
+    
+    // Jadwal Pengajar - New menu item for guru
+    $routes->get('jadwal-pengajar', 'Guru\JadwalPengajar::index');
+    
     // Data Absensi (CRUD) - New Structured Flow
     $routes->get('absensi', 'Guru\Absensi::index');
     $routes->get('absensi/kelas/(:num)', 'Guru\Absensi::kelas/$1');
@@ -227,6 +241,7 @@ $routes->group('guru', ['filter' => 'auth:role:guru'], function($routes) {
     $routes->get('absensi/get-siswa-by-kelas/(:num)', 'Guru\Absensi::getSiswaByKelas/$1');
     $routes->get('absensi/export', 'Guru\Absensi::export');
     
+    // Data Nilai
     $routes->get('nilai', 'Guru\Nilai::index');
     $routes->get('nilai/mata-pelajaran/(:num)', 'Guru\Nilai::mataPelajaran/$1');
     $routes->get('nilai/input/(:num)', 'Guru\Nilai::inputNilai/$1');
@@ -234,6 +249,7 @@ $routes->group('guru', ['filter' => 'auth:role:guru'], function($routes) {
     $routes->get('nilai/view/(:num)', 'Guru\Nilai::viewNilai/$1');
     $routes->get('nilai/export/(:num)', 'Guru\Nilai::export/$1');
     
+    // Materi/Modul
     $routes->get('materi', 'Guru\Materi::index');
     $routes->get('materi/create', 'Guru\Materi::create');
     $routes->post('materi/store', 'Guru\Materi::store');
@@ -242,7 +258,7 @@ $routes->group('guru', ['filter' => 'auth:role:guru'], function($routes) {
     $routes->get('materi/delete/(:num)', 'Guru\Materi::delete/$1');
     $routes->get('materi/download/(:num)', 'Guru\Materi::download/$1');
     
-    // Tugas routes untuk Guru
+    // Link Pengumpulan Tugas
     $routes->get('tugas', 'Guru\Tugas::index');
     $routes->get('tugas/create', 'Guru\Tugas::create');
     $routes->post('tugas/store', 'Guru\Tugas::store');
@@ -255,7 +271,7 @@ $routes->group('guru', ['filter' => 'auth:role:guru'], function($routes) {
     $routes->post('tugas/reminder', 'Guru\Tugas::reminder');
     $routes->get('tugas/export/(:num)', 'Guru\Tugas::export/$1');
     
-    // Ulangan routes untuk Guru
+    // Tugas/Soal Online
     $routes->get('ulangan', 'Guru\Ulangan::index');
     $routes->get('ulangan/create', 'Guru\Ulangan::create');
     $routes->post('ulangan/store', 'Guru\Ulangan::store');
@@ -267,18 +283,6 @@ $routes->group('guru', ['filter' => 'auth:role:guru'], function($routes) {
     $routes->get('ulangan/preview/(:num)', 'Guru\Ulangan::preview/$1');
     $routes->get('ulangan/hasil/(:num)', 'Guru\Ulangan::hasil/$1');
     $routes->get('ulangan/detail-hasil/(:num)/(:num)', 'Guru\Ulangan::detailHasil/$1/$2');
-});
-
-// Routes untuk Guru
-$routes->group('guru', ['filter' => 'auth:guru'], function($routes) {
-    $routes->get('/', 'Guru\Dashboard::index');
-    
-    // Data Nilai untuk Guru
-    $routes->get('nilai', 'Guru\Nilai::index');
-    $routes->get('nilai/mata-pelajaran/(:num)', 'Guru\Nilai::mataPelajaran/$1');
-    $routes->get('nilai/input/(:num)', 'Guru\Nilai::inputNilai/$1');
-    $routes->post('nilai/store', 'Guru\Nilai::store');
-    $routes->get('nilai/export/(:num)', 'Guru\Nilai::export/$1');
 });
 
 

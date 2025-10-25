@@ -20,7 +20,7 @@
                                 <?= session()->get('username') ?>
                             </div>
                             <div class="text-muted">
-                                Panel Guru - E-Learning SMK
+                                Panel Guru - Sistem Informasi SMK
                             </div>
                         </div>
                         <div class="col-auto">

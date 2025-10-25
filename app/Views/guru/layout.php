@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $title ?? 'Guru Dashboard' ?> - E-Learning SMK</title>
+    <title><?= $title ?? 'Guru Dashboard' ?> - Sistem Informasi SMK</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -17,7 +17,10 @@
     <style>
         .sidebar {
             min-height: 100vh;
-            background: <?= session()->get('sidebar_color_' . session()->get('role')) ?? 'linear-gradient(to bottom, #1cc88a, #169b6b)' ?>;
+            background: <?php 
+                helper('menu');
+                echo get_sidebar_color(session()->get('role')); 
+            ?>;
         }
         .sidebar .nav-link {
             color: rgba(255,255,255,.8);
@@ -90,59 +93,12 @@
                         <?php if ($logoUrl): ?>
                             <img src="<?= $logoUrl ?>" alt="Logo Sekolah" class="mb-2" style="max-width: 60px; max-height: 60px; object-fit: contain;">
                         <?php endif; ?>
-                        <h4 class="text-white">E-Learning SMK</h4>
-                        <small class="text-white-50">Panel Guru</small>
+                        <h4 class="text-white">Sistem Informasi SMK</h4>
+                        <small class="text-white-50"><?php echo get_panel_title(session()->get('role')); ?></small>
                     </div>
                     
                     <ul class="nav flex-column">
-                        <!-- Panel Guru -->
-                        <li class="nav-item">
-                            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-white-50">
-                                <span>Panel Guru</span>
-                            </h6>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'guru/dashboard') !== false) ? 'active' : '' ?>" href="<?= base_url('guru/dashboard') ?>">
-                                <i class="fas fa-tachometer-alt"></i> Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'guru/user-pengguna') !== false) ? 'active' : '' ?>" href="<?= base_url('guru/user-pengguna') ?>">
-                                <i class="fas fa-user-cog"></i> User
-                            </a>
-                        </li>
-                        
-                        <!-- Data -->
-                        <li class="nav-item">
-                            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-white-50">
-                                <span>Data</span>
-                            </h6>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'guru/absensi') !== false) ? 'active' : '' ?>" href="<?= base_url('guru/absensi') ?>">
-                                <i class="fas fa-clipboard-check"></i> Data Absensi
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'guru/nilai') !== false) ? 'active' : '' ?>" href="<?= base_url('guru/nilai') ?>">
-                                <i class="fas fa-chart-line"></i> Data Nilai
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'guru/materi') !== false) ? 'active' : '' ?>" href="<?= base_url('guru/materi') ?>">
-                                <i class="fas fa-book"></i> Materi/Modul
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'guru/ulangan') !== false) ? 'active' : '' ?>" href="<?= base_url('guru/ulangan') ?>">
-                                <i class="fas fa-clipboard-list"></i> Ulangan
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'guru/tugas') !== false) ? 'active' : '' ?>" href="<?= base_url('guru/tugas') ?>">
-                                <i class="fas fa-link"></i> Data Link Pengumpulan Tugas
-                            </a>
-                        </li>
+                        <?php echo render_menu(session()->get('role')); ?>
                     </ul>
                 </div>
             </nav>
@@ -256,4 +212,4 @@
     
     <?= $this->renderSection('scripts') ?>
 </body>
-</html> 
+</html>

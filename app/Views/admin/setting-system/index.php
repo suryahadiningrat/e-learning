@@ -257,7 +257,7 @@ $siswaColor = extractColorFromGradient($settings['sidebar_color_siswa'] ?? '', '
                     <table class="table table-borderless">
                         <tr>
                             <td width="150"><strong>Nama Sistem:</strong></td>
-                            <td>E-Learning Management System</td>
+                            <td>Sistem Informasi Management System</td>
                         </tr>
                         <tr>
                             <td><strong>Versi:</strong></td>

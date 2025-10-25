@@ -1,6 +1,6 @@
-# E-Learning SMK
+# Sistem Informasi SMK
 
-Sistem E-Learning untuk Sekolah Menengah Kejuruan (SMK) yang dibangun menggunakan CodeIgniter 4.
+Sistem Sistem Informasi untuk Sekolah Menengah Kejuruan (SMK) yang dibangun menggunakan CodeIgniter 4.
 
 ## Fitur Utama
 
@@ -63,7 +63,7 @@ Sistem E-Learning untuk Sekolah Menengah Kejuruan (SMK) yang dibangun menggunaka
 1. **Clone repository**
    ```bash
    git clone <repository-url>
-   cd e-learning
+   cd Sistem Informasi
    ```
 
 2. **Install dependencies**
@@ -171,7 +171,7 @@ Sistem E-Learning untuk Sekolah Menengah Kejuruan (SMK) yang dibangun menggunaka
 ## Struktur Folder
 
 ```
-e-learning/
+Sistem Informasi/
 ├── app/
 │   ├── Config/           # Konfigurasi aplikasi
 │   ├── Controllers/      # Controller

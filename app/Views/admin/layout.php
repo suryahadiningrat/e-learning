@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $title ?? 'Admin Dashboard' ?> - E-Learning SMK</title>
+    <title><?= $title ?? 'Admin Dashboard' ?> - Sistem Informasi SMK</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -17,7 +17,10 @@
     <style>
         .sidebar {
             min-height: 100vh;
-            background: <?= session()->get('sidebar_color_' . session()->get('role')) ?? 'linear-gradient(to bottom, #4e73df, #224abe)' ?>;
+            background: <?php 
+                helper('menu');
+                echo get_sidebar_color(session()->get('role')); 
+            ?>;
         }
         .sidebar .nav-link {
             color: rgba(255,255,255,.8);
@@ -69,98 +72,16 @@
                         <?php if ($logoUrl): ?>
                             <img src="<?= $logoUrl ?>" alt="Logo Sekolah" class="mb-2" style="max-width: 60px; max-height: 60px; object-fit: contain;">
                         <?php endif; ?>
-                        <h4 class="text-white">E-Learning SMK</h4>
-                        <small class="text-white-50">Panel Admin</small>
+                        <h4 class="text-white">Sistem Informasi SMK</h4>
+                        <small class="text-white-50"><?php 
+                            echo get_panel_title(session()->get('role')); 
+                        ?></small>
                     </div>
                     
                     <ul class="nav flex-column">
-                        <!-- Panel Admin -->
-                        <li class="nav-item">
-                            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-white-50">
-                                <span>Panel Admin</span>
-                            </h6>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'admin/dashboar') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/dashboard') ?>">
-                                <i class="fas fa-tachometer-alt"></i> Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'admin/users') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/users') ?>">
-                                <i class="fas fa-users"></i> User Aktivation
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'admin/user-pengguna') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/user-pengguna') ?>">
-                                <i class="fas fa-user-cog"></i> User
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'admin/setting-system') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/setting-system') ?>">
-                                <i class="fas fa-cogs"></i> Setting System
-                            </a>
-                        </li>
-                        <!-- Data Master -->
-                        <li class="nav-item">
-                            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-white-50">
-                                <span>Data Master</span>
-                            </h6>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'admin/siswa') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/siswa') ?>">
-                                <i class="fas fa-user-graduate"></i> Data Siswa
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'admin/guru') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/guru') ?>">
-                                <i class="fas fa-chalkboard-teacher"></i> Data Guru
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'admin/jurusan') !== false) ? 'active' : ''?>" href="<?= base_url('admin/jurusan') ?>">
-                                <i class="fas fa-building"></i> Data Jurusan
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'admin/kelas') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/kelas') ?>">
-                                <i class="fas fa-building"></i> Data Kelas
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'admin/mata-pelajaran') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/mata-pelajaran') ?>">
-                                <i class="fas fa-book-open"></i> Data Mata Pelajaran
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'admin/jadwal') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/jadwal') ?>">
-                                <i class="fas fa-calendar-alt"></i> Data Jadwal
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'admin/absensi') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/absensi') ?>">
-                                <i class="fas fa-clipboard-check"></i> Data Absensi
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'admin/nilai') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/nilai') ?>">
-                                <i class="fas fa-chart-line"></i> Data Nilai
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'admin/ulangan') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/ulangan') ?>">
-                                <i class="fas fa-file-alt"></i> Data Ulangan (Membuat Soal Online)
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'admin/materi') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/materi') ?>">
-                                <i class="fas fa-book"></i> Data Materi/Modul
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?= (strpos(current_url(), 'admin/tugas') !== false) ? 'active' : '' ?>" href="<?= base_url('admin/tugas') ?>">
-                                <i class="fas fa-link"></i> Data Link Pengumpulan Tugas
-                            </a>
-                        </li>
+                        <?php 
+                        echo render_menu(session()->get('role')); 
+                        ?>
                     </ul>
                 </div>
             </nav>
@@ -263,4 +184,4 @@
     
     <?= $this->renderSection('scripts') ?>
 </body>
-</html> 
+</html>
