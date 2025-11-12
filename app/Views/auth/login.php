@@ -37,6 +37,7 @@
             align-items: center;
             justify-content: center;
             position: relative;
+            padding: 20px;
         }
         
         <?php if ($backgroundImage): ?>
@@ -53,6 +54,15 @@
         }
         <?php endif; ?>
         
+        .login-wrapper {
+            display: flex;
+            gap: 30px;
+            max-width: 1000px;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+        }
+        
         .login-container {
             background: white;
             border-radius: 20px;
@@ -62,6 +72,59 @@
             max-width: 400px;
             position: relative;
             z-index: 2;
+        }
+        
+        .guide-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .guide-container h5 {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .guide-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .guide-section h6 {
+            color: #764ba2;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .guide-section ul {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+        
+        .guide-section ul li {
+            margin-bottom: 5px;
+            color: #495057;
+        }
+        
+        @media (max-width: 992px) {
+            .login-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .guide-container {
+                max-width: 400px;
+            }
         }
         .login-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -119,49 +182,94 @@
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-header">
-            <h2><i class="fas fa-graduation-cap me-2"></i>Sistem Informasi SMK</h2>
-            <p class="mb-0 mt-2">Silakan login untuk melanjutkan</p>
+    <div class="login-wrapper">
+        <div class="login-container">
+            <div class="login-header">
+                <h2><i class="fas fa-graduation-cap me-2"></i>Sistem Informasi SMK</h2>
+                <p class="mb-0 mt-2">Silakan login untuk melanjutkan</p>
+            </div>
+            
+            <div class="login-body">
+                <?php if (session()->getFlashdata('error')): ?>
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <?= session()->getFlashdata('error') ?>
+                    </div>
+                <?php endif; ?>
+                
+                <?php if (session()->getFlashdata('success')): ?>
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <?= session()->getFlashdata('success') ?>
+                    </div>
+                <?php endif; ?>
+
+                <form action="<?= base_url('auth/login') ?>" method="post">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <input type="text" class="form-control" name="username" placeholder="Username" required>
+                    </div>
+                    
+                    <div class="input-group mb-4">
+                        <span class="input-group-text">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" class="form-control" name="password" placeholder="Password" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-login">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </button>
+                </form>
+                
+                <div class="register-link">
+                    Belum punya akun? <a href="<?= base_url('auth/register') ?>">Daftar disini</a>
+                </div>
+            </div>
         </div>
         
-        <div class="login-body">
-            <?php if (session()->getFlashdata('error')): ?>
-                <div class="alert alert-danger">
-                    <i class="fas fa-exclamation-circle me-2"></i>
-                    <?= session()->getFlashdata('error') ?>
-                </div>
-            <?php endif; ?>
+        <div class="guide-container">
+            <h5><i class="fas fa-info-circle me-2"></i>Panduan Penggunaan Sistem</h5>
             
-            <?php if (session()->getFlashdata('success')): ?>
-                <div class="alert alert-success">
-                    <i class="fas fa-check-circle me-2"></i>
-                    <?= session()->getFlashdata('success') ?>
-                </div>
-            <?php endif; ?>
-
-            <form action="<?= base_url('auth/login') ?>" method="post">
-                <div class="input-group mb-3">
-                    <span class="input-group-text">
-                        <i class="fas fa-user"></i>
-                    </span>
-                    <input type="text" class="form-control" name="username" placeholder="Username" required>
-                </div>
-                
-                <div class="input-group mb-4">
-                    <span class="input-group-text">
-                        <i class="fas fa-lock"></i>
-                    </span>
-                    <input type="password" class="form-control" name="password" placeholder="Password" required>
-                </div>
-                
-                <button type="submit" class="btn btn-primary btn-login">
-                    <i class="fas fa-sign-in-alt me-2"></i>Login
-                </button>
-            </form>
+            <div class="guide-section">
+                <h6><i class="fas fa-user-shield me-2"></i>Admin</h6>
+                <ul>
+                    <li>Mengelola data guru dan siswa</li>
+                    <li>Mengatur jadwal dan kelas</li>
+                    <li>Melihat dan mencetak rekap absensi</li>
+                    <li>Mengelola nilai dan rekap rapor</li>
+                    <li>Membuat dan mengelola ulangan</li>
+                    <li>Mengelola materi pembelajaran</li>
+                    <li>Aktivasi user baru</li>
+                </ul>
+            </div>
             
-            <div class="register-link">
-                Belum punya akun? <a href="<?= base_url('auth/register') ?>">Daftar disini</a>
+            <div class="guide-section">
+                <h6><i class="fas fa-chalkboard-teacher me-2"></i>Guru</h6>
+                <ul>
+                    <li>Melihat jadwal mengajar</li>
+                    <li>Mengelola absensi siswa</li>
+                    <li>Input dan mengelola nilai</li>
+                    <li>Membuat soal ulangan online</li>
+                    <li>Mengunggah materi pembelajaran</li>
+                    <li>Membuat link pengumpulan tugas</li>
+                    <li>Melihat profil dan data pribadi</li>
+                </ul>
+            </div>
+            
+            <div class="guide-section">
+                <h6><i class="fas fa-user-graduate me-2"></i>Siswa</h6>
+                <ul>
+                    <li>Melihat jadwal pelajaran</li>
+                    <li>Mengakses materi pembelajaran</li>
+                    <li>Mengerjakan ulangan online</li>
+                    <li>Melihat nilai dan rapor</li>
+                    <li>Mengumpulkan tugas</li>
+                    <li>Melihat riwayat kehadiran</li>
+                    <li>Update profil pribadi</li>
+                </ul>
             </div>
         </div>
     </div>

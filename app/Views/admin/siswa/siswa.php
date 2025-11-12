@@ -5,9 +5,6 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Siswa - <?= $kelas['nama_kelas'] ?></h1>
         <div class="d-flex gap-2">
-            <a href="<?= base_url('admin/siswa/export-kelas/' . $kelas['id']) ?>" class="btn btn-success btn-sm">
-                <i class="fas fa-file-excel fa-sm"></i> Export Excel
-            </a>
             <a href="<?= base_url('admin/siswa/create/' . $kelas['id']) ?>" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus fa-sm"></i> Tambah Siswa
             </a>

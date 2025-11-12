@@ -57,6 +57,56 @@
                             <input type="password" class="form-control" id="password" name="password">
                             <small class="text-muted">Minimal 6 karakter</small>
                         </div>
+                        
+                        <hr class="my-4">
+                        <h5 class="mb-3">Data Pribadi Siswa</h5>
+                        
+                        <?php if($siswa): ?>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label>Kelas</label>
+                                    <input type="text" class="form-control" value="<?= $siswa['nama_kelas'] ?>" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label>NIS</label>
+                                    <input type="text" class="form-control" value="<?= $siswa['nis'] ?>" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label>No. Telepon</label>
+                                    <input type="text" class="form-control" value="<?= $siswa['no_telp'] ?? '-' ?>" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label>Tanggal Lahir</label>
+                                    <input type="text" class="form-control" value="<?= date('d-m-Y', strtotime($siswa['tanggal_lahir'] ?? 'now')) ?>" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group mb-3">
+                                    <label>Alamat</label>
+                                    <textarea class="form-control" rows="3" readonly><?= $siswa['alamat'] ?? '-' ?></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <?php else: ?>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> Data pribadi siswa belum tersedia.
+                        </div>
+                        <?php endif; ?>
+                        
                         <button type="submit" class="btn btn-primary">Update Profile</button>
                     </form>
                 </div>

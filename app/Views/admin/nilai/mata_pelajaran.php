@@ -4,14 +4,9 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Mata Pelajaran - <?= $jurusan['nama_jurusan'] ?></h1>
-        <div class="d-flex gap-2">
-            <a href="<?= base_url('admin/nilai/export/' . $jurusan['id']) ?>" class="btn btn-success btn-sm">
-                <i class="fas fa-file-excel fa-sm"></i> Export Excel
-            </a>
-            <a href="<?= base_url('admin/nilai') ?>" class="btn btn-secondary btn-sm">
-                <i class="fas fa-arrow-left fa-sm"></i> Kembali
-            </a>
-        </div>
+        <a href="<?= base_url('admin/nilai') ?>" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left fa-sm"></i> Kembali
+        </a>
     </div>
 
     <?php if (session('success')): ?>
@@ -46,11 +41,19 @@
                                 </div>
                             </div>
                             <div class="col-auto">
-                                <a href="<?= base_url('admin/nilai/input/' . $mapel['id']) ?>" 
-                                   class="btn btn-success btn-sm">
-                                    <i class="fas fa-edit fa-sm"></i>
-                                    Input Nilai
-                                </a>
+                                <div class="d-flex flex-column gap-1">
+                                    <a href="<?= base_url('admin/nilai/input/' . $mapel['id']) ?>" 
+                                       class="btn btn-success btn-sm">
+                                        <i class="fas fa-edit fa-sm"></i>
+                                        Input Nilai
+                                    </a>
+                                    <a href="<?= base_url('admin/nilai/print/' . $mapel['id']) ?>" 
+                                       class="btn btn-primary btn-sm"
+                                       target="_blank">
+                                        <i class="fas fa-print fa-sm"></i>
+                                        Rekap Nilai
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

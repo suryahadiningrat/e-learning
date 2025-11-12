@@ -56,6 +56,66 @@
                             <label for="password">Password Baru (Kosongkan jika tidak ingin mengubah)</label>
                             <input type="password" class="form-control" id="password" name="password">
                         </div>
+                        
+                        <hr class="my-4">
+                        <h5 class="mb-3">Data Pribadi Guru</h5>
+                        
+                        <?php if($guru): ?>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>NIP</label>
+                                    <input type="text" class="form-control" value="<?= $guru['nip'] ?>" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Bidang Studi</label>
+                                    <input type="text" class="form-control" value="<?= $guru['bidang_studi'] ?>" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>No. Telepon</label>
+                                    <input type="text" class="form-control" value="<?= $guru['no_telp'] ?? '-' ?>" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Jenis Kelamin</label>
+                                    <input type="text" class="form-control" value="<?= $guru['jenis_kelamin'] == 'L' ? 'Laki-laki' : 'Perempuan' ?>" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Tempat Lahir</label>
+                                    <input type="text" class="form-control" value="<?= $guru['tempat_lahir'] ?>" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Tanggal Lahir</label>
+                                    <input type="text" class="form-control" value="<?= date('d-m-Y', strtotime($guru['tanggal_lahir'])) ?>" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Alamat</label>
+                            <textarea class="form-control" rows="3" readonly><?= $guru['alamat'] ?></textarea>
+                        </div>
+                        <?php else: ?>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> Data pribadi guru belum tersedia.
+                        </div>
+                        <?php endif; ?>
+                        
                         <button type="submit" class="btn btn-primary">Update Profile</button>
                     </form>
                 </div>

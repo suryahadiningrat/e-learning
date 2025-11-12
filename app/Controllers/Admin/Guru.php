@@ -369,4 +369,36 @@ class Guru extends BaseController
             'jadwal' => $jadwal
         ]);
     }
+
+    public function print($id = null)
+    {
+        $guru = $this->guruModel->getGuruWithRelations($id);
+        
+        if (!$guru) {
+            return redirect()->to('admin/guru')->with('error', 'Guru tidak ditemukan');
+        }
+
+        // Get jadwal guru
+        $db = \Config\Database::connect();
+        $jadwal = $db->table('jadwal j')
+                    ->select('j.*, mp.nama as nama_mata_pelajaran, 
+                             CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, 
+                             jr.nama_jurusan, j.hari, j.jam_mulai, j.jam_selesai, j.semester, j.tahun_ajaran')
+                    ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
+                    ->join('kelas k', 'k.id = j.kelas_id')
+                    ->join('jurusan jr', 'jr.id = k.jurusan_id')
+                    ->where('j.guru_id', $id)
+                    ->orderBy('j.hari', 'ASC')
+                    ->orderBy('j.jam_mulai', 'ASC')
+                    ->get()
+                    ->getResultArray();
+
+        $data = [
+            'title' => 'Print Data Guru',
+            'guru' => $guru,
+            'jadwal' => $jadwal
+        ];
+
+        return view('admin/guru/print', $data);
+    }
 }

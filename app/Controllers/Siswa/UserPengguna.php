@@ -2,15 +2,28 @@
 namespace App\Controllers\Siswa;
 use App\Controllers\BaseController;
 use App\Models\UserModel;
+use App\Models\SiswaModel;
 
 class UserPengguna extends BaseController {
     public function index() {
         $userModel = new UserModel();
+        $siswaModel = new SiswaModel();
         $userId = session()->get('user_id'); // Mengambil ID user yang sedang login
         $user = $userModel->find($userId);
         
+        // Get siswa details with kelas info
+        $db = \Config\Database::connect();
+        $siswa = $db->table('siswa s')
+            ->select('s.*, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, jur.nama_jurusan')
+            ->join('kelas k', 'k.id = s.kelas_id')
+            ->join('jurusan jur', 'jur.id = k.jurusan_id')
+            ->where('s.user_id', $userId)
+            ->get()
+            ->getRowArray();
+        
         return view('siswa/user_pengguna/profile', [
             'user' => $user,
+            'siswa' => $siswa,
             'title' => 'Profile Saya'
         ]);
     }

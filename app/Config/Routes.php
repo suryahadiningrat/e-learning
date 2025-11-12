@@ -31,6 +31,10 @@ $routes->group('siswa', ['filter' => 'auth:role:siswa'], function($routes) {
     // Jadwal Pelajaran
     $routes->get('jadwal', 'Siswa\Jadwal::index');
     
+    // Presensi
+    $routes->get('presensi', 'Siswa\Presensi::index');
+    $routes->get('presensi/detail/(:any)', 'Siswa\Presensi::detail/$1');
+    
     // Materi/Modul
     $routes->get('materi', 'Siswa\Materi::index');
     $routes->get('materi/download/(:num)', 'Siswa\Materi::download/$1');
@@ -94,6 +98,7 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->post('guru/update/(:num)', 'Admin\Guru::update/$1');
     $routes->get('guru/delete/(:num)', 'Admin\Guru::delete/$1');
     $routes->get('guru/jadwal/(:num)', 'Admin\Guru::getJadwalGuru/$1');
+    $routes->get('guru/print/(:num)', 'Admin\Guru::print/$1');
     
     // Data Siswa
     $routes->get('siswa', 'Admin\Siswa::index');
@@ -200,6 +205,7 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->post('nilai/store', 'Admin\Nilai::store');
     $routes->get('nilai/view/(:num)', 'Admin\Nilai::viewNilai/$1');
     $routes->get('nilai/export/(:num)', 'Admin\Nilai::export/$1');
+    $routes->get('nilai/print/(:num)', 'Admin\Nilai::print/$1');
 });
 
 // Guru Routes

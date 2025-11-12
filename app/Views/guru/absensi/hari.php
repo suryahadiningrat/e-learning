@@ -16,7 +16,7 @@
                             <i class="fas fa-arrow-left"></i> Kembali ke Jadwal
                         </a>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createHariModal">
-                            <i class="fas fa-plus"></i> Buat Hari Absensi
+                            <i class="fas fa-plus"></i> Buat Hari Presensi
                         </button>
                     </div>
                 </div>
@@ -62,7 +62,7 @@
                                             <div class="mt-auto">
                                                 <a href="<?= base_url('guru/absensi/input/' . $item['id']) ?>" 
                                                    class="btn btn-primary">
-                                                    <i class="fas fa-edit"></i> Input Absensi
+                                                    <i class="fas fa-edit"></i> Input Presensi
                                                 </a>
                                                 <a href="<?= base_url('guru/absensi/export-hari/' . $item['id']) ?>" 
                                                    class="btn btn-success btn-sm">
@@ -78,7 +78,7 @@
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle"></i>
                                     Belum ada hari absensi yang dibuat untuk jadwal ini. 
-                                    Klik tombol "Buat Hari Absensi" untuk membuat hari absensi baru.
+                                    Klik tombol "Buat Hari Presensi" untuk membuat hari absensi baru.
                                 </div>
                             </div>
                         <?php endif; ?>
@@ -89,7 +89,7 @@
     </div>
 </div>
 
-<!-- Modal Create Hari Absensi -->
+<!-- Modal Create Hari Presensi -->
 <div class="modal fade" id="createHariModal" tabindex="-1" aria-labelledby="createHariModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -98,7 +98,7 @@
                 <input type="hidden" name="jadwal_id" value="<?= $jadwal['id'] ?>">
                 
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createHariModalLabel">Buat Hari Absensi</h5>
+                    <h5 class="modal-title" id="createHariModalLabel">Buat Hari Presensi</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -114,7 +114,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Buat Hari Absensi</button>
+                    <button type="submit" class="btn btn-primary">Buat Hari Presensi</button>
                 </div>
             </form>
         </div>

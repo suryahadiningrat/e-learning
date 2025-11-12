@@ -49,10 +49,6 @@
                                        class="btn btn-primary btn-sm">
                                         <i class="fas fa-eye"></i> Lihat Kelas
                                     </a>
-                                    <button type="button" class="btn btn-success btn-sm" 
-                                            onclick="exportJurusan(<?= $item['id'] ?>, '<?= $item['nama_jurusan'] ?>')">
-                                        <i class="fas fa-file-excel"></i> Export
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -68,7 +64,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exportModalLabel">Export Data Absensi</h5>
+                <h5 class="modal-title" id="exportModalLabel">Export Data Presensi</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="exportForm" method="GET" action="<?= base_url('admin/absensi/export') ?>">
@@ -102,7 +98,7 @@
 
 <script>
 function exportJurusan(jurusanId, namaJurusan) {
-    if (confirm('Export data absensi untuk jurusan ' + namaJurusan + '?')) {
+    if (confirm('Export data presensi untuk jurusan ' + namaJurusan + '?')) {
         window.location.href = '<?= base_url('admin/absensi/exportJurusan/') ?>' + jurusanId;
     }
 }

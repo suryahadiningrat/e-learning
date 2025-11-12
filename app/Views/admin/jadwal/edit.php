@@ -94,7 +94,6 @@
                                 <option value="Rabu" <?= (old('hari', $jadwal['hari'] ?? '') == 'Rabu') ? 'selected' : '' ?>>Rabu</option>
                                 <option value="Kamis" <?= (old('hari', $jadwal['hari'] ?? '') == 'Kamis') ? 'selected' : '' ?>>Kamis</option>
                                 <option value="Jumat" <?= (old('hari', $jadwal['hari'] ?? '') == 'Jumat') ? 'selected' : '' ?>>Jumat</option>
-                                <option value="Sabtu" <?= (old('hari', $jadwal['hari'] ?? '') == 'Sabtu') ? 'selected' : '' ?>>Sabtu</option>
                             </select>
                             <?php if (session('errors.hari')): ?>
                                 <div class="invalid-feedback">

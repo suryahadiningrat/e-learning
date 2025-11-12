@@ -7,7 +7,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="<?= base_url('admin/absensi') ?>">Absensi</a>
+                    <a href="<?= base_url('admin/absensi') ?>">Presensi</a>
                 </li>
                 <li class="breadcrumb-item">
                     <a href="<?= base_url('admin/absensi/kelas/' . $jadwal['id']) ?>">
@@ -45,7 +45,7 @@
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <div>
                 <h6 class="m-0 font-weight-bold text-primary">
-                    Hari Absensi - <?= $jadwal['nama'] ?> (<?= $jadwal['nama_kelas'] ?>)
+                    Hari Presensi - <?= $jadwal['nama'] ?> (<?= $jadwal['nama_kelas'] ?>)
                 </h6>
                 <small class="text-muted">
                     <i class="fas fa-clock"></i> <?= $jadwal['hari'] ?>, <?= $jadwal['jam_mulai'] ?> - <?= $jadwal['jam_selesai'] ?>
@@ -112,13 +112,13 @@
 
 <script>
 function exportJadwal(jadwalId, namaMapel) {
-    if (confirm('Export data absensi untuk mata pelajaran ' + namaMapel + '?')) {
+    if (confirm('Export data presensi untuk mata pelajaran ' + namaMapel + '?')) {
         window.location.href = '<?= base_url('admin/absensi/exportJadwal/') ?>' + jadwalId;
     }
 }
 
 function exportHari(hariId, tanggal) {
-    if (confirm('Export data absensi untuk tanggal ' + tanggal + '?')) {
+    if (confirm('Export data presensi untuk tanggal ' + tanggal + '?')) {
         window.location.href = '<?= base_url('admin/absensi/exportHari/') ?>' + hariId;
     }
 }

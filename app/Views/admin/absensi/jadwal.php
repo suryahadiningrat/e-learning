@@ -7,7 +7,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="<?= base_url('admin/absensi') ?>">Absensi</a>
+                    <a href="<?= base_url('admin/absensi') ?>">Presensi</a>
                 </li>
                 <li class="breadcrumb-item">
                     <a href="<?= base_url('admin/absensi/kelas/' . $kelas['jurusan_id']) ?>">
@@ -100,13 +100,13 @@
 
 <script>
 function exportKelas(kelasId, namaKelas) {
-    if (confirm('Export data absensi untuk kelas ' + namaKelas + '?')) {
+    if (confirm('Export data presensi untuk kelas ' + namaKelas + '?')) {
         window.location.href = '<?= base_url('admin/absensi/exportKelas/') ?>' + kelasId;
     }
 }
 
 function exportJadwal(jadwalId, namaMapel) {
-    if (confirm('Export data absensi untuk mata pelajaran ' + namaMapel + '?')) {
+    if (confirm('Export data presensi untuk mata pelajaran ' + namaMapel + '?')) {
         window.location.href = '<?= base_url('admin/absensi/exportJadwal/') ?>' + jadwalId;
     }
 }

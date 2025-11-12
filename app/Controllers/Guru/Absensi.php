@@ -37,7 +37,7 @@ class Absensi extends BaseController {
         }
     }
 
-    // Step 1: Tampilkan daftar jurusan yang memiliki jadwal yang diajar guru
+    // Step 1: Tampilkan daftar kelas yang diajar guru langsung
     public function index() {
         $guruId = $this->guruId;
         
@@ -46,21 +46,46 @@ class Absensi extends BaseController {
             return redirect()->to('auth/login')->with('error', 'Silakan login terlebih dahulu');
         }
         
-        // Get jurusan yang memiliki jadwal yang diajar guru
-        $jurusan = $this->getJurusanByGuru($guruId);
+        // Get kelas yang diajar guru beserta mata pelajaran
+        $db = \Config\Database::connect();
+        $jadwalGuru = $db->table('jadwal j')
+            ->select('j.id as jadwal_id, j.hari, j.jam_mulai, j.jam_selesai, 
+                      CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas,
+                      k.id as kelas_id, mp.nama as mata_pelajaran, mp.id as mapel_id,
+                      jur.nama_jurusan')
+            ->join('kelas k', 'k.id = j.kelas_id')
+            ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
+            ->join('jurusan jur', 'jur.id = k.jurusan_id')
+            ->where('j.guru_id', $guruId)
+            ->orderBy('k.tingkat, k.kode_jurusan, k.paralel')
+            ->get()
+            ->getResultArray();
         
-        if (empty($jurusan)) {
-            $data = [
-                'title' => 'Data Absensi',
-                'jurusan' => [],
-                'message' => 'Anda belum memiliki jadwal mengajar'
-            ];
-        } else {
-            $data = [
-                'title' => 'Data Absensi',
-                'jurusan' => $jurusan
+        // Group by kelas
+        $kelasData = [];
+        foreach ($jadwalGuru as $jadwal) {
+            $kelasId = $jadwal['kelas_id'];
+            if (!isset($kelasData[$kelasId])) {
+                $kelasData[$kelasId] = [
+                    'kelas_id' => $kelasId,
+                    'nama_kelas' => $jadwal['nama_kelas'],
+                    'nama_jurusan' => $jadwal['nama_jurusan'],
+                    'mata_pelajaran' => []
+                ];
+            }
+            
+            $kelasData[$kelasId]['mata_pelajaran'][] = [
+                'jadwal_id' => $jadwal['jadwal_id'],
+                'nama' => $jadwal['mata_pelajaran'],
+                'hari' => $jadwal['hari'],
+                'jam' => $jadwal['jam_mulai'] . ' - ' . $jadwal['jam_selesai']
             ];
         }
+        
+        $data = [
+            'title' => 'Data Presensi',
+            'kelasData' => array_values($kelasData)
+        ];
 
         return view('guru/absensi/index', $data);
     }
@@ -190,7 +215,7 @@ class Absensi extends BaseController {
         $hariAbsensi = $this->getHariAbsensiByJadwal($jadwalId);
 
         $data = [
-            'title' => 'Daftar Hari Absensi - ' . $jadwal['nama_mata_pelajaran'],
+            'title' => 'Daftar Hari Presensi - ' . $jadwal['nama_mata_pelajaran'],
             'jadwal' => $jadwal,
             'hari_absensi' => $hariAbsensi
         ];
@@ -238,7 +263,7 @@ class Absensi extends BaseController {
         }
 
         $data = [
-            'title' => 'Input Absensi - ' . $hariAbsensi['nama_mata_pelajaran'] . ' (' . date('d/m/Y', strtotime($hariAbsensi['tanggal'])) . ')',
+            'title' => 'Input Presensi - ' . $hariAbsensi['nama_mata_pelajaran'] . ' (' . date('d/m/Y', strtotime($hariAbsensi['tanggal'])) . ')',
             'hari_absensi' => $hariAbsensi,
             'jadwal' => $hariAbsensi,
             'siswa' => $siswa,
@@ -273,7 +298,7 @@ class Absensi extends BaseController {
         }
 
         $data = [
-            'title' => 'Buat Hari Absensi Baru - ' . $jadwal['nama_mata_pelajaran'],
+            'title' => 'Buat Hari Presensi Baru - ' . $jadwal['nama_mata_pelajaran'],
             'jadwal' => $jadwal
         ];
 
@@ -685,7 +710,7 @@ class Absensi extends BaseController {
     // Legacy methods for backward compatibility
     public function create() {
         $data = [
-            'title' => 'Tambah Absensi',
+            'title' => 'Tambah Presensi',
             'siswa' => $this->siswaModel->getSiswaWithRelations(),
             'kelas' => $this->kelasModel->getKelasWithRelations(),
             'jadwal' => $this->jadwalModel->getJadwalWithRelations()
@@ -728,7 +753,7 @@ class Absensi extends BaseController {
             return redirect()->to('guru/absensi')->with('error', 'Absensi tidak ditemukan');
         }
         $data = [
-            'title' => 'Edit Absensi',
+            'title' => 'Edit Presensi',
             'absensi' => $absensi,
             'siswa' => $this->siswaModel->getSiswaWithRelations(),
             'kelas' => $this->kelasModel->getKelasWithRelations(),

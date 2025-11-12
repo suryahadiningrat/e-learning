@@ -92,7 +92,11 @@ class Nilai extends BaseController
         foreach ($nilaiExisting as $nilai) {
             $nilaiFormatted[$nilai['siswa_id']] = [
                 'tugas' => json_decode($nilai['nilai_tugas'], true) ?: [],
-                'ulangan' => json_decode($nilai['nilai_ulangan'], true) ?: []
+                'ulangan' => json_decode($nilai['nilai_ulangan'], true) ?: [],
+                'uts_sem1' => $nilai['nilai_uts_sem1'] ?? '',
+                'uas_sem1' => $nilai['nilai_uas_sem1'] ?? '',
+                'uts_sem2' => $nilai['nilai_uts_sem2'] ?? '',
+                'uas_sem2' => $nilai['nilai_uas_sem2'] ?? ''
             ];
         }
 
@@ -145,11 +149,21 @@ class Nilai extends BaseController
                 }
             }
 
+            // Get semester values
+            $utsSem1 = isset($nilai['uts_sem1']) && $nilai['uts_sem1'] !== '' ? floatval($nilai['uts_sem1']) : null;
+            $uasSem1 = isset($nilai['uas_sem1']) && $nilai['uas_sem1'] !== '' ? floatval($nilai['uas_sem1']) : null;
+            $utsSem2 = isset($nilai['uts_sem2']) && $nilai['uts_sem2'] !== '' ? floatval($nilai['uts_sem2']) : null;
+            $uasSem2 = isset($nilai['uas_sem2']) && $nilai['uas_sem2'] !== '' ? floatval($nilai['uas_sem2']) : null;
+
             $dataToSave[] = [
                 'siswa_id' => $siswaId,
                 'jadwal_id' => $jadwalId,
                 'nilai_tugas' => $nilaiTugas,
                 'nilai_ulangan' => $nilaiUlangan,
+                'nilai_uts_sem1' => $utsSem1,
+                'nilai_uas_sem1' => $uasSem1,
+                'nilai_uts_sem2' => $utsSem2,
+                'nilai_uas_sem2' => $uasSem2,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ];
@@ -298,5 +312,67 @@ class Nilai extends BaseController
 
         $writer->save('php://output');
         exit;
+    }
+
+    // Print rekap nilai per mata pelajaran
+    public function print($jadwalId = null)
+    {
+        if (!$jadwalId) {
+            return redirect()->to('admin/nilai')->with('error', 'Jadwal tidak ditemukan');
+        }
+
+        // Get jadwal info
+        $db = \Config\Database::connect();
+        $jadwal = $db->table('jadwal j')
+                    ->select('j.*, mp.nama as nama_mata_pelajaran, CONCAT(k.tingkat, " ", k.kode_jurusan, " ", k.paralel) as nama_kelas, k.jurusan_id, jur.nama_jurusan, u.full_name as nama_guru')
+                    ->join('mata_pelajaran mp', 'mp.id = j.mata_pelajaran_id')
+                    ->join('kelas k', 'k.id = j.kelas_id')
+                    ->join('jurusan jur', 'jur.id = k.jurusan_id')
+                    ->join('guru g', 'g.id = j.guru_id')
+                    ->join('users u', 'u.id = g.user_id')
+                    ->where('j.id', $jadwalId)
+                    ->get()
+                    ->getRowArray();
+
+        if (!$jadwal) {
+            return redirect()->to('admin/nilai')->with('error', 'Jadwal tidak ditemukan');
+        }
+
+        // Get siswa dan nilai
+        $siswa = $this->nilaiModel->getSiswaByJadwal($jadwalId);
+        $nilaiExisting = $this->nilaiModel->getNilaiByJadwal($jadwalId);
+        
+        // Format nilai per siswa
+        $nilaiFormatted = [];
+        $maxTugas = 0;
+        $maxUlangan = 0;
+        
+        foreach ($nilaiExisting as $nilai) {
+            $tugas = json_decode($nilai['nilai_tugas'], true) ?: [];
+            $ulangan = json_decode($nilai['nilai_ulangan'], true) ?: [];
+            
+            $nilaiFormatted[$nilai['siswa_id']] = [
+                'tugas' => $tugas,
+                'ulangan' => $ulangan,
+                'uts_sem1' => $nilai['nilai_uts_sem1'] ?? null,
+                'uas_sem1' => $nilai['nilai_uas_sem1'] ?? null,
+                'uts_sem2' => $nilai['nilai_uts_sem2'] ?? null,
+                'uas_sem2' => $nilai['nilai_uas_sem2'] ?? null
+            ];
+            
+            $maxTugas = max($maxTugas, count($tugas));
+            $maxUlangan = max($maxUlangan, count($ulangan));
+        }
+
+        $data = [
+            'title' => 'Rekap Nilai - ' . $jadwal['nama_mata_pelajaran'],
+            'jadwal' => $jadwal,
+            'siswa' => $siswa,
+            'nilai' => $nilaiFormatted,
+            'maxTugas' => $maxTugas,
+            'maxUlangan' => $maxUlangan
+        ];
+
+        return view('admin/nilai/print', $data);
     }
 } 

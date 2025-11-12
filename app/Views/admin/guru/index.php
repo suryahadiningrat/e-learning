@@ -54,14 +54,17 @@
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <a href="<?= base_url('admin/guru/edit/' . ($g['id'] ?? '')) ?>" class="btn btn-warning btn-sm">
+                                    <a href="<?= base_url('admin/guru/edit/' . ($g['id'] ?? '')) ?>" class="btn btn-warning btn-sm" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <button type="button" class="btn btn-info btn-sm" onclick="showJadwalModal(<?= $g['id'] ?? 0 ?>, '<?= addslashes($g['full_name'] ?? '') ?>')">
+                                    <a href="<?= base_url('admin/guru/print/' . ($g['id'] ?? '')) ?>" class="btn btn-success btn-sm" target="_blank" title="Print Data">
+                                        <i class="fas fa-print"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-info btn-sm" onclick="showJadwalModal(<?= $g['id'] ?? 0 ?>, '<?= addslashes($g['full_name'] ?? '') ?>')" title="Lihat Jadwal">
                                         <i class="fas fa-calendar-alt"></i>
                                     </button>
                                     <a href="javascript:void(0)" class="btn btn-danger btn-sm" 
-                                       onclick="confirmDelete('<?= base_url('admin/guru/delete/' . ($g['id'] ?? '')) ?>', '<?= $g['full_name'] ?? 'Data' ?>')">
+                                       onclick="confirmDelete('<?= base_url('admin/guru/delete/' . ($g['id'] ?? '')) ?>', '<?= $g['full_name'] ?? 'Data' ?>')" title="Hapus">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </td>

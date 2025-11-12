@@ -44,7 +44,7 @@ class Absensi extends BaseController
         $jurusan = $this->jurusanModel->findAll();
         
         $data = [
-            'title' => 'Data Absensi',
+            'title' => 'Data Presensi',
             'jurusan' => $jurusan
         ];
 
@@ -66,7 +66,7 @@ class Absensi extends BaseController
         $kelas = $this->kelasModel->where('jurusan_id', $jurusanId)->findAll();
 
         $data = [
-            'title' => 'Data Absensi - Kelas ' . $jurusan['nama_jurusan'],
+            'title' => 'Data Presensi - Kelas ' . $jurusan['nama_jurusan'],
             'jurusan' => $jurusan,
             'kelas' => $kelas
         ];
@@ -107,7 +107,7 @@ class Absensi extends BaseController
             ->getResultArray();
             
         $data = [
-            'title' => 'Data Absensi - Jadwal ' . $kelas['nama_kelas'],
+            'title' => 'Data Presensi - Jadwal ' . $kelas['nama_kelas'],
             'kelas' => $kelas,
             'jadwal' => $jadwal
         ];
@@ -142,7 +142,7 @@ class Absensi extends BaseController
         $hariAbsensi = $this->getHariAbsensiByJadwal($jadwalId);
 
         $data = [
-            'title' => 'Data Absensi - ' . $jadwal['nama'] . ' (' . $jadwal['nama_kelas'] . ')',
+            'title' => 'Data Presensi - ' . $jadwal['nama'] . ' (' . $jadwal['nama_kelas'] . ')',
             'jadwal' => $jadwal,
             'hari_absensi' => $hariAbsensi
         ];
@@ -181,7 +181,7 @@ class Absensi extends BaseController
         $absensi = $this->getAbsensiByHariAbsensi($hariAbsensiId);
 
         $data = [
-            'title' => 'Input Absensi - ' . $hariAbsensi['nama'] . ' (' . date('d/m/Y', strtotime($hariAbsensi['tanggal'])) . ')',
+            'title' => 'Input Presensi - ' . $hariAbsensi['nama'] . ' (' . date('d/m/Y', strtotime($hariAbsensi['tanggal'])) . ')',
             'hari_absensi' => $hariAbsensi,
             'hari_absensi_id' => $hariAbsensiId,
             'jadwal' => $hariAbsensi,
@@ -215,7 +215,7 @@ class Absensi extends BaseController
         }
 
         $data = [
-            'title' => 'Buat Hari Absensi Baru - ' . $jadwal['nama'],
+            'title' => 'Buat Hari Presensi Baru - ' . $jadwal['nama'],
             'jadwal' => $jadwal
         ];
 
@@ -432,7 +432,7 @@ class Absensi extends BaseController
     public function create()
     {
         $data = [
-            'title' => 'Tambah Absensi',
+            'title' => 'Tambah Presensi',
             'siswa' => $this->siswaModel->getSiswaWithRelations(),
             'kelas' => $this->kelasModel->getKelasWithRelations(),
             'jadwal' => $this->jadwalModel->getJadwalWithRelations()
@@ -530,7 +530,7 @@ class Absensi extends BaseController
         }
 
         $data = [
-            'title' => 'Edit Absensi',
+            'title' => 'Edit Presensi',
             'absensi' => $absensi,
             'siswa' => $this->siswaModel->getSiswaWithRelations(),
             'kelas' => $this->kelasModel->getKelasWithRelations(),

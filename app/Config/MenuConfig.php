@@ -84,7 +84,7 @@ class MenuConfig
                     'type' => 'header'
                 ],
                 [
-                    'title' => 'Absensi',
+                    'title' => 'Presensi',
                     'icon' => 'fas fa-clipboard-check',
                     'url' => 'admin/absensi',
                     'active_pattern' => 'admin/absensi'
@@ -142,7 +142,7 @@ class MenuConfig
                     'type' => 'header'
                 ],
                 [
-                    'title' => 'Absensi',
+                    'title' => 'Presensi',
                     'icon' => 'fas fa-clipboard-check',
                     'url' => 'guru/absensi',
                     'active_pattern' => 'guru/absensi'
@@ -198,6 +198,12 @@ class MenuConfig
                 [
                     'title' => 'Pembelajaran',
                     'type' => 'header'
+                ],
+                [
+                    'title' => 'Presensi',
+                    'icon' => 'fas fa-clipboard-check',
+                    'url' => 'siswa/presensi',
+                    'active_pattern' => 'siswa/presensi'
                 ],
                 [
                     'title' => 'Materi/Modul',

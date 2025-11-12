@@ -7,7 +7,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="<?= base_url('admin/absensi') ?>">Absensi</a>
+                    <a href="<?= base_url('admin/absensi') ?>">Presensi</a>
                 </li>
                 <li class="breadcrumb-item">
                     <a href="<?= base_url('admin/absensi/jadwal/' . $jadwal['kelas_id']) ?>">
@@ -100,7 +100,7 @@
     <!-- Form Card -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Form Tambah Hari Absensi</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Form Tambah Hari Presensi</h6>
         </div>
         <div class="card-body">
             <form action="<?= base_url('admin/absensi/storeHari') ?>" method="post">
@@ -135,7 +135,7 @@
                         <i class="fas fa-arrow-left"></i> Kembali
                     </a>
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Simpan Hari Absensi
+                        <i class="fas fa-save"></i> Simpan Hari Presensi
                     </button>
                 </div>
             </form>

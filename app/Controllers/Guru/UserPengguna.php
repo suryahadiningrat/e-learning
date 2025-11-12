@@ -2,16 +2,22 @@
 namespace App\Controllers\Guru;
 use App\Controllers\BaseController;
 use App\Models\UserModel;
+use App\Models\GuruModel;
 
 class UserPengguna extends BaseController {
     public function index() {
         $userModel = new UserModel();
+        $guruModel = new GuruModel();
         $userId = session()->get('user_id');
         $user = $userModel->find($userId);
         
+        // Get guru details
+        $guru = $guruModel->where('user_id', $userId)->first();
+        
         $data = [
             'title' => 'Profile Saya',
-            'user' => $user
+            'user' => $user,
+            'guru' => $guru
         ];
         
         return view('guru/user_pengguna/profile', $data);

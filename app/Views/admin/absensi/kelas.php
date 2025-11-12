@@ -7,7 +7,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="<?= base_url('admin/absensi') ?>">Absensi</a>
+                    <a href="<?= base_url('admin/absensi') ?>">Presensi</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
                     <?= $jurusan['nama_jurusan'] ?>
@@ -36,10 +36,6 @@
             <h6 class="m-0 font-weight-bold text-primary">
                 Daftar Kelas - <?= $jurusan['nama_jurusan'] ?>
             </h6>
-            <button type="button" class="btn btn-success btn-sm" 
-                    onclick="exportKelas(<?= $jurusan['id'] ?>, '<?= $jurusan['nama_jurusan'] ?>')">
-                <i class="fas fa-file-excel"></i> Export Jurusan
-            </button>
         </div>
         <div class="card-body">
             <?php if (empty($kelas)): ?>
@@ -57,7 +53,7 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                <?= $item['kode_jurusan'] . " " . $item['tingkat'] . " " . $item['paralel']?>
+                                                <?= $item['tingkat'] . " " . $item['kode_jurusan'] . " " . $item['paralel']?>
                                             </div>
                                         </div>
                                         <div class="col-auto">
@@ -69,10 +65,6 @@
                                            class="btn btn-primary btn-sm">
                                             <i class="fas fa-eye"></i> Lihat Jadwal
                                         </a>
-                                        <button type="button" class="btn btn-success btn-sm" 
-                                                onclick="exportKelasData(<?= $item['id'] ?>)">
-                                            <i class="fas fa-file-excel"></i> Export
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -86,13 +78,13 @@
 
 <script>
 function exportKelas(jurusanId, namaJurusan) {
-    if (confirm('Export data absensi untuk jurusan ' + namaJurusan + '?')) {
+    if (confirm('Export data presensi untuk jurusan ' + namaJurusan + '?')) {
         window.location.href = '<?= base_url('admin/absensi/exportJurusan/') ?>' + jurusanId;
     }
 }
 
 function exportKelasData(kelasId, namaKelas) {
-    if (confirm('Export data absensi ?')) {
+    if (confirm('Export data presensi ?')) {
         window.location.href = '<?= base_url('admin/absensi/exportKelas/') ?>' + kelasId;
     }
 }

@@ -28,7 +28,7 @@ class JadwalModel extends Model
         'guru_id' => 'required|numeric',
         'kelas_id' => 'required|numeric',
         'mata_pelajaran' => 'required|min_length[2]|max_length[100]',
-        'hari' => 'required|in_list[Senin,Selasa,Rabu,Kamis,Jumat,Sabtu]',
+        'hari' => 'required|in_list[Senin,Selasa,Rabu,Kamis,Jumat]',
         'jam_mulai' => 'required|regex_match[/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/]',
         'jam_selesai' => 'required|regex_match[/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/]',
         'semester' => 'required|in_list[Ganjil,Genap]',

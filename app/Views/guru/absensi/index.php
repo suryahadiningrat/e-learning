@@ -28,23 +28,28 @@
                     <?php endif; ?>
 
                     <div class="row">
-                        <?php if (!empty($jurusan)): ?>
-                            <?php foreach ($jurusan as $item): ?>
+                        <?php if (!empty($kelasData)): ?>
+                            <?php foreach ($kelasData as $kelas): ?>
                                 <div class="col-md-6 col-lg-4 mb-3">
                                     <div class="card h-100">
                                         <div class="card-body d-flex flex-column">
-                                            <h5 class="card-title"><?= esc($item['nama_jurusan']) ?></h5>
-                                            <p class="card-text text-muted">
-                                                Kode: <?= esc($item['kode_jurusan']) ?>
+                                            <h5 class="card-title"><?= esc($kelas['nama_kelas']) ?></h5>
+                                            <p class="card-text text-muted mb-2">
+                                                <strong><?= esc($kelas['nama_jurusan']) ?></strong>
                                             </p>
+                                            
+                                            <div class="mb-3">
+                                                <small class="text-muted d-block mb-1">Mata Pelajaran yang Diajar:</small>
+                                                <?php foreach ($kelas['mata_pelajaran'] as $mapel): ?>
+                                                    <span class="badge bg-primary mb-1"><?= esc($mapel['nama']) ?></span>
+                                                    <small class="text-muted d-block"><?= esc($mapel['hari']) ?>, <?= esc($mapel['jam']) ?></small>
+                                                <?php endforeach; ?>
+                                            </div>
+                                            
                                             <div class="mt-auto">
-                                                <a href="<?= base_url('guru/absensi/kelas/' . $item['id']) ?>" 
-                                                   class="btn btn-primary">
-                                                    <i class="fas fa-arrow-right"></i> Lihat Kelas
-                                                </a>
-                                                <a href="<?= base_url('guru/absensi/export-jurusan/' . $item['id']) ?>" 
-                                                   class="btn btn-success btn-sm">
-                                                    <i class="fas fa-download"></i> Export
+                                                <a href="<?= base_url('guru/absensi/jadwal/' . $kelas['kelas_id']) ?>" 
+                                                   class="btn btn-primary btn-block">
+                                                    <i class="fas fa-edit"></i> Input Presensi
                                                 </a>
                                             </div>
                                         </div>
@@ -55,7 +60,7 @@
                             <div class="col-12">
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle"></i>
-                                    Tidak ada jurusan yang memiliki jadwal yang Anda ajar.
+                                    Anda belum memiliki jadwal mengajar.
                                 </div>
                             </div>
                         <?php endif; ?>
@@ -71,7 +76,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exportModalLabel">Export Data Absensi</h5>
+                <h5 class="modal-title" id="exportModalLabel">Export Data Presensi</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form action="<?= base_url('guru/absensi/export') ?>" method="get">
@@ -94,8 +99,8 @@
                         <label for="export_kelas_id" class="form-label">Kelas</label>
                         <select class="form-select" id="export_kelas_id" name="kelas_id">
                             <option value="">Semua Kelas</option>
-                            <?php foreach ($kelas ?? [] as $kelas_item): ?>
-                                <option value="<?= $kelas_item['id'] ?>" <?= (($_GET['kelas_id'] ?? '') == $kelas_item['id']) ? 'selected' : '' ?>>
+                            <?php foreach ($kelasData ?? [] as $kelas_item): ?>
+                                <option value="<?= $kelas_item['kelas_id'] ?>" <?= (($_GET['kelas_id'] ?? '') == $kelas_item['kelas_id']) ? 'selected' : '' ?>>
                                     <?= $kelas_item['nama_kelas'] ?> - <?= $kelas_item['nama_jurusan'] ?>
                                 </option>
                             <?php endforeach; ?>

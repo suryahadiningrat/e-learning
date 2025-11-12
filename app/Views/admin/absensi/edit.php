@@ -3,7 +3,7 @@
 <?= $this->section('content') ?>
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Edit Absensi</h1>
+        <h1 class="h3 mb-0 text-gray-800">Edit Presensi</h1>
         <a href="<?= base_url('admin/absensi') ?>" class="btn btn-secondary btn-sm">
             <i class="fas fa-arrow-left fa-sm"></i> Kembali
         </a>
@@ -11,7 +11,7 @@
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Form Edit Absensi</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Form Edit Presensi</h6>
         </div>
         <div class="card-body">
             <form action="<?= base_url('admin/absensi/update/' . $absensi['id']) ?>" method="post">

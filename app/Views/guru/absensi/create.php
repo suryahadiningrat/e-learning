@@ -2,7 +2,7 @@
 <?= $this->section('content') ?>
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Tambah Absensi</h1>
+        <h1 class="h3 mb-0 text-gray-800">Tambah Presensi</h1>
         <a href="<?= base_url('guru/absensi') ?>" class="btn btn-secondary btn-sm">
             <i class="fas fa-arrow-left fa-sm"></i> Kembali
         </a>
@@ -10,7 +10,7 @@
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Form Tambah Absensi</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Form Tambah Presensi</h6>
         </div>
         <div class="card-body">
             <form action="<?= base_url('guru/absensi/store') ?>" method="post">
@@ -129,7 +129,7 @@
                 </div>
                 <div class="d-flex justify-content-end">
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-2"></i>Simpan Absensi
+                        <i class="fas fa-save me-2"></i>Simpan Presensi
                     </button>
                 </div>
             </form>

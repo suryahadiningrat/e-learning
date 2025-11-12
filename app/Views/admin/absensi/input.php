@@ -7,7 +7,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="<?= base_url('admin/absensi') ?>">Absensi</a>
+                    <a href="<?= base_url('admin/absensi') ?>">Presensi</a>
                 </li>
                 <li class="breadcrumb-item">
                     <a href="<?= base_url('admin/absensi/kelas/' . $jadwal['id']) ?>">
@@ -149,7 +149,7 @@
                         <i class="fas fa-arrow-left"></i> Kembali
                     </a>
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Simpan Absensi
+                        <i class="fas fa-save"></i> Simpan Presensi
                     </button>
                 </div>
             </form>
@@ -159,7 +159,7 @@
 
 <script>
 function exportHari(hariId, tanggal) {
-    if (confirm('Export data absensi untuk tanggal ' + tanggal + '?')) {
+    if (confirm('Export data presensi untuk tanggal ' + tanggal + '?')) {
         window.location.href = '<?= base_url('admin/absensi/exportHari/') ?>' + hariId;
     }
 }

@@ -96,7 +96,7 @@
 
                         <div class="mt-3">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Simpan Absensi
+                                <i class="fas fa-save"></i> Simpan Presensi
                             </button>
                             <button type="button" class="btn btn-success" onclick="setAllStatus('Hadir')">
                                 <i class="fas fa-check"></i> Semua Hadir

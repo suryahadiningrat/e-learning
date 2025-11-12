@@ -35,16 +35,10 @@
                                 </div>
                             </div>
                             <div class="col-auto">
-                                <div class="d-flex gap-1">
-                                    <a href="<?= base_url('admin/siswa/export-jurusan/' . $jur['id']) ?>" 
-                                       class="btn btn-success btn-sm" title="Export Excel">
-                                        <i class="fas fa-file-excel fa-sm"></i>
-                                    </a>
-                                    <a href="<?= base_url('admin/siswa/jurusan/' . $jur['id']) ?>" 
-                                       class="btn btn-primary btn-sm" title="Pilih Jurusan">
-                                        <i class="fas fa-arrow-right fa-sm"></i>
-                                    </a>
-                                </div>
+                                <a href="<?= base_url('admin/siswa/jurusan/' . $jur['id']) ?>" 
+                                   class="btn btn-primary btn-sm" title="Pilih Jurusan">
+                                    <i class="fas fa-arrow-right fa-sm"></i> Lihat Kelas
+                                </a>
                             </div>
                         </div>
                     </div>
