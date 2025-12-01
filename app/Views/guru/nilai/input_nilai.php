@@ -48,6 +48,10 @@
                            class="btn btn-success btn-sm">
                             <i class="fas fa-file-excel fa-sm"></i> Export Excel
                         </a>
+                        <a href="<?= base_url('guru/nilai/export-pdf/' . $jadwal['id']) ?>" 
+                           class="btn btn-danger btn-sm">
+                            <i class="fas fa-file-pdf fa-sm"></i> Export PDF
+                        </a>
                     </div>
                     <div class="d-flex gap-3">
                         <span id="tugasCount" class="badge bg-primary">Tugas: 0</span>
@@ -59,17 +63,24 @@
                     <table class="table table-bordered table-striped" id="tableNilai">
                         <thead class="table-dark">
                             <tr>
-                                <th rowspan="2" class="align-middle">No</th>
-                                <th rowspan="2" class="align-middle">NIS</th>
-                                <th rowspan="2" class="align-middle">Nama Siswa</th>
+                                <th rowspan="3" class="align-middle">No</th>
+                                <th rowspan="3" class="align-middle">NIS</th>
+                                <th rowspan="3" class="align-middle">Nama Siswa</th>
                                 <th colspan="2" class="text-center" id="tugasHeader">Nilai Tugas</th>
                                 <th colspan="2" class="text-center" id="ulanganHeader">Nilai Ulangan</th>
+                                <th colspan="2" class="text-center">Semester 1</th>
+                                <th colspan="2" class="text-center">Semester 2</th>
+                                <th rowspan="3" class="align-middle">Rata-rata</th>
                             </tr>
                             <tr id="headerRow">
                                 <th class="text-center tugas-header">Tugas 1</th>
                                 <th class="text-center tugas-header">Tugas 2</th>
                                 <th class="text-center ulangan-header">Ulangan 1</th>
                                 <th class="text-center ulangan-header">Ulangan 2</th>
+                                <th class="text-center">UTS</th>
+                                <th class="text-center">UAS</th>
+                                <th class="text-center">UTS</th>
+                                <th class="text-center">UAS</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
@@ -81,14 +92,14 @@
                                     
                                     <!-- Kolom Tugas -->
                                     <td class="tugas-cell">
-                                        <input type="number" class="form-control form-control-sm" 
+                                        <input type="number" class="form-control form-control-sm nilai-input" 
                                                name="nilai[<?= $s['id'] ?>][tugas][]" 
                                                min="0" max="100" step="0.01" 
                                                placeholder="0-100"
                                                value="<?= isset($nilai_existing[$s['id']]['tugas'][0]) ? $nilai_existing[$s['id']]['tugas'][0] : '' ?>">
                                     </td>
                                     <td class="tugas-cell">
-                                        <input type="number" class="form-control form-control-sm" 
+                                        <input type="number" class="form-control form-control-sm nilai-input" 
                                                name="nilai[<?= $s['id'] ?>][tugas][]" 
                                                min="0" max="100" step="0.01" 
                                                placeholder="0-100"
@@ -97,18 +108,59 @@
                                     
                                     <!-- Kolom Ulangan -->
                                     <td class="ulangan-cell">
-                                        <input type="number" class="form-control form-control-sm" 
+                                        <input type="number" class="form-control form-control-sm nilai-input" 
                                                name="nilai[<?= $s['id'] ?>][ulangan][]" 
                                                min="0" max="100" step="0.01" 
                                                placeholder="0-100"
                                                value="<?= isset($nilai_existing[$s['id']]['ulangan'][0]) ? $nilai_existing[$s['id']]['ulangan'][0] : '' ?>">
                                     </td>
                                     <td class="ulangan-cell">
-                                        <input type="number" class="form-control form-control-sm" 
+                                        <input type="number" class="form-control form-control-sm nilai-input" 
                                                name="nilai[<?= $s['id'] ?>][ulangan][]" 
                                                min="0" max="100" step="0.01" 
                                                placeholder="0-100"
                                                value="<?= isset($nilai_existing[$s['id']]['ulangan'][1]) ? $nilai_existing[$s['id']]['ulangan'][1] : '' ?>">
+                                    </td>
+                                    
+                                    <!-- Semester 1 - UTS -->
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm nilai-input" 
+                                               name="nilai[<?= $s['id'] ?>][uts_sem1]" 
+                                               min="0" max="100" step="0.01" 
+                                               placeholder="0-100"
+                                               value="<?= isset($nilai_existing[$s['id']]['uts_sem1']) ? $nilai_existing[$s['id']]['uts_sem1'] : '' ?>">
+                                    </td>
+                                    
+                                    <!-- Semester 1 - UAS -->
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm nilai-input" 
+                                               name="nilai[<?= $s['id'] ?>][uas_sem1]" 
+                                               min="0" max="100" step="0.01" 
+                                               placeholder="0-100"
+                                               value="<?= isset($nilai_existing[$s['id']]['uas_sem1']) ? $nilai_existing[$s['id']]['uas_sem1'] : '' ?>">
+                                    </td>
+                                    
+                                    <!-- Semester 2 - UTS -->
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm nilai-input" 
+                                               name="nilai[<?= $s['id'] ?>][uts_sem2]" 
+                                               min="0" max="100" step="0.01" 
+                                               placeholder="0-100"
+                                               value="<?= isset($nilai_existing[$s['id']]['uts_sem2']) ? $nilai_existing[$s['id']]['uts_sem2'] : '' ?>">
+                                    </td>
+                                    
+                                    <!-- Semester 2 - UAS -->
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm nilai-input" 
+                                               name="nilai[<?= $s['id'] ?>][uas_sem2]" 
+                                               min="0" max="100" step="0.01" 
+                                               placeholder="0-100"
+                                               value="<?= isset($nilai_existing[$s['id']]['uas_sem2']) ? $nilai_existing[$s['id']]['uas_sem2'] : '' ?>">
+                                    </td>
+                                    
+                                    <!-- Rata-rata -->
+                                    <td class="text-center">
+                                        <strong class="rata-rata-display">-</strong>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -173,6 +225,14 @@ function updateHeaders() {
         headerRow.appendChild(th);
     }
     
+    // Add semester headers (these are static)
+    headerRow.innerHTML += `
+        <th class="text-center">UTS</th>
+        <th class="text-center">UAS</th>
+        <th class="text-center">UTS</th>
+        <th class="text-center">UAS</th>
+    `;
+    
     // Update main headers
     document.getElementById('tugasHeader').setAttribute('colspan', tugasCount);
     document.getElementById('ulanganHeader').setAttribute('colspan', ulanganCount);
@@ -195,6 +255,10 @@ function updateBody() {
         const siswaId = existingInputs.length > 0 ? existingInputs[0].name.match(/\[(\d+)\]/)[1] : '';
         const existingTugas = existingValue[siswaId]?.tugas || [];
         const existingUlangan = existingValue[siswaId]?.ulangan || [];
+        const existingUtsSem1 = existingValue[siswaId]?.uts_sem1 || '';
+        const existingUasSem1 = existingValue[siswaId]?.uas_sem1 || '';
+        const existingUtsSem2 = existingValue[siswaId]?.uts_sem2 || '';
+        const existingUasSem2 = existingValue[siswaId]?.uas_sem2 || '';
         
         // Clear row content
         row.innerHTML = '';
@@ -211,7 +275,7 @@ function updateBody() {
             const td = document.createElement('td');
             td.className = 'tugas-cell';
             td.innerHTML = `
-                <input type="number" class="form-control form-control-sm" 
+                <input type="number" class="form-control form-control-sm nilai-input" 
                        name="nilai[${siswaId}][tugas][]" 
                        min="0" max="100" step="0.01" 
                        placeholder="0-100"
@@ -225,7 +289,7 @@ function updateBody() {
             const td = document.createElement('td');
             td.className = 'ulangan-cell';
             td.innerHTML = `
-                <input type="number" class="form-control form-control-sm" 
+                <input type="number" class="form-control form-control-sm nilai-input" 
                        name="nilai[${siswaId}][ulangan][]" 
                        min="0" max="100" step="0.01" 
                        placeholder="0-100"
@@ -233,12 +297,80 @@ function updateBody() {
             `;
             row.appendChild(td);
         }
+        
+        // Add semester cells (UTS/UAS Sem1 and Sem2)
+        const semesterCells = `
+            <td>
+                <input type="number" class="form-control form-control-sm nilai-input" 
+                       name="nilai[${siswaId}][uts_sem1]" 
+                       min="0" max="100" step="0.01" 
+                       placeholder="0-100"
+                       value="${existingUtsSem1}">
+            </td>
+            <td>
+                <input type="number" class="form-control form-control-sm nilai-input" 
+                       name="nilai[${siswaId}][uas_sem1]" 
+                       min="0" max="100" step="0.01" 
+                       placeholder="0-100"
+                       value="${existingUasSem1}">
+            </td>
+            <td>
+                <input type="number" class="form-control form-control-sm nilai-input" 
+                       name="nilai[${siswaId}][uts_sem2]" 
+                       min="0" max="100" step="0.01" 
+                       placeholder="0-100"
+                       value="${existingUtsSem2}">
+            </td>
+            <td>
+                <input type="number" class="form-control form-control-sm nilai-input" 
+                       name="nilai[${siswaId}][uas_sem2]" 
+                       min="0" max="100" step="0.01" 
+                       placeholder="0-100"
+                       value="${existingUasSem2}">
+            </td>
+            <td class="text-center">
+                <strong class="rata-rata-display">-</strong>
+            </td>
+        `;
+        row.innerHTML += semesterCells;
     });
+    
+    // Recalculate averages
+    calculateAllAverages();
 }
 
 function updateCounters() {
     document.getElementById('tugasCount').textContent = `Tugas: ${tugasCount}`;
     document.getElementById('ulanganCount').textContent = `Ulangan: ${ulanganCount}`;
+}
+
+// Function to calculate average for a row
+function calculateRowAverage(row) {
+    const inputs = row.querySelectorAll('.nilai-input');
+    let sum = 0;
+    let count = 0;
+    
+    inputs.forEach(input => {
+        const value = parseFloat(input.value);
+        if (!isNaN(value) && value !== '') {
+            sum += value;
+            count++;
+        }
+    });
+    
+    const avgDisplay = row.querySelector('.rata-rata-display');
+    if (count > 0) {
+        const avg = (sum / count).toFixed(2);
+        avgDisplay.textContent = avg;
+    } else {
+        avgDisplay.textContent = '-';
+    }
+}
+
+// Function to calculate all averages
+function calculateAllAverages() {
+    const rows = document.querySelectorAll('#tableBody tr');
+    rows.forEach(row => calculateRowAverage(row));
 }
 
 // Initialize
@@ -261,6 +393,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Update tampilan
     updateTable();
+    
+    // Add event listeners for calculating average
+    calculateAllAverages();
+    document.getElementById('tableNilai').addEventListener('input', function(e) {
+        if (e.target.classList.contains('nilai-input')) {
+            calculateRowAverage(e.target.closest('tr'));
+        }
+    });
 });
 </script>
 <?= $this->endSection() ?>

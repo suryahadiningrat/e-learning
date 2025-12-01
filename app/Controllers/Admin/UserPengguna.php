@@ -4,14 +4,23 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 use App\Models\UserModel;
+use App\Models\GuruModel;
+use App\Models\SiswaModel;
+use App\Models\KelasModel;
 
 class UserPengguna extends BaseController
 {
     protected $userModel;
+    protected $guruModel;
+    protected $siswaModel;
+    protected $kelasModel;
 
     public function __construct()
     {
         $this->userModel = new UserModel();
+        $this->guruModel = new GuruModel();
+        $this->siswaModel = new SiswaModel();
+        $this->kelasModel = new KelasModel();
     }
 
     public function index()
@@ -129,9 +138,24 @@ class UserPengguna extends BaseController
             return redirect()->to('admin/user-pengguna')->with('error', 'User tidak ditemukan');
         }
 
+        // Get guru/siswa data if exists
+        $guru = null;
+        $siswa = null;
+        $kelas = [];
+        
+        if ($user['role'] == 'guru') {
+            $guru = $this->guruModel->where('user_id', $id)->first();
+        } elseif ($user['role'] == 'siswa') {
+            $siswa = $this->siswaModel->where('user_id', $id)->first();
+            $kelas = $this->kelasModel->findAll();
+        }
+
         $data = [
             'title' => 'Edit User Pengguna',
-            'user' => $user
+            'user' => $user,
+            'guru' => $guru,
+            'siswa' => $siswa,
+            'kelas' => $kelas
         ];
 
         return view('admin/user_pengguna/edit', $data);
@@ -223,6 +247,47 @@ class UserPengguna extends BaseController
             $result = $db->table('users')
                         ->where('id', $id)
                         ->update($userData);
+            
+            // Update guru/siswa data based on role
+            $role = $this->request->getPost('role');
+            
+            if ($role == 'guru') {
+                $guruData = [
+                    'user_id' => $id,
+                    'nip' => $this->request->getPost('nip') ?: '',
+                    'bidang_studi' => $this->request->getPost('bidang_studi') ?: '',
+                    'jenis_kelamin' => $this->request->getPost('jenis_kelamin') ?: 'L',
+                    'no_telp' => $this->request->getPost('no_telp') ?: '',
+                    'tempat_lahir' => $this->request->getPost('tempat_lahir') ?: '',
+                    'tanggal_lahir' => $this->request->getPost('tanggal_lahir') ?: null,
+                    'alamat' => $this->request->getPost('alamat') ?: ''
+                ];
+                
+                $existingGuru = $this->guruModel->where('user_id', $id)->first();
+                if ($existingGuru) {
+                    $db->table('guru')->where('user_id', $id)->update($guruData);
+                } else {
+                    $db->table('guru')->insert($guruData);
+                }
+            } elseif ($role == 'siswa') {
+                $siswaData = [
+                    'user_id' => $id,
+                    'nis' => $this->request->getPost('nis') ?: '',
+                    'kelas_id' => $this->request->getPost('kelas_id') ?: null,
+                    'jenis_kelamin' => $this->request->getPost('jenis_kelamin') ?: 'L',
+                    'no_telp' => $this->request->getPost('no_telp') ?: '',
+                    'tempat_lahir' => $this->request->getPost('tempat_lahir') ?: '',
+                    'tanggal_lahir' => $this->request->getPost('tanggal_lahir') ?: null,
+                    'alamat' => $this->request->getPost('alamat') ?: ''
+                ];
+                
+                $existingSiswa = $this->siswaModel->where('user_id', $id)->first();
+                if ($existingSiswa) {
+                    $db->table('siswa')->where('user_id', $id)->update($siswaData);
+                } else {
+                    $db->table('siswa')->insert($siswaData);
+                }
+            }
             
             if ($result) {
                 return redirect()->to('admin/user-pengguna')->with('success', 'User berhasil diperbarui');

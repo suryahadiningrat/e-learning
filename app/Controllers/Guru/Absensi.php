@@ -28,13 +28,9 @@ class Absensi extends BaseController {
         $this->jurusanModel = new JurusanModel();
         $this->hariAbsensiModel = new HariAbsensiModel();
         
-        // Get guru ID and validate session
+        // Get guru ID from session
         $guruModel = new GuruModel();
         $this->guruId = $guruModel->getGuruByUserId(session('user_id'));
-        
-        if (!$this->guruId) {
-            throw new \CodeIgniter\Exceptions\PageNotFoundException('Akses tidak diizinkan');
-        }
     }
 
     // Step 1: Tampilkan daftar kelas yang diajar guru langsung
@@ -43,7 +39,12 @@ class Absensi extends BaseController {
         
         // Validate guru access
         if (!$guruId) {
-            return redirect()->to('auth/login')->with('error', 'Silakan login terlebih dahulu');
+            $data = [
+                'title' => 'Data Presensi',
+                'kelasData' => [],
+                'error' => 'Data guru Anda belum lengkap. Silakan hubungi admin untuk melengkapi data guru.'
+            ];
+            return view('guru/absensi/index', $data);
         }
         
         // Get kelas yang diajar guru beserta mata pelajaran
@@ -848,6 +849,256 @@ class Absensi extends BaseController {
         $writer->save('php://output');
         exit();
     }
+    
+    // Export rekap presensi ke PDF
+    public function exportPdf()
+    {
+        $startDate = $this->request->getGet('start_date');
+        $endDate = $this->request->getGet('end_date');
+        $kelasId = $this->request->getGet('kelas_id');
+        
+        $absensiList = $this->absensiModel->getAbsensiWithRelationsFiltered($startDate, $endDate, $kelasId);
+        
+        // Get guru info
+        $db = \Config\Database::connect();
+        $guru = $db->table('guru g')
+                   ->select('g.*, u.full_name as nama_guru')
+                   ->join('users u', 'u.id = g.user_id')
+                   ->where('g.id', $this->guruId)
+                   ->get()
+                   ->getRowArray();
+        
+        // Get kelas info if filtered
+        $kelasInfo = '';
+        if ($kelasId) {
+            $kelas = $this->kelasModel->find($kelasId);
+            if ($kelas) {
+                $kelasInfo = $kelas['tingkat'] . ' ' . $kelas['kode_jurusan'] . ' ' . $kelas['paralel'];
+            }
+        }
+        
+        // Group by date for summary
+        $summaryByDate = [];
+        foreach ($absensiList as $item) {
+            $date = $item['tanggal'];
+            if (!isset($summaryByDate[$date])) {
+                $summaryByDate[$date] = [
+                    'hadir' => 0,
+                    'izin' => 0,
+                    'sakit' => 0,
+                    'alfa' => 0,
+                    'total' => 0
+                ];
+            }
+            $summaryByDate[$date][$item['status']]++;
+            $summaryByDate[$date]['total']++;
+        }
+
+        // Generate HTML for PDF
+        $html = '
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    font-size: 11px;
+                }
+                .header {
+                    text-align: center;
+                    margin-bottom: 20px;
+                }
+                .header h1 {
+                    font-size: 16px;
+                    margin: 0;
+                    padding: 10px 0;
+                }
+                .header h2 {
+                    font-size: 13px;
+                    margin: 0;
+                    padding: 5px 0;
+                    font-weight: normal;
+                }
+                .info {
+                    margin-bottom: 15px;
+                }
+                .info table {
+                    width: 100%;
+                }
+                .info td {
+                    padding: 3px 5px;
+                }
+                .info td:first-child {
+                    width: 120px;
+                }
+                table.data {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 10px;
+                }
+                table.data th, table.data td {
+                    border: 1px solid #333;
+                    padding: 5px 3px;
+                    text-align: center;
+                }
+                table.data th {
+                    background-color: #343a40;
+                    color: white;
+                    font-weight: bold;
+                    font-size: 10px;
+                }
+                table.data tr:nth-child(even) {
+                    background-color: #f9f9f9;
+                }
+                .summary {
+                    margin-top: 20px;
+                }
+                .summary h3 {
+                    font-size: 13px;
+                    margin-bottom: 10px;
+                }
+                .status-hadir { color: green; font-weight: bold; }
+                .status-izin { color: blue; font-weight: bold; }
+                .status-sakit { color: orange; font-weight: bold; }
+                .status-alfa { color: red; font-weight: bold; }
+                .footer {
+                    margin-top: 30px;
+                    text-align: right;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>REKAP PRESENSI SISWA</h1>
+                <h2>Sistem Pembelajaran E-Learning</h2>
+            </div>
+            
+            <div class="info">
+                <table>
+                    <tr>
+                        <td><strong>Nama Guru</strong></td>
+                        <td>: ' . esc($guru['nama_guru'] ?? 'N/A') . '</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bidang Studi</strong></td>
+                        <td>: ' . esc($guru['bidang_studi'] ?? 'N/A') . '</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kelas</strong></td>
+                        <td>: ' . ($kelasInfo ?: 'Semua Kelas') . '</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Periode</strong></td>
+                        <td>: ' . ($startDate ? date('d/m/Y', strtotime($startDate)) : 'Semua') . ' s/d ' . ($endDate ? date('d/m/Y', strtotime($endDate)) : 'Semua') . '</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <table class="data">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Tanggal</th>
+                        <th>Nama Siswa</th>
+                        <th>NIS</th>
+                        <th>Kelas</th>
+                        <th>Mata Pelajaran</th>
+                        <th>Hari</th>
+                        <th>Jam</th>
+                        <th>Status</th>
+                        <th>Keterangan</th>
+                    </tr>
+                </thead>
+                <tbody>';
+        
+        $no = 1;
+        foreach ($absensiList as $item) {
+            $statusClass = 'status-' . strtolower($item['status']);
+            $html .= '<tr>
+                        <td>' . $no++ . '</td>
+                        <td>' . date('d/m/Y', strtotime($item['tanggal'])) . '</td>
+                        <td style="text-align: left;">' . esc($item['nama_siswa']) . '</td>
+                        <td>' . esc($item['nis']) . '</td>
+                        <td>' . esc($item['nama_kelas']) . '</td>
+                        <td style="text-align: left;">' . esc($item['mata_pelajaran']) . '</td>
+                        <td>' . esc($item['hari']) . '</td>
+                        <td>' . esc($item['jam_mulai'] . '-' . $item['jam_selesai']) . '</td>
+                        <td class="' . $statusClass . '">' . esc(ucfirst($item['status'])) . '</td>
+                        <td style="text-align: left;">' . esc($item['keterangan'] ?? '-') . '</td>
+                    </tr>';
+        }
+        
+        $html .= '</tbody>
+            </table>
+            
+            <div class="summary">
+                <h3>Ringkasan Presensi per Tanggal</h3>
+                <table class="data">
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Hadir</th>
+                            <th>Izin</th>
+                            <th>Sakit</th>
+                            <th>Alfa</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+        
+        $totalHadir = 0;
+        $totalIzin = 0;
+        $totalSakit = 0;
+        $totalAlfa = 0;
+        $totalAll = 0;
+        
+        foreach ($summaryByDate as $date => $summary) {
+            $html .= '<tr>
+                        <td>' . date('d/m/Y', strtotime($date)) . '</td>
+                        <td class="status-hadir">' . $summary['hadir'] . '</td>
+                        <td class="status-izin">' . $summary['izin'] . '</td>
+                        <td class="status-sakit">' . $summary['sakit'] . '</td>
+                        <td class="status-alfa">' . $summary['alfa'] . '</td>
+                        <td>' . $summary['total'] . '</td>
+                    </tr>';
+            $totalHadir += $summary['hadir'];
+            $totalIzin += $summary['izin'];
+            $totalSakit += $summary['sakit'];
+            $totalAlfa += $summary['alfa'];
+            $totalAll += $summary['total'];
+        }
+        
+        $html .= '<tr style="font-weight: bold; background-color: #e9ecef;">
+                    <td>TOTAL</td>
+                    <td class="status-hadir">' . $totalHadir . '</td>
+                    <td class="status-izin">' . $totalIzin . '</td>
+                    <td class="status-sakit">' . $totalSakit . '</td>
+                    <td class="status-alfa">' . $totalAlfa . '</td>
+                    <td>' . $totalAll . '</td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+            
+            <div class="footer">
+                <p>Dicetak pada: ' . date('d F Y, H:i:s') . '</p>
+            </div>
+        </body>
+        </html>';
+
+        // Create PDF using DOMPDF
+        $dompdf = new \Dompdf\Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+
+        $filename = 'Rekap_Presensi_' . date('Y-m-d') . '.pdf';
+        
+        $dompdf->stream($filename, ['Attachment' => true]);
+        exit;
+    }
+    
     public function getJadwalByKelas($kelasId) {
         $jadwal = $this->jadwalModel->getJadwalByKelas($kelasId);
         return $this->response->setJSON($jadwal);

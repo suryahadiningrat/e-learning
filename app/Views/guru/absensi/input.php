@@ -75,12 +75,15 @@
                                             <td><?= esc($item['full_name']) ?></td>
                                             <td>
                                                 <input type="hidden" name="siswa_id[]" value="<?= $item['id'] ?>">
+                                                <?php 
+                                                    // Set default to Hadir if no existing data
+                                                    $currentStatus = isset($absensi[$item['id']]) ? $absensi[$item['id']]['status'] : 'Hadir';
+                                                ?>
                                                 <select class="form-select" name="status[]" required>
-                                                    <option value="">Pilih Status</option>
-                                                    <option value="Hadir" <?= (isset($absensi[$item['id']]) && $absensi[$item['id']]['status'] == 'Hadir') ? 'selected' : '' ?>>Hadir</option>
-                                                    <option value="Sakit" <?= (isset($absensi[$item['id']]) && $absensi[$item['id']]['status'] == 'Sakit') ? 'selected' : '' ?>>Sakit</option>
-                                                    <option value="Izin" <?= (isset($absensi[$item['id']]) && $absensi[$item['id']]['status'] == 'Izin') ? 'selected' : '' ?>>Izin</option>
-                                                    <option value="Alpha" <?= (isset($absensi[$item['id']]) && $absensi[$item['id']]['status'] == 'Alpha') ? 'selected' : '' ?>>Alpha</option>
+                                                    <option value="Hadir" <?= ($currentStatus == 'Hadir') ? 'selected' : '' ?>>Hadir</option>
+                                                    <option value="Sakit" <?= ($currentStatus == 'Sakit') ? 'selected' : '' ?>>Sakit</option>
+                                                    <option value="Izin" <?= ($currentStatus == 'Izin') ? 'selected' : '' ?>>Izin</option>
+                                                    <option value="Alpha" <?= ($currentStatus == 'Alpha') ? 'selected' : '' ?>>Alpha</option>
                                                 </select>
                                             </td>
                                             <td>

@@ -124,12 +124,15 @@
                                     <td><?= $item['full_name'] ?></td>
                                     <td>
                                         <input type="hidden" name="siswa_id[]" value="<?= $item['id'] ?>">
+                                        <?php 
+                                            // Set default to Hadir if no existing data
+                                            $currentStatus = isset($absensi[$key]) ? $absensi[$key]['status'] : 'Hadir';
+                                        ?>
                                         <select class="form-select form-select-sm" name="status[]" required>
-                                            <option value="">Pilih Status</option>
-                                            <option value="Hadir" <?= (isset($absensi[$key]) && $absensi[$key]['status'] == 'Hadir') ? 'selected' : '' ?>>Hadir</option>
-                                            <option value="Sakit" <?= (isset($absensi[$key]) && $absensi[$key]['status'] == 'Sakit') ? 'selected' : '' ?>>Sakit</option>
-                                            <option value="Izin" <?= (isset($absensi[$key]) && $absensi[$key]['status'] == 'Izin') ? 'selected' : '' ?>>Izin</option>
-                                            <option value="Alpha" <?= (isset($absensi[$key]) && $absensi[$key]['status'] == 'Alpha') ? 'selected' : '' ?>>Alpha</option>
+                                            <option value="Hadir" <?= ($currentStatus == 'Hadir') ? 'selected' : '' ?>>Hadir</option>
+                                            <option value="Sakit" <?= ($currentStatus == 'Sakit') ? 'selected' : '' ?>>Sakit</option>
+                                            <option value="Izin" <?= ($currentStatus == 'Izin') ? 'selected' : '' ?>>Izin</option>
+                                            <option value="Alpha" <?= ($currentStatus == 'Alpha') ? 'selected' : '' ?>>Alpha</option>
                                         </select>
                                     </td>
                                     <td>

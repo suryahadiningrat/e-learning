@@ -59,6 +59,7 @@ $routes->group('siswa', ['filter' => 'auth:role:siswa'], function($routes) {
     // Nilai
     $routes->get('nilai', 'Siswa\Nilai::index');
     $routes->get('nilai/export', 'Siswa\Nilai::export');
+    $routes->get('nilai/export-pdf', 'Siswa\Nilai::exportPdf');
 });
 
 // Admin Routes
@@ -165,6 +166,7 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->get('absensi/get-jadwal-by-kelas/(:num)', 'Admin\Absensi::getJadwalByKelas/$1');
     $routes->get('absensi/get-siswa-by-kelas/(:num)', 'Admin\Absensi::getSiswaByKelas/$1');
     $routes->get('absensi/export', 'Admin\Absensi::export');
+    $routes->get('absensi/export-pdf', 'Admin\Absensi::exportPdf');
     
     // Materi/Modul
     $routes->get('materi', 'Admin\Materi::index');
@@ -246,6 +248,7 @@ $routes->group('guru', ['filter' => 'auth:role:guru'], function($routes) {
     $routes->get('absensi/get-jadwal-by-kelas/(:num)', 'Guru\Absensi::getJadwalByKelas/$1');
     $routes->get('absensi/get-siswa-by-kelas/(:num)', 'Guru\Absensi::getSiswaByKelas/$1');
     $routes->get('absensi/export', 'Guru\Absensi::export');
+    $routes->get('absensi/export-pdf', 'Guru\Absensi::exportPdf');
     
     // Data Nilai
     $routes->get('nilai', 'Guru\Nilai::index');
@@ -254,6 +257,7 @@ $routes->group('guru', ['filter' => 'auth:role:guru'], function($routes) {
     $routes->post('nilai/store', 'Guru\Nilai::store');
     $routes->get('nilai/view/(:num)', 'Guru\Nilai::viewNilai/$1');
     $routes->get('nilai/export/(:num)', 'Guru\Nilai::export/$1');
+    $routes->get('nilai/export-pdf/(:num)', 'Guru\Nilai::exportPdf/$1');
     
     // Materi/Modul
     $routes->get('materi', 'Guru\Materi::index');

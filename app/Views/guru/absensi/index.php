@@ -9,8 +9,11 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h3 class="card-title"><?= $title ?></h3>
+                    <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#exportModal">
+                        <i class="fas fa-download me-1"></i> Rekap Presensi
+                    </button>
                 </div>
                 <div class="card-body">
                     <?php if (session()->getFlashdata('success')): ?>
@@ -23,6 +26,13 @@
                     <?php if (session()->getFlashdata('error')): ?>
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <?= session()->getFlashdata('error') ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (isset($error)): ?>
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-1"></i> <?= $error ?>
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     <?php endif; ?>
@@ -108,13 +118,16 @@
                     </div>
                     <div class="alert alert-info">
                         <i class="fas fa-info-circle"></i>
-                        <strong>Info:</strong> File akan di-download dalam format Excel (.xlsx)
+                        <strong>Info:</strong> Pilih format export yang diinginkan
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" name="format" value="excel" class="btn btn-success">
                         <i class="fas fa-file-excel me-2"></i>Export Excel
+                    </button>
+                    <button type="submit" name="format" value="pdf" class="btn btn-danger" formaction="<?= base_url('guru/absensi/export-pdf') ?>">
+                        <i class="fas fa-file-pdf me-2"></i>Export PDF
                     </button>
                 </div>
             </form>

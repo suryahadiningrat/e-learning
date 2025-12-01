@@ -40,9 +40,14 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Data Nilai</h1>
-        <a href="<?= base_url('siswa/nilai/export') ?>" class="btn btn-success btn-sm">
-            <i class="fas fa-file-excel fa-sm"></i> Export Excel
-        </a>
+        <div class="d-flex gap-2">
+            <a href="<?= base_url('siswa/nilai/export-pdf') ?>" class="btn btn-danger btn-sm">
+                <i class="fas fa-file-pdf fa-sm"></i> Export PDF
+            </a>
+            <a href="<?= base_url('siswa/nilai/export') ?>" class="btn btn-success btn-sm">
+                <i class="fas fa-file-excel fa-sm"></i> Export Excel
+            </a>
+        </div>
     </div>
 
     <?php if (session('success')): ?>

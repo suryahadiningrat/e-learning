@@ -4,6 +4,9 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800"><?= $title ?></h1>
+        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#exportModal">
+            <i class="fas fa-download me-1"></i> Rekap Presensi
+        </button>
     </div>
 
     <!-- Alert Messages -->
@@ -88,7 +91,10 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-success">
-                        <i class="fas fa-file-excel"></i> Export Excel
+                        <i class="fas fa-file-excel me-1"></i> Export Excel
+                    </button>
+                    <button type="submit" class="btn btn-danger" formaction="<?= base_url('admin/absensi/export-pdf') ?>">
+                        <i class="fas fa-file-pdf me-1"></i> Export PDF
                     </button>
                 </div>
             </form>

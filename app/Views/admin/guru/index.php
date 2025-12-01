@@ -4,9 +4,9 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Data Guru</h1>
-        <a href="<?= base_url('admin/guru/create') ?>" class="btn btn-primary btn-sm">
-            <i class="fas fa-plus fa-sm"></i> Tambah Guru
-        </a>
+        <small class="text-muted">
+            <i class="fas fa-info-circle"></i> Data guru otomatis dari pendaftaran user
+        </small>
     </div>
 
     <div class="card shadow mb-4">
@@ -54,19 +54,12 @@
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <a href="<?= base_url('admin/guru/edit/' . ($g['id'] ?? '')) ?>" class="btn btn-warning btn-sm" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
                                     <a href="<?= base_url('admin/guru/print/' . ($g['id'] ?? '')) ?>" class="btn btn-success btn-sm" target="_blank" title="Print Data">
                                         <i class="fas fa-print"></i>
                                     </a>
                                     <button type="button" class="btn btn-info btn-sm" onclick="showJadwalModal(<?= $g['id'] ?? 0 ?>, '<?= addslashes($g['full_name'] ?? '') ?>')" title="Lihat Jadwal">
                                         <i class="fas fa-calendar-alt"></i>
                                     </button>
-                                    <a href="javascript:void(0)" class="btn btn-danger btn-sm" 
-                                       onclick="confirmDelete('<?= base_url('admin/guru/delete/' . ($g['id'] ?? '')) ?>', '<?= $g['full_name'] ?? 'Data' ?>')" title="Hapus">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
