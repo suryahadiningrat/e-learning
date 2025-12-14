@@ -72,7 +72,7 @@
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
                                     <label>NIS</label>
-                                    <input type="text" class="form-control" value="<?= $siswa['nis'] ?>" readonly>
+                                    <input type="text" class="form-control" name="nis" value="<?= $siswa['nis'] ?>">
                                 </div>
                             </div>
                         </div>
@@ -80,14 +80,32 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label>No. Telepon</label>
-                                    <input type="text" class="form-control" value="<?= $siswa['no_telp'] ?? '-' ?>" readonly>
+                                    <label>Tempat Lahir</label>
+                                    <input type="text" class="form-control" name="tempat_lahir" value="<?= $siswa['tempat_lahir'] ?? '' ?>">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
                                     <label>Tanggal Lahir</label>
-                                    <input type="text" class="form-control" value="<?= date('d-m-Y', strtotime($siswa['tanggal_lahir'] ?? 'now')) ?>" readonly>
+                                    <input type="date" class="form-control" name="tanggal_lahir" value="<?= date('Y-m-d', strtotime($siswa['tanggal_lahir'] ?? 'now')) ?>">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label>Jenis Kelamin</label>
+                                    <select class="form-control" name="jenis_kelamin">
+                                        <option value="L" <?= ($siswa['jenis_kelamin'] ?? '') == 'L' ? 'selected' : '' ?>>Laki-laki</option>
+                                        <option value="P" <?= ($siswa['jenis_kelamin'] ?? '') == 'P' ? 'selected' : '' ?>>Perempuan</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label>No. Telepon</label>
+                                    <input type="text" class="form-control" name="no_telp" value="<?= $siswa['no_telp'] ?? '' ?>">
                                 </div>
                             </div>
                         </div>
@@ -96,11 +114,10 @@
                             <div class="col-md-12">
                                 <div class="form-group mb-3">
                                     <label>Alamat</label>
-                                    <textarea class="form-control" rows="3" readonly><?= $siswa['alamat'] ?? '-' ?></textarea>
+                                    <textarea class="form-control" name="alamat" rows="3"><?= $siswa['alamat'] ?? '' ?></textarea>
                                 </div>
                             </div>
                         </div>
-                        
                         <?php else: ?>
                         <div class="alert alert-warning">
                             <i class="fas fa-exclamation-triangle"></i> Data pribadi siswa belum tersedia.

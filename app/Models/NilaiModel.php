@@ -14,6 +14,7 @@ class NilaiModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'siswa_id', 'jadwal_id', 'nilai_tugas', 'nilai_ulangan', 
+        'nilai_uts_sem1', 'nilai_uas_sem1', 'nilai_uts_sem2', 'nilai_uas_sem2',
         'created_at', 'updated_at'
     ];
 

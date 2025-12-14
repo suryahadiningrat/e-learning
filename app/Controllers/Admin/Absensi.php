@@ -1043,7 +1043,7 @@ class Absensi extends BaseController
         <body>
             <div class="header">
                 <h1>REKAP PRESENSI</h1>
-                <h2>Sistem Informasi SMK</h2>
+                <h2>Sistem Informasi SMK Negeri 1 Pleret</h2>
             </div>
             
             <div class="info">

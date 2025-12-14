@@ -1,9 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Sistem Informasi SMK</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Login - Sistem Informasi SMK Negeri 1 Pleret</title>
+
+    <!-- Custom fonts for this template-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <?php
@@ -205,12 +211,12 @@
     <div class="login-wrapper">
         <div class="login-container">
             <div class="login-header">
-                <h2><i class="fas fa-graduation-cap me-2"></i>Sistem Informasi SMK</h2>
+                <h2><i class="fas fa-graduation-cap me-2"></i>Sistem Informasi SMK Negeri 1 Pleret</h2>
                 <p class="mb-0 mt-2">Silakan login untuk melanjutkan</p>
             </div>
             
             <div class="login-body">
-                <?php if (session()->getFlashdata('error')): ?>
+                <?php if(session()->getFlashdata('error')): ?>
                     <div class="alert alert-danger">
                         <i class="fas fa-exclamation-circle me-2"></i>
                         <?= session()->getFlashdata('error') ?>

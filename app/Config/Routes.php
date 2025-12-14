@@ -208,6 +208,7 @@ $routes->group('admin', ['filter' => 'auth:role:admin'], function($routes) {
     $routes->get('nilai/view/(:num)', 'Admin\Nilai::viewNilai/$1');
     $routes->get('nilai/export/(:num)', 'Admin\Nilai::export/$1');
     $routes->get('nilai/print/(:num)', 'Admin\Nilai::print/$1');
+    $routes->get('nilai/rekap/(:num)', 'Admin\Nilai::cetakRekap/$1');
 });
 
 // Guru Routes

@@ -20,7 +20,7 @@
                                 <?= session()->get('username') ?>
                             </div>
                             <div class="text-muted">
-                                Panel Guru - Sistem Informasi SMK
+                                Panel Guru - Sistem Informasi SMK Negeri 1 Pleret
                             </div>
                         </div>
                         <div class="col-auto">

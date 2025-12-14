@@ -63,6 +63,7 @@
                                 <th colspan="2" class="text-center">Semester 1</th>
                                 <th colspan="2" class="text-center">Semester 2</th>
                                 <th rowspan="3" class="align-middle">Rata-rata</th>
+                                <th rowspan="3" class="align-middle">Aksi</th>
                             </tr>
                             <tr id="headerRow">
                                 <th class="text-center tugas-header">Tugas 1</th>
@@ -154,6 +155,11 @@
                                     <td class="text-center">
                                         <strong class="rata-rata-display">-</strong>
                                     </td>
+                                    <td class="text-center">
+                                        <a href="<?= base_url('admin/nilai/rekap/' . $s['id']) ?>" class="btn btn-info btn-sm" target="_blank" title="Cetak Rekap">
+                                            <i class="fas fa-print"></i>
+                                        </a>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -217,6 +223,15 @@ function updateHeaders() {
         headerRow.appendChild(th);
     }
     
+    // Add Semester 1 & 2 headers (UTS/UAS)
+    const staticHeaders = ['UTS', 'UAS', 'UTS', 'UAS'];
+    staticHeaders.forEach(text => {
+        const th = document.createElement('th');
+        th.className = 'text-center';
+        th.textContent = text;
+        headerRow.appendChild(th);
+    });
+    
     // Update main headers
     document.getElementById('tugasHeader').setAttribute('colspan', tugasCount);
     document.getElementById('ulanganHeader').setAttribute('colspan', ulanganCount);
@@ -225,20 +240,27 @@ function updateHeaders() {
 function updateBody() {
     const tableBody = document.getElementById('tableBody');
     const rows = tableBody.querySelectorAll('tr');
+    // Get existing nilai data once
+    const existingValue = <?= json_encode($nilai_existing) ?>;
     
     rows.forEach(row => {
-        // Get existing data
+        // Get existing data from current cells before clearing
+        // Note: This relies on the table being in a valid state. 
+        // If it's the initial load, it has the full PHP rendered content.
         const no = row.cells[0].textContent;
         const nis = row.cells[1].textContent;
         const nama = row.cells[2].textContent;
         
-        // Get existing nilai data
-        const existingValue = <?= json_encode($nilai_existing) ?>;
-        // Extract student ID from the row (we'll get it from the form inputs)
-        const existingInputs = row.querySelectorAll('input[name*="[tugas]"]');
-        const siswaId = existingInputs.length > 0 ? existingInputs[0].name.match(/\[(\d+)\]/)[1] : '';
-        const existingTugas = existingValue[siswaId]?.tugas || [];
-        const existingUlangan = existingValue[siswaId]?.ulangan || [];
+        let siswaId = '';
+        const input = row.querySelector('input[name^="nilai["]');
+        if (input) {
+            const match = input.name.match(/nilai\[(\d+)\]/);
+            if (match) siswaId = match[1];
+        }
+        
+        const studentData = existingValue[siswaId] || {};
+        const existingTugas = studentData.tugas || [];
+        const existingUlangan = studentData.ulangan || [];
         
         // Clear row content
         row.innerHTML = '';
@@ -255,7 +277,7 @@ function updateBody() {
             const td = document.createElement('td');
             td.className = 'tugas-cell';
             td.innerHTML = `
-                <input type="number" class="form-control form-control-sm" 
+                <input type="number" class="form-control form-control-sm nilai-input" 
                        name="nilai[${siswaId}][tugas][]" 
                        min="0" max="100" step="0.01" 
                        placeholder="0-100"
@@ -269,7 +291,7 @@ function updateBody() {
             const td = document.createElement('td');
             td.className = 'ulangan-cell';
             td.innerHTML = `
-                <input type="number" class="form-control form-control-sm" 
+                <input type="number" class="form-control form-control-sm nilai-input" 
                        name="nilai[${siswaId}][ulangan][]" 
                        min="0" max="100" step="0.01" 
                        placeholder="0-100"
@@ -277,6 +299,59 @@ function updateBody() {
             `;
             row.appendChild(td);
         }
+
+        // Add Semester 1 (UTS, UAS)
+        const sem1Html = `
+            <td>
+                <input type="number" class="form-control form-control-sm nilai-input" 
+                       name="nilai[${siswaId}][uts_sem1]" 
+                       min="0" max="100" step="0.01" 
+                       placeholder="0-100"
+                       value="${studentData.uts_sem1 || ''}">
+            </td>
+            <td>
+                <input type="number" class="form-control form-control-sm nilai-input" 
+                       name="nilai[${siswaId}][uas_sem1]" 
+                       min="0" max="100" step="0.01" 
+                       placeholder="0-100"
+                       value="${studentData.uas_sem1 || ''}">
+            </td>
+        `;
+        
+        // Add Semester 2 (UTS, UAS)
+        const sem2Html = `
+            <td>
+                <input type="number" class="form-control form-control-sm nilai-input" 
+                       name="nilai[${siswaId}][uts_sem2]" 
+                       min="0" max="100" step="0.01" 
+                       placeholder="0-100"
+                       value="${studentData.uts_sem2 || ''}">
+            </td>
+            <td>
+                <input type="number" class="form-control form-control-sm nilai-input" 
+                       name="nilai[${siswaId}][uas_sem2]" 
+                       min="0" max="100" step="0.01" 
+                       placeholder="0-100"
+                       value="${studentData.uas_sem2 || ''}">
+            </td>
+        `;
+        
+        // Add Rata-rata and Aksi
+        const footerHtml = `
+            <td class="text-center">
+                <strong class="rata-rata-display">-</strong>
+            </td>
+            <td class="text-center">
+                <a href="<?= base_url('admin/nilai/rekap/') ?>/${siswaId}" class="btn btn-info btn-sm" target="_blank" title="Cetak Rekap">
+                    <i class="fas fa-print"></i>
+                </a>
+            </td>
+        `;
+        
+        row.insertAdjacentHTML('beforeend', sem1Html + sem2Html + footerHtml);
+        
+        // Calculate average
+        calculateRowAverage(row);
     });
 }
 

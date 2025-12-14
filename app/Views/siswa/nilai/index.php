@@ -90,16 +90,32 @@
                                 <th rowspan="2">No</th>
                                 <th rowspan="2">Mata Pelajaran</th>
                                 <th rowspan="2">Kelas</th>
-                                <th colspan="<?= $maxTugas ?>" class="text-center">Nilai Tugas</th>
-                                <th colspan="<?= $maxUlangan ?>" class="text-center">Nilai Ulangan</th>
+                                <?php if ($maxTugas > 0): ?>
+                                    <th colspan="<?= $maxTugas ?>" class="text-center">Nilai Tugas</th>
+                                <?php endif; ?>
+                                <?php if ($maxUlangan > 0): ?>
+                                    <th colspan="<?= $maxUlangan ?>" class="text-center">Nilai Ulangan</th>
+                                <?php endif; ?>
+                                <th colspan="2" class="text-center">Semester 1</th>
+                                <th colspan="2" class="text-center">Semester 2</th>
+                                <th rowspan="2" class="text-center">Rata-rata</th>
                             </tr>
                             <tr>
-                                <?php for ($i = 1; $i <= $maxTugas; $i++): ?>
-                                    <th class="text-center">Tugas <?= $i ?></th>
-                                <?php endfor; ?>
-                                <?php for ($i = 1; $i <= $maxUlangan; $i++): ?>
-                                    <th class="text-center">Ulangan <?= $i ?></th>
-                                <?php endfor; ?>
+                                <?php if ($maxTugas > 0): ?>
+                                    <?php for ($i = 1; $i <= $maxTugas; $i++): ?>
+                                        <th class="text-center">Tugas <?= $i ?></th>
+                                    <?php endfor; ?>
+                                <?php endif; ?>
+                                
+                                <?php if ($maxUlangan > 0): ?>
+                                    <?php for ($i = 1; $i <= $maxUlangan; $i++): ?>
+                                        <th class="text-center">Ulangan <?= $i ?></th>
+                                    <?php endfor; ?>
+                                <?php endif; ?>
+                                <th class="text-center">UTS</th>
+                                <th class="text-center">UAS</th>
+                                <th class="text-center">UTS</th>
+                                <th class="text-center">UAS</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -111,29 +127,72 @@
                                     
                                     <?php 
                                     $nilaiTugas = json_decode($item['nilai_tugas'], true) ?: [];
-                                    for ($i = 0; $i < $maxTugas; $i++): 
+                                    if ($maxTugas > 0):
+                                        for ($i = 0; $i < $maxTugas; $i++): 
+                                        ?>
+                                            <td class="text-center">
+                                                <?php if (isset($nilaiTugas[$i]) && $nilaiTugas[$i] !== ''): ?>
+                                                    <span class="badge bg-primary"><?= $nilaiTugas[$i] ?></span>
+                                                <?php else: ?>
+                                                    <span class="text-muted">-</span>
+                                                <?php endif; ?>
+                                            </td>
+                                        <?php endfor; 
+                                    endif;
                                     ?>
-                                        <td class="text-center">
-                                            <?php if (isset($nilaiTugas[$i]) && $nilaiTugas[$i] !== ''): ?>
-                                                <span class="badge bg-primary"><?= $nilaiTugas[$i] ?></span>
-                                            <?php else: ?>
-                                                <span class="text-muted">-</span>
-                                            <?php endif; ?>
-                                        </td>
-                                    <?php endfor; ?>
                                     
                                     <?php 
                                     $nilaiUlangan = json_decode($item['nilai_ulangan'], true) ?: [];
-                                    for ($i = 0; $i < $maxUlangan; $i++): 
+                                    if ($maxUlangan > 0):
+                                        for ($i = 0; $i < $maxUlangan; $i++): 
+                                        ?>
+                                            <td class="text-center">
+                                                <?php if (isset($nilaiUlangan[$i]) && $nilaiUlangan[$i] !== ''): ?>
+                                                    <span class="badge bg-success"><?= $nilaiUlangan[$i] ?></span>
+                                                <?php else: ?>
+                                                    <span class="text-muted">-</span>
+                                                <?php endif; ?>
+                                            </td>
+                                        <?php endfor; 
+                                    endif;
                                     ?>
-                                        <td class="text-center">
-                                            <?php if (isset($nilaiUlangan[$i]) && $nilaiUlangan[$i] !== ''): ?>
-                                                <span class="badge bg-success"><?= $nilaiUlangan[$i] ?></span>
-                                            <?php else: ?>
-                                                <span class="text-muted">-</span>
-                                            <?php endif; ?>
-                                        </td>
-                                    <?php endfor; ?>
+
+                                    <!-- Semester 1 -->
+                                    <td class="text-center">
+                                        <?= $item['nilai_uts_sem1'] ? '<span class="badge bg-info">'.$item['nilai_uts_sem1'].'</span>' : '<span class="text-muted">-</span>' ?>
+                                    </td>
+                                    <td class="text-center">
+                                        <?= $item['nilai_uas_sem1'] ? '<span class="badge bg-info">'.$item['nilai_uas_sem1'].'</span>' : '<span class="text-muted">-</span>' ?>
+                                    </td>
+
+                                    <!-- Semester 2 -->
+                                    <td class="text-center">
+                                        <?= $item['nilai_uts_sem2'] ? '<span class="badge bg-info">'.$item['nilai_uts_sem2'].'</span>' : '<span class="text-muted">-</span>' ?>
+                                    </td>
+                                    <td class="text-center">
+                                        <?= $item['nilai_uas_sem2'] ? '<span class="badge bg-info">'.$item['nilai_uas_sem2'].'</span>' : '<span class="text-muted">-</span>' ?>
+                                    </td>
+
+                                    <?php
+                                    // Calculate Average
+                                    $avgTugas = !empty($nilaiTugas) ? array_sum($nilaiTugas) / count($nilaiTugas) : 0;
+                                    $avgUlangan = !empty($nilaiUlangan) ? array_sum($nilaiUlangan) / count($nilaiUlangan) : 0;
+                                    
+                                    $components = 0;
+                                    $totalScore = 0;
+                                    
+                                    if ($avgTugas > 0) { $totalScore += $avgTugas; $components++; }
+                                    if ($avgUlangan > 0) { $totalScore += $avgUlangan; $components++; }
+                                    if ($item['nilai_uts_sem1']) { $totalScore += $item['nilai_uts_sem1']; $components++; }
+                                    if ($item['nilai_uas_sem1']) { $totalScore += $item['nilai_uas_sem1']; $components++; }
+                                    if ($item['nilai_uts_sem2']) { $totalScore += $item['nilai_uts_sem2']; $components++; }
+                                    if ($item['nilai_uas_sem2']) { $totalScore += $item['nilai_uas_sem2']; $components++; }
+                                    
+                                    $rataRata = $components > 0 ? $totalScore / $components : 0;
+                                    ?>
+                                    <td class="text-center">
+                                        <strong><?= $rataRata > 0 ? number_format($rataRata, 2) : '-' ?></strong>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>

@@ -96,7 +96,8 @@
     </div>
 
     <div class="header">
-        <h2>SISTEM INFORMASI SMK</h2>
+        <h2>SISTEM INFORMASI SMK NEGERI 1 PLERET</h2>
+        <p>Jl. Raya Pleret, Bantul, Yogyakarta</p>
         <p>RINCIAN DATA GURU</p>
         <p style="font-size: 12px;">Tanggal Cetak: <?= date('d F Y, H:i') ?> WIB</p>
     </div>

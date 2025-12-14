@@ -32,7 +32,14 @@ class UserPengguna extends BaseController {
             'full_name' => 'required|min_length[3]|max_length[255]',
             'email' => 'required|valid_email|is_unique[users.email,id,'.$userId.']',
             'username' => 'required|min_length[3]|is_unique[users.username,id,'.$userId.']',
-            'photo' => 'permit_empty|is_image[photo]|mime_in[photo,image/jpg,image/jpeg,image/png]|max_size[photo,2048]'
+            'photo' => 'permit_empty|is_image[photo]|mime_in[photo,image/jpg,image/jpeg,image/png]|max_size[photo,2048]',
+            'alamat' => 'required|min_length[10]|max_length[255]',
+            'no_telp' => 'required|min_length[10]|max_length[15]',
+            'nip' => 'required|min_length[5]|max_length[20]',
+            'bidang_studi' => 'required',
+            'jenis_kelamin' => 'required|in_list[L,P]',
+            'tempat_lahir' => 'required',
+            'tanggal_lahir' => 'required|valid_date',
         ];
 
         // Tambah validasi password jika diisi
@@ -76,6 +83,23 @@ class UserPengguna extends BaseController {
         }
 
         $userModel->update($userId, $data);
+
+        // Update data guru
+        $guruModel = new GuruModel();
+        $guru = $guruModel->where('user_id', $userId)->first();
+        
+        if ($guru) {
+            $guruData = [
+                'nip' => $this->request->getPost('nip'),
+                'bidang_studi' => $this->request->getPost('bidang_studi'),
+                'jenis_kelamin' => $this->request->getPost('jenis_kelamin'),
+                'tempat_lahir' => $this->request->getPost('tempat_lahir'),
+                'tanggal_lahir' => $this->request->getPost('tanggal_lahir'),
+                'alamat' => $this->request->getPost('alamat'),
+                'no_telp' => $this->request->getPost('no_telp')
+            ];
+            $guruModel->update($guru['id'], $guruData);
+        }
         
         return redirect()->to('guru/user-pengguna')->with('message', 'Profile berhasil diupdate');
     }

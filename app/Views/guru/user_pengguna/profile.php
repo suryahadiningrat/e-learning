@@ -65,13 +65,13 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>NIP</label>
-                                    <input type="text" class="form-control" value="<?= $guru['nip'] ?>" readonly>
+                                    <input type="text" class="form-control" name="nip" value="<?= $guru['nip'] ?>">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Bidang Studi</label>
-                                    <input type="text" class="form-control" value="<?= $guru['bidang_studi'] ?>" readonly>
+                                    <input type="text" class="form-control" name="bidang_studi" value="<?= $guru['bidang_studi'] ?>">
                                 </div>
                             </div>
                         </div>
@@ -80,13 +80,16 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>No. Telepon</label>
-                                    <input type="text" class="form-control" value="<?= $guru['no_telp'] ?? '-' ?>" readonly>
+                                    <input type="text" class="form-control" name="no_telp" value="<?= $guru['no_telp'] ?? '' ?>">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Jenis Kelamin</label>
-                                    <input type="text" class="form-control" value="<?= $guru['jenis_kelamin'] == 'L' ? 'Laki-laki' : 'Perempuan' ?>" readonly>
+                                    <select class="form-control" name="jenis_kelamin">
+                                        <option value="L" <?= $guru['jenis_kelamin'] == 'L' ? 'selected' : '' ?>>Laki-laki</option>
+                                        <option value="P" <?= $guru['jenis_kelamin'] == 'P' ? 'selected' : '' ?>>Perempuan</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -95,20 +98,20 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Tempat Lahir</label>
-                                    <input type="text" class="form-control" value="<?= $guru['tempat_lahir'] ?>" readonly>
+                                    <input type="text" class="form-control" name="tempat_lahir" value="<?= $guru['tempat_lahir'] ?>">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Tanggal Lahir</label>
-                                    <input type="text" class="form-control" value="<?= date('d-m-Y', strtotime($guru['tanggal_lahir'])) ?>" readonly>
+                                    <input type="date" class="form-control" name="tanggal_lahir" value="<?= date('Y-m-d', strtotime($guru['tanggal_lahir'])) ?>">
                                 </div>
                             </div>
                         </div>
                         
                         <div class="form-group">
                             <label>Alamat</label>
-                            <textarea class="form-control" rows="3" readonly><?= $guru['alamat'] ?></textarea>
+                            <textarea class="form-control" name="alamat" rows="3"><?= $guru['alamat'] ?></textarea>
                         </div>
                         <?php else: ?>
                         <div class="alert alert-warning">

@@ -375,4 +375,58 @@ class Nilai extends BaseController
 
         return view('admin/nilai/print', $data);
     }
-} 
+
+    // Cetak rekap nilai siswa (semua mata pelajaran)
+    public function cetakRekap($siswaId = null)
+    {
+        if (!$siswaId) {
+            return redirect()->back()->with('error', 'Siswa tidak ditemukan');
+        }
+
+        $siswa = $this->siswaModel->getSiswaWithRelations($siswaId);
+        if (!$siswa) {
+            return redirect()->back()->with('error', 'Siswa tidak ditemukan');
+        }
+
+        // Get all grades for this student
+        $nilaiList = $this->nilaiModel->getNilaiBySiswa($siswaId);
+        
+        // Calculate averages for each subject
+        foreach ($nilaiList as &$nilai) {
+            $tugas = json_decode($nilai['nilai_tugas'], true) ?: [];
+            $ulangan = json_decode($nilai['nilai_ulangan'], true) ?: [];
+            
+            $avgTugas = !empty($tugas) ? array_sum($tugas) / count($tugas) : 0;
+            $avgUlangan = !empty($ulangan) ? array_sum($ulangan) / count($ulangan) : 0;
+            
+            $components = 0;
+            $totalScore = 0;
+            
+            if ($avgTugas > 0) { $totalScore += $avgTugas; $components++; }
+            if ($avgUlangan > 0) { $totalScore += $avgUlangan; $components++; }
+            if ($nilai['nilai_uts_sem1']) { $totalScore += $nilai['nilai_uts_sem1']; $components++; }
+            if ($nilai['nilai_uas_sem1']) { $totalScore += $nilai['nilai_uas_sem1']; $components++; }
+             
+            $nilai['rata_rata'] = $components > 0 ? $totalScore / $components : 0;
+        }
+
+        $data = [
+            'siswa' => $siswa,
+            'nilai_list' => $nilaiList,
+            'sekolah' => [
+                'nama' => 'SMK Negeri 1 Pleret',
+                'alamat' => 'Jl. Imogiri Timur Km. 9, Jati, Wonokromo, Pleret, Bantul, DIY',
+                // 'logo' => FCPATH . 'assets/img/logo_smk.png' // Uncomment if logo exists
+            ]
+        ];
+
+        $html = view('admin/nilai/rekap_pdf', $data);
+
+        $dompdf = new \Dompdf\Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        
+        $dompdf->stream("rekap_nilai_" . $siswa['nis'] . ".pdf", ["Attachment" => false]);
+    }
+}

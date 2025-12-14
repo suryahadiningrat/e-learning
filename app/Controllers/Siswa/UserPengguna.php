@@ -31,13 +31,21 @@ class UserPengguna extends BaseController {
     public function update() {
         $userId = session()->get('user_id');
         $userModel = new UserModel();
+        $siswaModel = new SiswaModel();
+        $siswa = $siswaModel->where('user_id', $userId)->first();
 
         // Validasi input
         $rules = [
             'full_name' => 'required|min_length[3]|max_length[255]',
             'email' => 'required|valid_email|is_unique[users.email,id,'.$userId.']',
             'username' => 'required|min_length[3]|is_unique[users.username,id,'.$userId.']',
-            'photo' => 'permit_empty|is_image[photo]|mime_in[photo,image/jpg,image/jpeg,image/png]|max_size[photo,2048]'
+            'photo' => 'permit_empty|is_image[photo]|mime_in[photo,image/jpg,image/jpeg,image/png]|max_size[photo,2048]',
+            'alamat' => 'required|min_length[5]|max_length[255]',
+            'no_telp' => 'required|min_length[10]|max_length[15]',
+            'nis' => 'required|min_length[8]|max_length[20]|is_unique[siswa.nis,id,'.($siswa['id'] ?? 0).']',
+            'jenis_kelamin' => 'required|in_list[L,P]',
+            'tempat_lahir' => 'required|min_length[2]|max_length[50]',
+            'tanggal_lahir' => 'required|valid_date'
         ];
 
         // Tambah validasi password jika diisi
@@ -81,6 +89,20 @@ class UserPengguna extends BaseController {
         }
 
         $userModel->update($userId, $data);
+        
+        // Update data siswa
+        if ($siswa) {
+            $siswaData = [
+                'nis' => $this->request->getPost('nis'),
+                'jenis_kelamin' => $this->request->getPost('jenis_kelamin'),
+                'tempat_lahir' => $this->request->getPost('tempat_lahir'),
+                'tanggal_lahir' => $this->request->getPost('tanggal_lahir'),
+                'alamat' => $this->request->getPost('alamat'),
+                'no_telp' => $this->request->getPost('no_telp')
+            ];
+            $siswaModel->update($siswa['id'], $siswaData);
+        }
+
         return redirect()->to('siswa/user-pengguna')->with('message', 'Profile berhasil diupdate');
     }
 }
