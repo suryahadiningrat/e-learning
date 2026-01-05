@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: elearning_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - elearning_network
+
+  nginx:
+    image: nginx:alpine
+    container_name: elearning_nginx
+    restart: unless-stopped
+    ports:
+      - "8024:8024"
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - app
+    networks:
+      - elearning_network
+
+networks:
+  elearning_network:
+    driver: bridge
