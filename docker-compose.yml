@@ -18,9 +18,10 @@ services:
     container_name: elearning_nginx
     restart: unless-stopped
     ports:
-      - "8024:80"
+      - "8024:8024"
     volumes:
       - ./:/var/www/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - app
     networks:
